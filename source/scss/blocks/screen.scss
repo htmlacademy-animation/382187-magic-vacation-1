@@ -7,7 +7,7 @@
   overflow: hidden;
 
   &--hidden {
-    display: none;
+    visibility: hidden;
   }
 
   @media (max-width: $tablet) and (orientation: portrait) {

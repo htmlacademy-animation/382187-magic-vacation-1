@@ -1,0 +1,29 @@
+.screen {
+  &.active {
+    .intro__message {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .form__field {
+      width: calc(100% - 21rem);
+      transition: width 0.7s ease;
+    }
+  }
+}
+
+.swiper-slide-active {
+  & .slider__item-text {
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.7s ease .3s;
+  }
+}
+
+.swiper-slide-next {
+  & .slider__item-text {
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.7s ease .6s;
+  }
+}
