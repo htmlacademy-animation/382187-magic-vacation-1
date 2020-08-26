@@ -35,6 +35,8 @@
   padding: 1rem 0;
   width: 10rem;
   color: $c-light;
+  opacity: 0;
+  transform: translateX(-3rem);
 
   @media (min-width: $stop-scaling) {
     top: -5px;
@@ -177,6 +179,7 @@
   font-size: 1.2rem;
   line-height: 1.0418;
   color: $c-light;
+  opacity: 0;
 
   @media (min-width: $stop-scaling) {
     font-size: 12px;
