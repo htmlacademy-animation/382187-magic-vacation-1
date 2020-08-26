@@ -52,3 +52,24 @@
     }
   }
 }
+
+.animation-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 0;
+  width: 100%;
+  background-color: $c-dark;
+
+  &.active {
+    height: 100%;
+    transition: height 1s ease;
+  }
+}
+
+.screen--prizes.active {
+  & ~ .animation-bar.active {
+    background-color: $c-dark;
+    z-index: 2;
+  }
+}
