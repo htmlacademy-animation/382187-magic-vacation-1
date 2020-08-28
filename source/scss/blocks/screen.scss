@@ -304,10 +304,10 @@
 
 .screen--prizes {
   background-color: $c-dark;
+  position: relative;
 }
 
 .screen--game {
-  position: relative;
   background-color: $c-dark;
 
   &::before {
