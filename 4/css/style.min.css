@@ -2396,71 +2396,6 @@ img {
     .result--negative .result__title {
       width: 45rem; } }
 
-@keyframes rulesItemText {
-  0%,
-  30% {
-    opacity: 0;
-    transform: translateX(5rem); }
-  100% {
-    opacity: 1;
-    transform: translateX(0); } }
-
-@keyframes rulesItemNumber {
-  0% {
-    transform: scale(0);
-    color: transparent;
-    opacity: 1; }
-  50% {
-    transform: scale(1.1); }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-    color: #ffffff; } }
-
-@keyframes rulesLink {
-  0% {
-    width: 6rem;
-    opacity: 0;
-    margin-left: calc(100% - 6rem); }
-  1% {
-    opacity: 1; }
-  100% {
-    width: 100%;
-    opacity: 1;
-    margin-left: 0; } }
-
-.rules__item:nth-child(1)::before {
-  opacity: 0;
-  animation: rulesItemNumber 0.7s ease-out 0.85s forwards; }
-
-.rules__item:nth-child(1) p {
-  opacity: 0;
-  animation: rulesItemText 0.7s ease-out 0.85s forwards; }
-
-.rules__item:nth-child(2)::before {
-  opacity: 0;
-  animation: rulesItemNumber 0.7s ease-out 1s forwards; }
-
-.rules__item:nth-child(2) p {
-  opacity: 0;
-  animation: rulesItemText 0.7s ease-out 1s forwards; }
-
-.rules__item:nth-child(3)::before {
-  opacity: 0;
-  animation: rulesItemNumber 0.7s ease-out 1.15s forwards; }
-
-.rules__item:nth-child(3) p {
-  opacity: 0;
-  animation: rulesItemText 0.7s ease-out 1.15s forwards; }
-
-.rules__item:nth-child(4)::before {
-  opacity: 0;
-  animation: rulesItemNumber 0.7s ease-out 1.3s forwards; }
-
-.rules__item:nth-child(4) p {
-  opacity: 0;
-  animation: rulesItemText 0.7s ease-out 1.3s forwards; }
-
 .rules {
   position: relative;
   flex-grow: 1;
@@ -2620,19 +2555,7 @@ img {
 .rules__link {
   position: absolute;
   bottom: 6rem;
-  right: 5.6rem;
-  color: transparent;
-  transition: color 0.2s ease-out 0.35s; }
-  .rules__link::before {
-    top: 0;
-    left: 0;
-    transform: none;
-    border: none;
-    opacity: 0; }
-  .rules__link.active {
-    color: #5f458c; }
-    .rules__link.active::before {
-      animation: rulesLink 0.35s ease-out forwards; }
+  right: 5.6rem; }
   @media (min-width: 2000px) {
     .rules__link {
       bottom: 60px;
@@ -3406,6 +3329,39 @@ img {
         width: 10px;
         height: 10px; } }
 
+@keyframes rulesItemText {
+  0%,
+  30% {
+    opacity: 0;
+    transform: translateX(5rem); }
+  100% {
+    opacity: 1;
+    transform: translateX(0); } }
+
+@keyframes rulesItemNumber {
+  0% {
+    transform: scale(0);
+    color: transparent;
+    opacity: 1; }
+  50% {
+    transform: scale(1.1); }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    color: #ffffff; } }
+
+@keyframes rulesLink {
+  0% {
+    width: 6rem;
+    opacity: 0;
+    margin-left: calc(100% - 6rem); }
+  1% {
+    opacity: 1; }
+  100% {
+    width: 100%;
+    opacity: 1;
+    margin-left: 0; } }
+
 .screen.active .intro__message {
   opacity: 1;
   transform: translateY(0); }
@@ -3413,6 +3369,52 @@ img {
 .screen.active .form__field {
   width: calc(100% - 21rem);
   transition: width 0.7s ease; }
+
+.screen.active .rules__item:nth-child(1)::before {
+  opacity: 0;
+  animation: rulesItemNumber 0.7s ease-out 0.85s forwards; }
+
+.screen.active .rules__item:nth-child(1) p {
+  opacity: 0;
+  animation: rulesItemText 0.7s ease-out 0.85s forwards; }
+
+.screen.active .rules__item:nth-child(2)::before {
+  opacity: 0;
+  animation: rulesItemNumber 0.7s ease-out 1s forwards; }
+
+.screen.active .rules__item:nth-child(2) p {
+  opacity: 0;
+  animation: rulesItemText 0.7s ease-out 1s forwards; }
+
+.screen.active .rules__item:nth-child(3)::before {
+  opacity: 0;
+  animation: rulesItemNumber 0.7s ease-out 1.15s forwards; }
+
+.screen.active .rules__item:nth-child(3) p {
+  opacity: 0;
+  animation: rulesItemText 0.7s ease-out 1.15s forwards; }
+
+.screen.active .rules__item:nth-child(4)::before {
+  opacity: 0;
+  animation: rulesItemNumber 0.7s ease-out 1.3s forwards; }
+
+.screen.active .rules__item:nth-child(4) p {
+  opacity: 0;
+  animation: rulesItemText 0.7s ease-out 1.3s forwards; }
+
+.screen.active .rules__link {
+  color: transparent;
+  transition: color 0.2s ease-out 0.35s; }
+  .screen.active .rules__link::before {
+    top: 0;
+    left: 0;
+    transform: none;
+    border: none;
+    opacity: 0; }
+  .screen.active .rules__link.active {
+    color: #5f458c; }
+    .screen.active .rules__link.active::before {
+      animation: rulesLink 0.35s ease-out forwards; }
 
 .swiper-slide-active .slider__item-text {
   opacity: 1;
@@ -3449,7 +3451,7 @@ img {
   position: fixed;
   bottom: 0;
   transition: all 1s ease; }
-  .screen--story.transtioning ~ .animation-bar {
+  .screen--story.transitioning ~ .animation-bar {
     height: 100%;
     z-index: 1; }
 

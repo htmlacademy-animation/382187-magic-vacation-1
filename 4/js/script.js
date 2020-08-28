@@ -10107,46 +10107,6 @@ module.exports = code;
 
 /***/ }),
 
-/***/ "./source/js/modules/animation-bar.js":
-/*!********************************************!*\
-  !*** ./source/js/modules/animation-bar.js ***!
-  \********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (() => {
-  const animationBar = document.querySelector(`.animation-bar`);
-  const menu = Array.from(document.querySelectorAll(`.js-menu-link`));
-  const prizes = document.querySelector(`.screen--prizes`);
-  const story = document.querySelector(`.screen--story`);
-
-
-  animationBar.addEventListener(`transitionend`, () => {
-    story.classList.remove(`transtioning`);
-    story.classList.add(`screen--hidden`);
-    story.classList.remove(`active`);
-
-    animationBar.classList.remove(`active`);
-
-    prizes.classList.remove(`screen--hidden`);
-    prizes.classList.add(`active`);
-  });
-
-  menu.forEach((elem) => {
-    elem.addEventListener(`click`, function () {
-      if (elem.dataset.href !== `prizes`) {
-        prizes.classList.add(`screen--hidden`);
-        prizes.classList.remove(`active`);
-      }
-    });
-  });
-});
-
-
-/***/ }),
-
 /***/ "./source/js/modules/chat.js":
 /*!***********************************!*\
   !*** ./source/js/modules/chat.js ***!
@@ -10320,13 +10280,18 @@ __webpack_require__.r(__webpack_exports__);
 class FullPageScroll {
   constructor() {
     this.THROTTLE_TIMEOUT = 2000;
+    // this.prizes = document.querySelector(`.screen--prizes`);
+    // this.story = document.querySelector(`.screen--story`);
 
     this.screenElements = document.querySelectorAll(`.screen:not(.screen--result)`);
     this.menuElements = document.querySelectorAll(`.page-header__menu .js-menu-link`);
     this.animationBar = document.querySelector(`.animation-bar`);
+    this.rulesLink = document.querySelector(`.rules__link`);
+
 
     this.storyScreenIndex = 1;
     this.prizeScreenIndex = 2;
+    this.rulesScreenIndex = 3;
 
     this.activeScreen = 0;
     this.previousScreen = 0;
@@ -10363,14 +10328,38 @@ class FullPageScroll {
   }
 
   changeVisibilityDisplay() {
-    if (this.previousScreen === this.storyScreenIndex && this.activeScreen === this.prizeScreenIndex) {
-      this.screenElements[this.previousScreen].classList.add(`transtioning`);
+    this.triggerAnimationBar();
+
+    this.screenElements.forEach((screen) => {
+      screen.classList.remove(`active`);
+      screen.classList.add(`screen--hidden`);
+    });
+
+    if (this.previousScreen === this.rulesScreenIndex) {
+      this.rulesLink.classList.remove(`active`);
     }
 
     if (!(this.previousScreen === this.storyScreenIndex && this.activeScreen === this.prizeScreenIndex)) {
       this.screenElements[this.activeScreen].classList.remove(`screen--hidden`);
       this.screenElements[this.activeScreen].classList.add(`active`);
     }
+  }
+
+  triggerAnimationBar() {
+    if (this.previousScreen === this.storyScreenIndex && this.activeScreen === this.prizeScreenIndex) {
+      this.screenElements[this.previousScreen].classList.add(`transitioning`);
+    }
+
+    this.animationBar.addEventListener(`transitionend`, () => {
+      this.screenElements[this.storyScreenIndex].classList.remove(`transitioning`);
+      this.screenElements[this.storyScreenIndex].classList.add(`screen--hidden`);
+      this.screenElements[this.storyScreenIndex].classList.remove(`active`);
+
+      this.animationBar.classList.remove(`active`);
+
+      this.screenElements[this.prizeScreenIndex].classList.remove(`screen--hidden`);
+      this.screenElements[this.prizeScreenIndex].classList.add(`active`);
+    });
   }
 
   changeActiveMenuItem() {
@@ -10543,6 +10532,13 @@ __webpack_require__.r(__webpack_exports__);
   const rulesItem = document.querySelector(`.rules__item:last-child`);
   const rulesLink = document.querySelector(`.rules__link`);
 
+  // TODO. FIX bug when link animated before list when we return on that screen
+
+  rulesItem.addEventListener(`animationstart`, (event) => {
+    if (event.animationName === `rulesItemText`) {
+      rulesLink.classList.remove(`active`);
+    }
+  });
   rulesItem.addEventListener(`animationend`, (event) => {
     if (event.animationName === `rulesItemText`) {
       rulesLink.classList.add(`active`);
@@ -10690,10 +10686,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_social_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/social.js */ "./source/js/modules/social.js");
 /* harmony import */ var _modules_full_page_scroll__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modules/full-page-scroll */ "./source/js/modules/full-page-scroll.js");
 /* harmony import */ var _modules_page_loaded_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./modules/page-loaded.js */ "./source/js/modules/page-loaded.js");
-/* harmony import */ var _modules_animation_bar_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./modules/animation-bar.js */ "./source/js/modules/animation-bar.js");
-/* harmony import */ var _modules_rules_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./modules/rules.js */ "./source/js/modules/rules.js");
+/* harmony import */ var _modules_rules_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./modules/rules.js */ "./source/js/modules/rules.js");
 // modules
-
 
 
 
@@ -10716,8 +10710,7 @@ Object(_modules_result_js__WEBPACK_IMPORTED_MODULE_5__["default"])();
 Object(_modules_form_js__WEBPACK_IMPORTED_MODULE_6__["default"])();
 Object(_modules_social_js__WEBPACK_IMPORTED_MODULE_7__["default"])();
 Object(_modules_page_loaded_js__WEBPACK_IMPORTED_MODULE_9__["default"])();
-Object(_modules_animation_bar_js__WEBPACK_IMPORTED_MODULE_10__["default"])();
-Object(_modules_rules_js__WEBPACK_IMPORTED_MODULE_11__["default"])();
+Object(_modules_rules_js__WEBPACK_IMPORTED_MODULE_10__["default"])();
 
 const fullPageScroll = new _modules_full_page_scroll__WEBPACK_IMPORTED_MODULE_8__["default"]();
 
