@@ -4,6 +4,7 @@ export default class TypographyBuild {
       timer,
       classForActivate,
       property,
+      animationStep,
       wordContainerClass,
       initialOffset = 0
   ) {
@@ -13,6 +14,7 @@ export default class TypographyBuild {
     this._timer = timer;
     this._classForActivate = classForActivate;
     this._property = property;
+    this.animationStep = animationStep;
     this._element = document.querySelector(this._elementSelector);
     this._timeOffset = 0;
     this.initialOffset = initialOffset;
@@ -21,33 +23,25 @@ export default class TypographyBuild {
     this.prePareText();
   }
 
-  shuffleArrayIndexes(array) {
-    const shuffledArray = [];
-    let i = 1;
-    let j = 2;
-
-    for (let index = 0; index < array.length; index++) {
-      if (index === i) {
-        shuffledArray.push(i + 1);
-        i += 3;
-      } else if (index === j) {
-        shuffledArray.push(j - 1);
-        j += 3;
-      } else {
-        shuffledArray.push(index);
-      }
+  shuffleIndex(index) {
+    if (index % 3 === 1) {
+      return index - 1;
     }
 
-    return shuffledArray.filter((e) => e === 0 || e);
+    if (index % 3 === 2) {
+      return index + 1;
+    }
+
+    return index;
   }
 
   createElement(letter, animatingIndex) {
     const span = document.createElement(`span`);
     span.textContent = letter;
 
-    this._timeOffset = this.initialOffset + animatingIndex * 20;
-
+    this._timeOffset = this.initialOffset + animatingIndex * this.animationStep;
     span.style.transition = `${this._property} ${this._timer}ms ease ${this._timeOffset}ms`;
+
     return span;
   }
 
@@ -55,26 +49,37 @@ export default class TypographyBuild {
     if (!this._element) {
       return;
     }
-    const text = this._element.textContent.trim().split(` `).filter((letter) => letter !== ``);
+    const parentFragment = document.createDocumentFragment();
+    let wordFragment = document.createDocumentFragment();
+    let wordContainer = document.createElement(`span`);
+    wordContainer.classList.add(this.wordContainerClass);
 
-    const content = text.reduce((fragmentParent, word) => {
-      const animatingIndexes = this.shuffleArrayIndexes(word.split(``));
-      const wordElement = Array.from(word).reduce((fragment, letter, idx) => {
-        fragment.appendChild(this.createElement(letter, animatingIndexes[idx]));
-        return fragment;
-      }, document.createDocumentFragment());
-      const wordContainer = document.createElement(`span`);
-      wordContainer.classList.add(this.wordContainerClass);
-      wordContainer.appendChild(wordElement);
+    this._element.textContent.trim().split(``).map((letter, idx, arr) => {
+      // Omit spaces and do not animate them
+      if (letter !== ` `) {
+        wordFragment.appendChild(this.createElement(letter, this.shuffleIndex(idx)));
+      }
+      // Handle space letter
+      if (letter === ` `) {
+        // Apend word to parent
+        wordFragment.appendChild(document.createTextNode(`\u00A0`));
+        wordContainer.appendChild(wordFragment);
+        parentFragment.appendChild(wordContainer);
 
-      fragmentParent.appendChild(wordContainer);
-
-      return fragmentParent;
-    }, document.createDocumentFragment());
-
+        // Create new word container and word fragment
+        wordContainer = document.createElement(`span`);
+        wordContainer.classList.add(this.wordContainerClass);
+        wordFragment = document.createDocumentFragment();
+      }
+      // Add the last letter to word and then the word to parent
+      if (idx === arr.length - 1) {
+        wordContainer.appendChild(wordFragment);
+        parentFragment.appendChild(wordContainer);
+      }
+    });
 
     this._element.innerHTML = ``;
-    this._element.appendChild(content);
+    this._element.appendChild(parentFragment);
   }
 
   runAnimation() {
