@@ -3,13 +3,18 @@ import throttle from 'lodash/throttle';
 export default class FullPageScroll {
   constructor() {
     this.THROTTLE_TIMEOUT = 2000;
+    // this.prizes = document.querySelector(`.screen--prizes`);
+    // this.story = document.querySelector(`.screen--story`);
 
     this.screenElements = document.querySelectorAll(`.screen:not(.screen--result)`);
     this.menuElements = document.querySelectorAll(`.page-header__menu .js-menu-link`);
     this.animationBar = document.querySelector(`.animation-bar`);
+    this.rulesLink = document.querySelector(`.rules__link`);
+
 
     this.storyScreenIndex = 1;
     this.prizeScreenIndex = 2;
+    this.rulesScreenIndex = 3;
 
     this.activeScreen = 0;
     this.previousScreen = 0;
@@ -46,14 +51,38 @@ export default class FullPageScroll {
   }
 
   changeVisibilityDisplay() {
-    if (this.previousScreen === this.storyScreenIndex && this.activeScreen === this.prizeScreenIndex) {
-      this.screenElements[this.previousScreen].classList.add(`transtioning`);
+    this.triggerAnimationBar();
+
+    this.screenElements.forEach((screen) => {
+      screen.classList.remove(`active`);
+      screen.classList.add(`screen--hidden`);
+    });
+
+    if (this.previousScreen === this.rulesScreenIndex) {
+      this.rulesLink.classList.remove(`active`);
     }
 
     if (!(this.previousScreen === this.storyScreenIndex && this.activeScreen === this.prizeScreenIndex)) {
       this.screenElements[this.activeScreen].classList.remove(`screen--hidden`);
       this.screenElements[this.activeScreen].classList.add(`active`);
     }
+  }
+
+  triggerAnimationBar() {
+    if (this.previousScreen === this.storyScreenIndex && this.activeScreen === this.prizeScreenIndex) {
+      this.screenElements[this.previousScreen].classList.add(`transitioning`);
+    }
+
+    this.animationBar.addEventListener(`transitionend`, () => {
+      this.screenElements[this.storyScreenIndex].classList.remove(`transitioning`);
+      this.screenElements[this.storyScreenIndex].classList.add(`screen--hidden`);
+      this.screenElements[this.storyScreenIndex].classList.remove(`active`);
+
+      this.animationBar.classList.remove(`active`);
+
+      this.screenElements[this.prizeScreenIndex].classList.remove(`screen--hidden`);
+      this.screenElements[this.prizeScreenIndex].classList.add(`active`);
+    });
   }
 
   changeActiveMenuItem() {

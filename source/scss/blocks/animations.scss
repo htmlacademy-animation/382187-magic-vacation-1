@@ -1,3 +1,54 @@
+@keyframes rulesItemText {
+  0%,
+  30% {
+    opacity: 0;
+    transform: translateX(5rem);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes rulesItemNumber {
+  0% {
+    transform: scale(0);
+    color: transparent;
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    color: $c-light;
+  }
+}
+
+
+@keyframes rulesLink {
+  0% {
+    width: 6rem;
+    opacity: 0;
+    margin-left: calc(100% - 6rem)
+  }
+
+  1% {
+    opacity: 1;
+  }
+
+  100% {
+    width: 100%;
+    opacity: 1;
+    margin-left: 0;
+    // transform: translateX(0);
+  }
+}
+
 .screen {
   &.active {
     .intro__message {
@@ -8,6 +59,41 @@
     .form__field {
       width: calc(100% - 21rem);
       transition: width 0.7s ease;
+    }
+
+    @for $i from 1 through 4 {
+      .rules__item:nth-child(#{$i}) {
+        &::before {
+          opacity: 0;
+          animation: rulesItemNumber 0.7s ease-out #{(0.15s * $i) + 0.7s} forwards;
+        }
+
+        p {
+          opacity: 0;
+          animation: rulesItemText 0.7s ease-out #{(0.15s * $i) + 0.7s} forwards;
+        }
+      }
+    }
+
+    .rules__link {
+      color: transparent;
+      transition: color 0.2s ease-out 0.35s;
+
+      &::before {
+        top: 0;
+        left: 0;
+        transform: none;
+        border: none;
+        opacity: 0;
+      }
+
+      &.active {
+        color: $c-dark;
+
+        &::before {
+          animation: rulesLink 0.35s ease-out forwards;
+        }
+      }
     }
   }
 }
@@ -61,7 +147,7 @@
   bottom: 0;
   transition: all 1s ease;
 
-  .screen--story.transtioning~& {
+  .screen--story.transitioning~& {
     height: 100%;
     z-index: 1;
   }
