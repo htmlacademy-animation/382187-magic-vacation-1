@@ -235,6 +235,7 @@
   font-weight: 400;
   font-size: 2.4rem;
   line-height: 4rem;
+  animation-play-state: paused;
 
   @media (min-width: $stop-scaling) {
     bottom: 28px;

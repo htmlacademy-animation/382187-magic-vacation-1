@@ -48,6 +48,31 @@
   }
 }
 
+@keyframes sliderControlPrev {
+  0% {
+    transform: translateX(-4rem) rotate(-135deg);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes sliderControlNext {
+  0% {
+    transform: translateX(4rem) rotate(135deg);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0) rotate(0);
+    opacity: 1;
+  }
+}
+
+
 .screen {
   &.active {
     .intro__title.active .intro__word>span,
@@ -100,6 +125,21 @@
         }
       }
     }
+
+    .slider__pagination {
+      opacity: 1;
+      transition: opacity 0.7s ease 1s;
+    }
+
+    .slider__control--prev {
+      animation: sliderControlPrev 0.7s cubic-bezier(0.25, 0.03, 0, 1.52) 1s backwards;
+      animation-play-state: running;
+    }
+
+    .slider__control--next {
+      animation: sliderControlNext 0.7s cubic-bezier(0.25, 0.03, 0, 1.52) 1s both;
+      animation-play-state: running;
+    }
   }
 }
 
@@ -142,6 +182,10 @@
       transition-timing-function: cubic-bezier(0.85, 0.5, 1, 1);
     }
   }
+}
+
+.slider__pagination.swiper-pagination {
+  opacity: 0;
 }
 
 .animation-bar {
