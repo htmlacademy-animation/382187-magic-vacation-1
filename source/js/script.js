@@ -26,7 +26,4 @@ rules();
 letterAnimation();
 
 const fullPageScroll = new FullPageScroll();
-
-document.addEventListener(`DOMContentLoaded`, () => {
-  fullPageScroll.init();
-});
+fullPageScroll.init();
