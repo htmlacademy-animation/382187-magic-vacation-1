@@ -3,8 +3,7 @@ import throttle from 'lodash/throttle';
 export default class FullPageScroll {
   constructor() {
     this.THROTTLE_TIMEOUT = 2000;
-    // this.prizes = document.querySelector(`.screen--prizes`);
-    // this.story = document.querySelector(`.screen--story`);
+    this.ANIMATION_BAR_TRANSITION = 500;
 
     this.screenElements = document.querySelectorAll(`.screen:not(.screen--result)`);
     this.menuElements = document.querySelectorAll(`.page-header__menu .js-menu-link`);
@@ -23,7 +22,7 @@ export default class FullPageScroll {
   }
 
   init() {
-    document.addEventListener(`wheel`, throttle(this.onScrollHandler, this.THROTTLE_TIMEOUT, {trailing: true}));
+    document.addEventListener(`wheel`, throttle(this.onScrollHandler, this.THROTTLE_TIMEOUT, {trailing: false}));
     window.addEventListener(`popstate`, this.onUrlHashChengedHandler);
 
     this.onUrlHashChanged();
@@ -51,21 +50,26 @@ export default class FullPageScroll {
   }
 
   changeVisibilityDisplay() {
-    this.triggerAnimationBar();
+    if (this.screenElements[this.activeScreen].id === `prizes`) {
+      this.animationBar.classList.add(`active`);
+      setTimeout(() => {
+        this.animationBar.classList.remove(`active`);
+        this.toggleScreens();
+      }, this.ANIMATION_BAR_TRANSITION);
+    } else {
+      this.toggleScreens();
+    }
+  }
 
+  toggleScreens() {
     this.screenElements.forEach((screen) => {
-      screen.classList.remove(`active`);
       screen.classList.add(`screen--hidden`);
+      screen.classList.remove(`active`);
     });
 
-    if (this.previousScreen === this.rulesScreenIndex) {
-      this.rulesLink.classList.remove(`active`);
-    }
-
-    if (!(this.previousScreen === this.storyScreenIndex && this.activeScreen === this.prizeScreenIndex)) {
-      this.screenElements[this.activeScreen].classList.remove(`screen--hidden`);
-      this.screenElements[this.activeScreen].classList.add(`active`);
-    }
+    this.screenElements[this.activeScreen].classList.remove(`screen--hidden`);
+    location.hash = this.screenElements[this.activeScreen].id;
+    this.screenElements[this.activeScreen].classList.add(`active`);
   }
 
   triggerAnimationBar() {
@@ -108,8 +112,10 @@ export default class FullPageScroll {
   reCalculateActiveScreenPosition(delta) {
     if (delta > 0) {
       this.activeScreen = Math.min(this.screenElements.length - 1, ++this.activeScreen);
+      this.previousScreen = Math.max(0, this.activeScreen - 1);
     } else {
       this.activeScreen = Math.max(0, --this.activeScreen);
+      this.previousScreen = Math.min(this.screenElements.length - 1, this.activeScreen + 1);
     }
   }
 }

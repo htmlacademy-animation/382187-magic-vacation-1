@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 350 330">
-   <g id="flight">
+  <g id="flight">
     <animate attributeName="opacity" begin="2.5s" values="1; 0" keySplines="0.33 0 0.67 1;" dur="0.5s" fill="freeze" calcMode="spline"/>
     <g id="dirigible">
       <g id="gondola">
