@@ -1,4 +1,5 @@
 import throttle from 'lodash/throttle';
+import timer from './timer.js';
 
 export default class FullPageScroll {
   constructor() {
@@ -94,6 +95,10 @@ export default class FullPageScroll {
     if (activeItem) {
       this.menuElements.forEach((item) => item.classList.remove(`active`));
       activeItem.classList.add(`active`);
+
+      if (activeItem.dataset.href === `game`) {
+        timer();
+      }
     }
   }
 
