@@ -1,5 +1,6 @@
 import throttle from 'lodash/throttle';
 import timer from './timer.js';
+import prizes from './prizes.js';
 
 export default class FullPageScroll {
   constructor() {
@@ -98,6 +99,10 @@ export default class FullPageScroll {
 
       if (activeItem.dataset.href === `game`) {
         timer();
+      }
+
+      if (activeItem.dataset.href === `prizes`) {
+        prizes();
       }
     }
   }
