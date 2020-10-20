@@ -72,6 +72,95 @@
   }
 }
 
+@keyframes opacityAppearanceSlideLeft {
+  0% {
+    transform: translateX(100%);
+  }
+
+  90% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes opacityAppearance {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.prizes__item {
+  @media (orientation: landscape) {
+    opacity: 0;
+
+    .prizes__desc {
+      b {
+        opacity: 0;
+      }
+
+      span {
+        opacity: 0;
+        transform: translateX(2rem);
+      }
+    }
+  }
+}
+
+.prizes__item--active {
+  @media (orientation: landscape) {
+    opacity: 1;
+
+    .prizes__desc {
+      b {
+        animation: opacityAppearance 0.3s ease-in-out forwards;
+      }
+
+      span {
+        transform: translateX(0);
+        opacity: 1;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+      }
+    }
+
+    &.prizes__item--journeys {
+      animation: opacityAppearanceSlideLeft 3s ease-in-out forwards;
+
+      .prizes__desc {
+        b {
+          animation-delay: 1s;
+          width: 1ch;
+        }
+
+        span {
+          transition-delay: 1s;
+        }
+      }
+    }
+
+    &.prizes__item--cases {
+      .prizes__desc {
+        b {
+          width: 1ch;
+        }
+      }
+    }
+
+    &.prizes__item--codes {
+      .prizes__desc {
+        b {
+          width: 3ch;
+        }
+      }
+    }
+  }
+}
 
 .screen {
   &.active {
