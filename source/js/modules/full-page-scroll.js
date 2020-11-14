@@ -12,7 +12,6 @@ export default class FullPageScroll {
     this.animationBar = document.querySelector(`.animation-bar`);
     this.rulesLink = document.querySelector(`.rules__link`);
 
-
     this.storyScreenIndex = 1;
     this.prizeScreenIndex = 2;
     this.rulesScreenIndex = 3;
