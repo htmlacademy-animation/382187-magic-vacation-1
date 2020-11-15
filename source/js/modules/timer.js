@@ -35,7 +35,7 @@ export default () => {
       winScreen.classList.remove(`screen--hidden`);
       winScreen.classList.add(`screen--show`);
       const img = document.createElement(`img`);
-      img.src = `/img/win-result.svg`;
+      img.src = `./img/win-result.svg`;
       resultTitle.append(img);
       // startWhaleAnimation();
       animateSeacalfScene();

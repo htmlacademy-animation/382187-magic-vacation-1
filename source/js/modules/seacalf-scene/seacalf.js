@@ -12,13 +12,13 @@ export default class Seacalf {
     this.ctx = ctx;
 
     this.seacalf = {
-      src: `img/sea-calf-2.png`,
+      src: `./img/sea-calf-2.png`,
       width: 400,
       height: 400,
     };
 
     this.ice = {
-      src: `img/ice.png`,
+      src: `./img/ice.png`,
       width: 408,
       height: 167,
     };

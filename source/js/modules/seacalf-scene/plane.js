@@ -11,7 +11,7 @@ export default class Plane {
     this.ctx = ctx;
 
     this.plane = {
-      src: `img/airplane.png`,
+      src: `./img/airplane.png`,
       width: 130,
       height: 130,
     };
@@ -54,7 +54,7 @@ export default class Plane {
     this.arcAngles = {start: Math.PI / 2, end: Math.PI * 3 / 2};
 
     this.rightTree = {
-      src: `/img/tree.png`,
+      src: `./img/tree.png`,
       height: 101,
       width: 38,
       left: this.initialPlanePosition.left + 150,
@@ -62,7 +62,7 @@ export default class Plane {
     };
 
     this.leftTree = {
-      src: `/img/tree2.png`,
+      src: `./img/tree2.png`,
       height: 159,
       width: 50,
       left: this.rightTree.left - this.rightTree.width,
