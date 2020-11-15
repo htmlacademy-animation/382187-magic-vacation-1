@@ -10930,7 +10930,7 @@ class Plane {
     this.ctx = ctx;
 
     this.plane = {
-      src: `img/airplane.png`,
+      src: `./img/airplane.png`,
       width: 130,
       height: 130,
     };
@@ -10973,7 +10973,7 @@ class Plane {
     this.arcAngles = {start: Math.PI / 2, end: Math.PI * 3 / 2};
 
     this.rightTree = {
-      src: `/img/tree.png`,
+      src: `./img/tree.png`,
       height: 101,
       width: 38,
       left: this.initialPlanePosition.left + 150,
@@ -10981,7 +10981,7 @@ class Plane {
     };
 
     this.leftTree = {
-      src: `/img/tree2.png`,
+      src: `./img/tree2.png`,
       height: 159,
       width: 50,
       left: this.rightTree.left - this.rightTree.width,
@@ -11162,13 +11162,13 @@ class Seacalf {
     this.ctx = ctx;
 
     this.seacalf = {
-      src: `img/sea-calf-2.png`,
+      src: `./img/sea-calf-2.png`,
       width: 400,
       height: 400,
     };
 
     this.ice = {
-      src: `img/ice.png`,
+      src: `./img/ice.png`,
       width: 408,
       height: 167,
     };
@@ -11501,7 +11501,7 @@ __webpack_require__.r(__webpack_exports__);
       winScreen.classList.remove(`screen--hidden`);
       winScreen.classList.add(`screen--show`);
       const img = document.createElement(`img`);
-      img.src = `/img/win-result.svg`;
+      img.src = `./img/win-result.svg`;
       resultTitle.append(img);
       // startWhaleAnimation();
       Object(_seacalf_scene_index__WEBPACK_IMPORTED_MODULE_0__["default"])();
