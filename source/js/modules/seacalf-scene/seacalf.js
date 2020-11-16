@@ -54,8 +54,8 @@ export default class Seacalf {
 
   animate() {
     runSerial([
-      () => animateProgress(this.translateYAnimationTick(this.initialPosition.top, this.finalPosition.top), this.duration * 0.3),
-      () => animateEasing(this.rotateAnimationTick(30, 0), this.duration * 0.6, makeEaseOut(bounce))
+      () => animateProgress(this.translateYAnimationTick(this.initialPosition.top, this.finalPosition.top), this.duration * 0.6),
+      () => animateEasing(this.rotateAnimationTick(30, 0), this.duration * 0.5, makeEaseOut(bounce))
     ]);
   }
 

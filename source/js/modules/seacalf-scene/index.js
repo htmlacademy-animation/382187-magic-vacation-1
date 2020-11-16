@@ -1,15 +1,17 @@
 import Plane from './plane';
 import Seacalf from './seacalf';
 import Snowflake from './snowflake';
-import {animateDuration, runSerial} from '../helpers';
+import {animateDuration, animateProgress, runSerial, tick} from '../helpers';
 
 export default () => {
-  const ANIMATION_DURATION = 1400;
-  const TOTAL_DURATION = 3000;
-
+  const ANIMATION_DURATION = 1800;
+  const SNOWFLAKES_OPACITY_DURATION = 400;
   const canvasElement = document.getElementById(`seacalf-canvas`);
-  let animate = false;
+  const startAnimations = [];
+
   let loadSeacalfCount = 0;
+  let opacity = 0;
+  let animate = false;
 
   canvasElement.width = window.innerWidth;
   canvasElement.height = window.innerHeight;
@@ -47,71 +49,97 @@ export default () => {
   plane.initImages();
 
   const drawScene = () => {
+    ctx.save();
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    plane.draw();
+    seacalf.draw();
+    // Используем здесь для того чтобы анимация прозрачности у снежинок была только при первом запуске
+    ctx.globalAlpha = opacity;
+    snowflakeLeft.draw();
+    snowflakeRight.draw();
+    ctx.restore();
+  };
+
+  const opacityAnimationTick = (from, to) => (progress) => {
+    opacity = tick(from, to, progress);
+  };
+
+  const startSnowflakesAnimationInfinite = () => {
+    const globalAnimationTick = (globalProgress) => {
+      if (globalProgress === 0) {
+        // Не должно быть в серии
+        // Анимация прорачности идет одновременно с анимацией движения
+        animateProgress(opacityAnimationTick(opacity, 1), SNOWFLAKES_OPACITY_DURATION);
+
+        runSerial([
+          () => snowflakeLeft.animate(),
+          () => snowflakeRight.animate()
+        ]);
+      }
+      drawScene();
+    };
+
+    const animations = [
+      () => animateDuration(globalAnimationTick, ANIMATION_DURATION)
+    ];
+
+    runSerial(animations).then(startSnowflakesAnimationInfinite);
+  };
+
+
+  const startAnimation = () => {
     if (!animate) {
       animate = true;
 
-      const render = () => {
-        ctx.save();
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      const globalAnimationTick = (globalProgress) => {
+        if (globalProgress >= 0 && startAnimations.indexOf(0) === -1) {
+          startAnimations.push(0);
+          seacalf.animate();
+        }
 
-        plane.draw();
-        seacalf.draw();
-        snowflakeLeft.draw();
-        snowflakeRight.draw();
+        if (globalProgress >= 393 && startAnimations.indexOf(393) === -1) {
+          startAnimations.push(393);
+          plane.animate();
+        }
 
-        ctx.restore();
-
-        if (animate) {
-          requestAnimationFrame(render);
+        if (globalProgress >= 934 && startAnimations.indexOf(934) === -1) {
+          startAnimations.push(934);
+          startSnowflakesAnimationInfinite();
         }
       };
+      animateDuration(globalAnimationTick, ANIMATION_DURATION);
+    }
+  };
 
-      runSerial([
-        () => seacalf.animate(),
-        () => plane.animate(),
-        () => snowflakeLeft.animate(),
-        () => snowflakeRight.animate()
-      ]);
+  const increaseLoadSeacalfSceneImg = () => {
+    loadSeacalfCount++;
 
-      animateDuration(render, TOTAL_DURATION);
+    if (loadSeacalfCount === 7) {
+      startAnimation();
     }
   };
 
   const init = () => {
-    const increaseLoadSeacalfImg = () => {
-      loadSeacalfCount++;
-
-      if (loadSeacalfCount === 7) {
-        drawScene();
-      }
-    };
-
     seacalf.seacalf.img.onload = () => {
-      increaseLoadSeacalfImg();
+      increaseLoadSeacalfSceneImg();
     };
-
     seacalf.ice.img.onload = () => {
-      increaseLoadSeacalfImg();
+      increaseLoadSeacalfSceneImg();
     };
-
     plane.plane.img.onload = () => {
-      increaseLoadSeacalfImg();
+      increaseLoadSeacalfSceneImg();
     };
-
     plane.leftTree.img.onload = () => {
-      increaseLoadSeacalfImg();
+      increaseLoadSeacalfSceneImg();
     };
-
     plane.rightTree.img.onload = () => {
-      increaseLoadSeacalfImg();
+      increaseLoadSeacalfSceneImg();
     };
-
     snowflakeLeft.snowflake.img.onload = () => {
-      increaseLoadSeacalfImg();
+      increaseLoadSeacalfSceneImg();
     };
-
     snowflakeRight.snowflake.img.onload = () => {
-      increaseLoadSeacalfImg();
+      increaseLoadSeacalfSceneImg();
     };
   };
 

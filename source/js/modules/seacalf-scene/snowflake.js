@@ -18,29 +18,18 @@ export default class Snowflake {
     this.ctx = ctx;
 
     this.snowflake = {
-      src: `img/snowflake.png`,
+      src: `./img/snowflake.png`,
       width: 200,
       height: 200,
     };
-
-    this.timePerFrame = 1000 / 25;
 
     this.initialPosition = position;
     this.skew = skew;
     this.scale = scale;
 
-    this.positionAnimationRequest = null;
     this.maxOffset = 50;
     this.currentOffset = 0;
     this.offsetProgress = 0;
-
-    this.opacity = 0;
-
-    this.animatePosition = this.animatePosition.bind(this);
-  }
-
-  endAnimation() {
-    this.positionAnimationRequest = null;
   }
 
   opacityAnimationTick(from, to) {
@@ -51,30 +40,11 @@ export default class Snowflake {
 
   translateYAnimationTick() {
     this.currentOffset = 10 * Math.sin(this.offsetProgress) + this.maxOffset / 2;
-    this.offsetProgress += 25;
+    this.offsetProgress += 12.5;
   }
 
   animate() {
-    animateProgress(this.opacityAnimationTick(0, 1), this.duration);
-    this.positionAnimationRequest = requestAnimationFrame(this.animatePosition);
-  }
-
-  animatePosition(currentTime) {
-    if (!this.lastFrameUpdateTime) {
-      this.lastFrameUpdateTime = currentTime;
-    }
-
-    this.timePassedSinceLastUpdate = currentTime - this.lastFrameUpdateTime;
-
-    if (this.timePassedSinceLastUpdate > this.timePerFrame) {
-      this.lastFrameUpdateTime = currentTime;
-
-      this.translateYAnimationTick();
-    }
-
-    if (this.positionAnimationRequest) {
-      requestAnimationFrame(this.animatePosition);
-    }
+    animateProgress(this.translateYAnimationTick.bind(this), this.duration);
   }
 
   draw() {
@@ -82,7 +52,6 @@ export default class Snowflake {
     this.ctx.translate(this.initialPosition.left, this.initialPosition.top - this.currentOffset);
     skewCtx(this.ctx, ...this.skew);
     this.ctx.scale(...this.scale);
-    this.ctx.globalAlpha = this.opacity;
     this.ctx.drawImage(this.snowflake.img, 0, 0, this.snowflake.width, this.snowflake.height);
     this.ctx.restore();
   }
