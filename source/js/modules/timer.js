@@ -1,9 +1,8 @@
-import animateSeacalfScene from "./seacalf-scene";
+import animateCrocodileScene from "./crocodile-scene";
 
 export default () => {
-  const gameScreen = document.querySelector(`.screen--game`);
-  const winScreen = document.querySelector(`#result`);
-  const resultTitle = document.querySelector(`.result__title`);
+  const gameBtns = document.querySelectorAll(`.game__button`);
+  const loseResultTitle = document.querySelector(`#result3 .result__title`);
   // TODO. Set correct timing. Now 2 second just to show seacalf scene animation
   const COUNTDOWN_TIME = 1 * 2 * 1000;
   const endTime = new Date().getTime() + COUNTDOWN_TIME;
@@ -30,14 +29,11 @@ export default () => {
     if (remainingTime >= 1000) {
       requestAnimationFrame(showTime);
     } else {
-      gameScreen.classList.remove(`active`);
-      gameScreen.classList.add(`screen--hidden`);
-      winScreen.classList.remove(`screen--hidden`);
-      winScreen.classList.add(`screen--show`);
+      gameBtns[2].click();
       const img = document.createElement(`img`);
-      img.src = `./img/win-result.svg`;
-      resultTitle.append(img);
-      animateSeacalfScene();
+      img.src = `./img/lose-result.svg`;
+      loseResultTitle.append(img);
+      animateCrocodileScene();
     }
   }
 
