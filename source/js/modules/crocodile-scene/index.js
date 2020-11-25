@@ -146,9 +146,8 @@ export default () => {
   const snowflake = new Thing({duration: ANIMATION_DURATION, ctx, src: snowflakeOptions.src, sizes: snowflakeOptions.sizes, positions: snowflakeOptions.positions});
   const saturn = new Thing({duration: ANIMATION_DURATION, ctx, src: saturnOptions.src, sizes: saturnOptions.sizes, positions: saturnOptions.positions});
   const leaf = new Thing({duration: ANIMATION_DURATION, ctx, src: leafOptions.src, sizes: leafOptions.sizes, positions: leafOptions.positions});
-
   const crocodile = new Crocodile({duration: ANIMATION_DURATION * 0.2, ctx, src: `./img/crocodile.png`});
-  const tear = new Tear({duration: ANIMATION_INFINITE, ctx, src: `./img/icons/tear.svg`});
+  const tear = new Tear({duration: ANIMATION_INFINITE, ctx, src: `./img/drop.png`});
 
   const drawScene = () => {
     ctx.save();
@@ -205,12 +204,13 @@ export default () => {
           leaf.animateFall();
         }
 
+        drawScene();
+
         if (globalProgress >= 1200 && startAnimations.indexOf(1200) === -1) {
           startAnimations.push(1200);
           startTearAnimationLoop();
         }
 
-        drawScene();
       };
 
       animateDuration(globalAnimationTick, ANIMATION_DURATION);

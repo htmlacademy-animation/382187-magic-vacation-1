@@ -38,11 +38,11 @@ export default class Thing {
   }
 
   animateFall() {
-    animateEasing(this.positionAnimationTick(this.finalPositions, {...this.finalPositions, top: window.innerHeight * 2}), this.duration, bezierEasing(0.67, 1.07, 1, 2.7));
+    animateEasing(this.positionAnimationTick(this.finalPositions, {...this.finalPositions, top: window.innerHeight}), this.duration * 0.7, bezierEasing(0.67, 1.07, 1, 1));
   }
 
   animate() {
     animateProgress(this.sizeAnimationTick(this.initialSize, this.finalSize), this.duration * 0.8);
-    animateProgress(this.positionAnimationTick(this.initialPositions, this.finalPositions), this.duration * 0.8);
+    animateProgress(this.positionAnimationTick(this.initialPositions, this.finalPositions), this.duration);
   }
 }
