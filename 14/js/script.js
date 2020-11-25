@@ -10451,9 +10451,8 @@ __webpack_require__.r(__webpack_exports__);
   const snowflake = new _thing__WEBPACK_IMPORTED_MODULE_2__["default"]({duration: ANIMATION_DURATION, ctx, src: snowflakeOptions.src, sizes: snowflakeOptions.sizes, positions: snowflakeOptions.positions});
   const saturn = new _thing__WEBPACK_IMPORTED_MODULE_2__["default"]({duration: ANIMATION_DURATION, ctx, src: saturnOptions.src, sizes: saturnOptions.sizes, positions: saturnOptions.positions});
   const leaf = new _thing__WEBPACK_IMPORTED_MODULE_2__["default"]({duration: ANIMATION_DURATION, ctx, src: leafOptions.src, sizes: leafOptions.sizes, positions: leafOptions.positions});
-
   const crocodile = new _crocodile__WEBPACK_IMPORTED_MODULE_3__["default"]({duration: ANIMATION_DURATION * 0.2, ctx, src: `./img/crocodile.png`});
-  const tear = new _tear__WEBPACK_IMPORTED_MODULE_4__["default"]({duration: ANIMATION_INFINITE, ctx, src: `./img/icons/tear.svg`});
+  const tear = new _tear__WEBPACK_IMPORTED_MODULE_4__["default"]({duration: ANIMATION_INFINITE, ctx, src: `./img/drop.png`});
 
   const drawScene = () => {
     ctx.save();
@@ -10510,12 +10509,13 @@ __webpack_require__.r(__webpack_exports__);
           leaf.animateFall();
         }
 
+        drawScene();
+
         if (globalProgress >= 1200 && startAnimations.indexOf(1200) === -1) {
           startAnimations.push(1200);
           startTearAnimationLoop();
         }
 
-        drawScene();
       };
 
       Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["animateDuration"])(globalAnimationTick, ANIMATION_DURATION);
@@ -10776,12 +10776,12 @@ class Thing {
   }
 
   animateFall() {
-    Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["animateEasing"])(this.positionAnimationTick(this.finalPositions, {...this.finalPositions, top: window.innerHeight * 2}), this.duration, Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["bezierEasing"])(0.67, 1.07, 1, 2.7));
+    Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["animateEasing"])(this.positionAnimationTick(this.finalPositions, {...this.finalPositions, top: window.innerHeight}), this.duration * 0.7, Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["bezierEasing"])(0.67, 1.07, 1, 1));
   }
 
   animate() {
     Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["animateProgress"])(this.sizeAnimationTick(this.initialSize, this.finalSize), this.duration * 0.8);
-    Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["animateProgress"])(this.positionAnimationTick(this.initialPositions, this.finalPositions), this.duration * 0.8);
+    Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["animateProgress"])(this.positionAnimationTick(this.initialPositions, this.finalPositions), this.duration);
   }
 }
 
