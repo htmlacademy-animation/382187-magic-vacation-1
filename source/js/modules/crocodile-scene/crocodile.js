@@ -2,6 +2,8 @@ import {animateProgress, tick} from '../helpers';
 
 export default class Crocodile {
   constructor({duration, ctx, src}) {
+    this.ww = window.innerWidth;
+    this.wh = window.innerHeight;
     this.duration = duration;
     this.ctx = ctx;
 
@@ -14,18 +16,18 @@ export default class Crocodile {
     this.img.src = src;
 
     this.initialPosition = {
-      top: window.innerHeight / 2 - this.size.height / 2 + 140,
-      left: window.innerWidth / 2,
+      top: this.wh / 2 - this.size.height / 2 + 140,
+      left: this.ww / 2,
     };
 
     this.position = {
-      top: window.innerHeight / 2 - this.size.height / 2 + 140,
-      left: window.innerWidth / 2 + this.size.width,
+      top: this.wh / 2 - this.size.height / 2 + 140,
+      left: this.ww / 2 + this.size.width,
     };
 
     this.finalPosition = {
-      top: window.innerHeight / 2 - this.size.height / 2 + 170,
-      left: window.innerWidth / 2 - this.size.width / 2 + 20,
+      top: this.wh / 2 - this.size.height / 2 + 170,
+      left: this.ww / 2 - this.size.width / 2 + 20,
     };
 
     this.opacity = 0;
@@ -58,7 +60,7 @@ export default class Crocodile {
   draw() {
     this.ctx.save();
 
-    this.drawMask(window.innerWidth / 2 - this.size.width / 2 - 60, window.innerHeight / 2, 550, 300);
+    this.drawMask(this.ww / 2 - this.size.width / 2 - 60, this.wh / 2, 550, 300);
     this.ctx.drawImage(this.img, this.position.left, this.position.top, this.size.width, this.size.height);
     this.ctx.restore();
   }

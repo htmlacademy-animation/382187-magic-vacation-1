@@ -4,6 +4,7 @@ export default class Thing {
   constructor({duration, ctx, src, sizes, positions}) {
     this.duration = duration;
     this.ctx = ctx;
+
     this.initialSize = sizes.initial;
     this.finalSize = sizes.final;
 

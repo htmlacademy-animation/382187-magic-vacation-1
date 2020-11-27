@@ -4,6 +4,8 @@ export default class Tear {
   constructor({duration, ctx, src}) {
     this.duration = duration;
     this.ctx = ctx;
+    this.ww = window.innerWidth;
+    this.wh = window.innerHeight;
 
     this.img = new Image();
     this.img.src = src;
@@ -24,18 +26,18 @@ export default class Tear {
     };
 
     this.initialPosition = {
-      top: window.innerHeight / 2 - this.finalSize.height / 2 + 160,
-      left: window.innerWidth / 2 - this.finalSize.width / 2 - 20,
+      top: this.wh / 2 - this.finalSize.height / 2 + 160,
+      left: this.ww / 2 - this.finalSize.width / 2 - 20,
     };
 
     this.position = {
-      top: window.innerHeight / 2 - this.finalSize.height / 2 + 160,
-      left: window.innerWidth / 2 - this.finalSize.width / 2 - 20,
+      top: this.wh / 2 - this.finalSize.height / 2 + 160,
+      left: this.ww / 2 - this.finalSize.width / 2 - 20,
     };
 
     this.finalPosition = {
-      top: window.innerHeight / 2 - this.finalSize.height / 2 + 215,
-      left: window.innerWidth / 2 - this.finalSize.width / 2 - 20,
+      top: this.wh / 2 - this.finalSize.height / 2 + 215,
+      left: this.ww / 2 - this.finalSize.width / 2 - 20,
     };
 
     this.opacity = 0;

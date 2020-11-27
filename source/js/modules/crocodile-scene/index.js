@@ -210,7 +210,6 @@ export default () => {
           startAnimations.push(1200);
           startTearAnimationLoop();
         }
-
       };
 
       animateDuration(globalAnimationTick, ANIMATION_DURATION);

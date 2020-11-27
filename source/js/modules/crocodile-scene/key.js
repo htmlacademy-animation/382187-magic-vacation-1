@@ -2,6 +2,8 @@ import {animateProgress, tick} from '../helpers';
 
 export default class Key {
   constructor({duration, ctx, src}) {
+    this.ww = window.innerWidth;
+    this.wh = window.innerHeight;
     this.duration = duration;
     this.ctx = ctx;
 
@@ -37,7 +39,7 @@ export default class Key {
   draw() {
     this.ctx.save();
     this.ctx.globalAlpha = this.opacity;
-    this.ctx.drawImage(this.img, window.innerWidth / 2 - this.finalSize.width / 2, window.innerHeight / 2 - this.finalSize.height / 2 + 70, this.size.width, this.size.height);
+    this.ctx.drawImage(this.img, this.ww / 2 - this.finalSize.width / 2, this.wh / 2 - this.finalSize.height / 2 + 70, this.size.width, this.size.height);
     this.ctx.restore();
   }
 
