@@ -10220,6 +10220,8 @@ __webpack_require__.r(__webpack_exports__);
 
 class Crocodile {
   constructor({duration, ctx, src}) {
+    this.ww = window.innerWidth;
+    this.wh = window.innerHeight;
     this.duration = duration;
     this.ctx = ctx;
 
@@ -10232,18 +10234,18 @@ class Crocodile {
     this.img.src = src;
 
     this.initialPosition = {
-      top: window.innerHeight / 2 - this.size.height / 2 + 140,
-      left: window.innerWidth / 2,
+      top: this.wh / 2 - this.size.height / 2 + 140,
+      left: this.ww / 2,
     };
 
     this.position = {
-      top: window.innerHeight / 2 - this.size.height / 2 + 140,
-      left: window.innerWidth / 2 + this.size.width,
+      top: this.wh / 2 - this.size.height / 2 + 140,
+      left: this.ww / 2 + this.size.width,
     };
 
     this.finalPosition = {
-      top: window.innerHeight / 2 - this.size.height / 2 + 170,
-      left: window.innerWidth / 2 - this.size.width / 2 + 20,
+      top: this.wh / 2 - this.size.height / 2 + 170,
+      left: this.ww / 2 - this.size.width / 2 + 20,
     };
 
     this.opacity = 0;
@@ -10276,7 +10278,7 @@ class Crocodile {
   draw() {
     this.ctx.save();
 
-    this.drawMask(window.innerWidth / 2 - this.size.width / 2 - 60, window.innerHeight / 2, 550, 300);
+    this.drawMask(this.ww / 2 - this.size.width / 2 - 60, this.wh / 2, 550, 300);
     this.ctx.drawImage(this.img, this.position.left, this.position.top, this.size.width, this.size.height);
     this.ctx.restore();
   }
@@ -10515,7 +10517,6 @@ __webpack_require__.r(__webpack_exports__);
           startAnimations.push(1200);
           startTearAnimationLoop();
         }
-
       };
 
       Object(_helpers__WEBPACK_IMPORTED_MODULE_0__["animateDuration"])(globalAnimationTick, ANIMATION_DURATION);
@@ -10582,6 +10583,8 @@ __webpack_require__.r(__webpack_exports__);
 
 class Key {
   constructor({duration, ctx, src}) {
+    this.ww = window.innerWidth;
+    this.wh = window.innerHeight;
     this.duration = duration;
     this.ctx = ctx;
 
@@ -10617,7 +10620,7 @@ class Key {
   draw() {
     this.ctx.save();
     this.ctx.globalAlpha = this.opacity;
-    this.ctx.drawImage(this.img, window.innerWidth / 2 - this.finalSize.width / 2, window.innerHeight / 2 - this.finalSize.height / 2 + 70, this.size.width, this.size.height);
+    this.ctx.drawImage(this.img, this.ww / 2 - this.finalSize.width / 2, this.wh / 2 - this.finalSize.height / 2 + 70, this.size.width, this.size.height);
     this.ctx.restore();
   }
 
@@ -10647,6 +10650,8 @@ class Tear {
   constructor({duration, ctx, src}) {
     this.duration = duration;
     this.ctx = ctx;
+    this.ww = window.innerWidth;
+    this.wh = window.innerHeight;
 
     this.img = new Image();
     this.img.src = src;
@@ -10667,18 +10672,18 @@ class Tear {
     };
 
     this.initialPosition = {
-      top: window.innerHeight / 2 - this.finalSize.height / 2 + 160,
-      left: window.innerWidth / 2 - this.finalSize.width / 2 - 20,
+      top: this.wh / 2 - this.finalSize.height / 2 + 160,
+      left: this.ww / 2 - this.finalSize.width / 2 - 20,
     };
 
     this.position = {
-      top: window.innerHeight / 2 - this.finalSize.height / 2 + 160,
-      left: window.innerWidth / 2 - this.finalSize.width / 2 - 20,
+      top: this.wh / 2 - this.finalSize.height / 2 + 160,
+      left: this.ww / 2 - this.finalSize.width / 2 - 20,
     };
 
     this.finalPosition = {
-      top: window.innerHeight / 2 - this.finalSize.height / 2 + 215,
-      left: window.innerWidth / 2 - this.finalSize.width / 2 - 20,
+      top: this.wh / 2 - this.finalSize.height / 2 + 215,
+      left: this.ww / 2 - this.finalSize.width / 2 - 20,
     };
 
     this.opacity = 0;
@@ -10742,6 +10747,7 @@ class Thing {
   constructor({duration, ctx, src, sizes, positions}) {
     this.duration = duration;
     this.ctx = ctx;
+
     this.initialSize = sizes.initial;
     this.finalSize = sizes.final;
 
