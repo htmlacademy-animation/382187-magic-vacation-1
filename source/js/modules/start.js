@@ -57,8 +57,6 @@ class Start {
   }
 }
 
-
-
 const init = () => {
   const start = new Start();
 
