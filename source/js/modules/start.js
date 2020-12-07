@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {prepareRawShaderMaterial} from './helpers';
 
 class Start {
   constructor() {
@@ -39,7 +40,7 @@ class Start {
     const loadManager = new THREE.LoadingManager();
     const textureLoader = new THREE.TextureLoader(loadManager);
     const loadedTexture = textureLoader.load(this.texturePath);
-    const material = new THREE.MeshBasicMaterial({map: loadedTexture});
+    const material = new THREE.RawShaderMaterial(prepareRawShaderMaterial({map: {value: loadedTexture}}));
     const geometry = new THREE.PlaneGeometry(1, 1);
 
     loadManager.onLoad = () => {
