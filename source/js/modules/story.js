@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {prepareRawShaderMaterial} from './helpers';
 
 export default class Story {
   constructor() {
@@ -48,7 +49,7 @@ export default class Story {
 
     loadManager.onLoad = () => {
       loadedTextures.forEach((loadedTexture, index) => {
-        const material = new THREE.MeshBasicMaterial({map: loadedTexture});
+        const material = new THREE.RawShaderMaterial(prepareRawShaderMaterial({map: {value: loadedTexture}}));
         const image = new THREE.Mesh(geometry, material);
         image.scale.x = this.wh * this.textureRatio;
         image.scale.y = this.wh;
