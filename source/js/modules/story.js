@@ -7,11 +7,11 @@ export default class Story {
     this.wh = window.innerHeight;
 
     this.canvasSelector = `story-canvas`;
-    this.texturePaths = [
-      `./img/scene-1.png`,
-      `./img/scene-2.png`,
-      `./img/scene-3.png`,
-      `./img/scene-4.png`,
+    this.textures = [
+      {src: `./img/scene-1.png`, hueShift: 0.0},
+      {src: `./img/scene-2.png`, hueShift: -0.25},
+      {src: `./img/scene-3.png`, hueShift: 0.0},
+      {src: `./img/scene-4.png`, hueShift: 0.0}
     ];
     this.textureRatio = 2048 / 1024;
     this.backgroundColor = 0x5f458c;
@@ -44,12 +44,15 @@ export default class Story {
 
     const loadManager = new THREE.LoadingManager();
     const textureLoader = new THREE.TextureLoader(loadManager);
-    const loadedTextures = this.texturePaths.map((texturePath) => textureLoader.load(texturePath));
+    const loadedTextures = this.textures.map((texture) => ({src: textureLoader.load(texture.src), hueShift: texture.hueShift}));
     const geometry = new THREE.PlaneGeometry(1, 1);
 
     loadManager.onLoad = () => {
       loadedTextures.forEach((loadedTexture, index) => {
-        const material = new THREE.RawShaderMaterial(prepareRawShaderMaterial({map: {value: loadedTexture}}));
+        const material = new THREE.RawShaderMaterial(prepareRawShaderMaterial({
+          map: {value: loadedTexture.src},
+          hueShift: {value: loadedTexture.hueShift}
+        }));
         const image = new THREE.Mesh(geometry, material);
         image.scale.x = this.wh * this.textureRatio;
         image.scale.y = this.wh;
