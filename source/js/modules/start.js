@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {prepareRawShaderMaterial} from './helpers';
+import {prepareRawShaderMaterial} from './shaders';
 
 class Start {
   constructor() {

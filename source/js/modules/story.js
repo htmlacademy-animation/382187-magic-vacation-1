@@ -1,17 +1,19 @@
 import * as THREE from 'three';
-import {prepareRawShaderMaterial} from './helpers';
+import {prepareStoryRawShaderMaterial} from './shaders';
 
 export default class Story {
   constructor() {
     this.ww = window.innerWidth;
     this.wh = window.innerHeight;
 
+    this.centerCoords = {x: this.ww / 2, y: this.wh / 2};
+
     this.canvasSelector = `story-canvas`;
     this.textures = [
-      {src: `./img/scene-1.png`, hueShift: 0.0},
-      {src: `./img/scene-2.png`, hueShift: -0.25},
-      {src: `./img/scene-3.png`, hueShift: 0.0},
-      {src: `./img/scene-4.png`, hueShift: 0.0}
+      {src: `./img/scene-1.png`, options: {hueShift: 0.0, distort: false}},
+      {src: `./img/scene-2.png`, options: {hueShift: -0.25, distort: true}},
+      {src: `./img/scene-3.png`, options: {hueShift: 0.0, distort: false}},
+      {src: `./img/scene-4.png`, options: {hueShift: 0.0, distort: false}}
     ];
     this.textureRatio = 2048 / 1024;
     this.backgroundColor = 0x5f458c;
@@ -24,7 +26,46 @@ export default class Story {
       z: 800,
     };
 
+    this.bubblesDuration = 5000;
+
+    this.bubbles = [
+      {
+        radius: 100.0,
+        position: [this.centerCoords.x - 50, 450],
+        positionAmplitude: 50,
+      },
+      {
+        radius: 60.0,
+        position: [this.centerCoords.x + 100, 300],
+        positionAmplitude: 40,
+      },
+      {
+        radius: 40.0,
+        position: [this.centerCoords.x - 200, 150],
+        positionAmplitude: 30,
+      },
+    ];
+
+
     this.render = this.render.bind(this);
+  }
+
+  addBubble(index) {
+    const {width} = this.renderer.getSize();
+    const pixelRatio = this.renderer.getPixelRatio();
+
+    if (this.textures[index].options.distort) {
+      return {
+        distortion: {
+          value: {
+            bubbles: this.bubbles,
+            resolution: [width * pixelRatio, width / this.textureRatio * pixelRatio],
+          }
+        },
+      };
+    }
+
+    return {};
   }
 
   init() {
@@ -44,15 +85,17 @@ export default class Story {
 
     const loadManager = new THREE.LoadingManager();
     const textureLoader = new THREE.TextureLoader(loadManager);
-    const loadedTextures = this.textures.map((texture) => ({src: textureLoader.load(texture.src), hueShift: texture.hueShift}));
+    const loadedTextures = this.textures.map((texture) => ({src: textureLoader.load(texture.src), options: texture.options}));
     const geometry = new THREE.PlaneGeometry(1, 1);
 
     loadManager.onLoad = () => {
       loadedTextures.forEach((loadedTexture, index) => {
-        const material = new THREE.RawShaderMaterial(prepareRawShaderMaterial({
+        const material = new THREE.RawShaderMaterial(prepareStoryRawShaderMaterial({
           map: {value: loadedTexture.src},
-          hueShift: {value: loadedTexture.hueShift}
+          options: {value: loadedTexture.options},
+          ...this.addBubble(index),
         }));
+
         const image = new THREE.Mesh(geometry, material);
         image.scale.x = this.wh * this.textureRatio;
         image.scale.y = this.wh;
@@ -61,7 +104,6 @@ export default class Story {
       });
       this.render();
     };
-
   }
 
   changeStory(index) {
