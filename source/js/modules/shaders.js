@@ -55,6 +55,9 @@ export const prepareStoryRawShaderMaterial = (uniforms) => (
       struct bubbleStruct {
         float radius;
         vec2 position;
+        float glareOffset;
+        float glareAngleStart;
+        float glareAngleEnd;
       };
       struct distortionStruct {
         bubbleStruct bubbles[3];
@@ -65,6 +68,10 @@ export const prepareStoryRawShaderMaterial = (uniforms) => (
         const vec3 k = vec3(0.57735, 0.57735, 0.57735);
         float cosAngle = cos(shift);
         return vec3(color * cosAngle + cross(k, color) * sin(shift) + k * dot(k, color) * (1.0 - cosAngle));
+      }
+      bool isBetweenAngles(vec2 point, float glareAngleStart, float glareAngleEnd) {
+        float angle = atan(point.y, point.x);
+        return angle >= glareAngleStart && angle <= glareAngleEnd;
       }
       float getOffset(vec2 point, vec2 circle) {
         return sqrt(pow(point.x - circle.x, 2.0) + pow(point.y - circle.y, 2.0));
@@ -81,12 +88,15 @@ export const prepareStoryRawShaderMaterial = (uniforms) => (
         float offset = getOffset(point, circle);
         return floor(offset) >= floor(radius) && floor(offset) <= floor(radius + outlineWidth);
       }
+      bool isGlarePart(vec2 point, vec2 circle, float radius, float glareWidth, float glareAngleStart, float glareAngleEnd) {
+        return isCircleOutline(point, circle, radius, glareWidth) && isBetweenAngles(point - circle, glareAngleStart, glareAngleEnd);
+      }
       vec4 blendOutline(vec4 texture, vec4 outline) {
         return vec4(mix(texture.rgb, outline.rgb, outline.a), texture.a);
       }
       vec4 distort(sampler2D map, distortionStruct distortion) {
         float outlineWidth = 3.0;
-        vec4 outlineColor = vec4(1, 1, 1, 0.25);
+        vec4 outlineColor = vec4(1, 1, 1, 0.15);
         vec2 resolution = distortion.resolution;
         bubbleStruct bubble = distortion.bubbles[0];
         vec2 point = gl_FragCoord.xy;
@@ -104,18 +114,22 @@ export const prepareStoryRawShaderMaterial = (uniforms) => (
         vec2 position = bubble.position;
         float radius = bubble.radius;
         float h = bubble.radius / 2.0;
+        float glareAngleStart = bubble.glareAngleStart;
+        float glareAngleEnd = bubble.glareAngleEnd;
+        float glareOffset = bubble.glareOffset;
 
         float hr = radius * sqrt(1.0 - pow((radius - h) / radius, 2.0));
         float offset = sqrt(pow(point.x - position.x, 2.0) + pow(point.y - position.y, 2.0));
 
         bool isInsidePoint = isInsideCircle(point, position, hr);
         bool isOutlinePoint = isCircleOutline(point, position, hr, outlineWidth);
+        bool isGlarePoint = isGlarePart(point, position, hr * glareOffset, outlineWidth, glareAngleStart, glareAngleEnd);
 
         vec2 newPoint = isInsidePoint ? position + (point - position) * (radius - h) / sqrt(pow(radius, 2.0) - pow(offset, 2.0)) : point;
 
         vec2 newVUv = (newPoint) / resolution;
 
-        if (isOutlinePoint) {
+        if (isOutlinePoint || isGlarePoint) {
           return blendOutline(texture2D(map, newVUv), outlineColor);
         }
 
