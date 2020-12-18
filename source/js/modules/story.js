@@ -27,22 +27,34 @@ export default class Story {
     };
 
     this.bubblesDuration = 5000;
+    this.bubbleGlareOffset = 0.8;
+    this.bubbleStartRadianAngle = 1.96;
+    this.bubbleEndRadianAngle = 2.75;
 
     this.bubbles = [
       {
         radius: 100.0,
         position: [this.centerCoords.x - 50, 450],
         positionAmplitude: 50,
+        glareOffset: this.bubbleGlareOffset,
+        glareAngleStart: this.bubbleStartRadianAngle,
+        glareAngleEnd: this.bubbleEndRadianAngle
       },
       {
         radius: 60.0,
         position: [this.centerCoords.x + 100, 300],
         positionAmplitude: 40,
+        glareOffset: this.bubbleGlareOffset,
+        glareAngleStart: this.bubbleStartRadianAngle,
+        glareAngleEnd: this.bubbleEndRadianAngle
       },
       {
         radius: 40.0,
         position: [this.centerCoords.x - 200, 150],
         positionAmplitude: 30,
+        glareOffset: this.bubbleGlareOffset,
+        glareAngleStart: this.bubbleStartRadianAngle,
+        glareAngleEnd: this.bubbleEndRadianAngle
       },
     ];
 
