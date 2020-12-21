@@ -83,7 +83,8 @@ export default () => {
 
     if (screenName === `story`) {
       story.init();
-      story.changeStory(0);
+    } else {
+      story.endAnimation();
     }
   });
 
