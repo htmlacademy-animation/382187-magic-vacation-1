@@ -41,6 +41,38 @@ export const animateProgress = (render, duration) => new Promise((resolve) => {
   }());
 });
 
+export const animateEasingWithFPS = (render, duration, easing, fps = 30) => new Promise((resolve) => {
+  let start = null;
+  let lastFrameUpdateTime = null;
+  let timeSinceLastUpdate = null;
+
+  (function loop(currentTime) {
+    if (!start) {
+      start = currentTime;
+    }
+
+    if (!lastFrameUpdateTime) {
+      lastFrameUpdateTime = currentTime;
+    }
+
+    let progress = (currentTime - start) / duration;
+    if (progress > 1) {
+      render(easing(1));
+      resolve(true);
+      return;
+    }
+
+    timeSinceLastUpdate = currentTime - lastFrameUpdateTime;
+    if (timeSinceLastUpdate > fps) {
+      lastFrameUpdateTime = currentTime;
+      render(easing(progress));
+    }
+
+    requestAnimationFrame(loop);
+  }());
+});
+
+
 // eslint-disable-arrow-parens
 export const animateDuration = (render, duration) => new Promise((resolve) => {
   let start = Date.now();
