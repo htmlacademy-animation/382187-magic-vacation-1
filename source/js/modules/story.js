@@ -48,7 +48,7 @@ export default class Story {
     this.materials = [];
 
     this.bubblesParams = {
-      duration: 5000,
+      duration: 2000,
       glareOffset: 0.8,
       startRadianAngle: 1.96,
       endRadianAngle: 2.75
@@ -56,28 +56,37 @@ export default class Story {
 
     this.bubbles = [
       {
-        radius: 100.0,
-        position: [this.centerCoords.x - 50, 450],
-        positionAmplitude: 50,
+        radius: 80.0,
+        initialPosition: [this.centerCoords.x, -100],
+        position: [this.centerCoords.x - this.centerCoords.x / 10, -100],
+        finalPosition: [this.centerCoords.x - this.centerCoords.x / 10, this.wh + 100],
+        positionAmplitude: 60,
         glareOffset: this.bubblesParams.glareOffset,
         glareAngleStart: this.bubblesParams.startRadianAngle,
-        glareAngleEnd: this.bubblesParams.endRadianAngle
+        glareAngleEnd: this.bubblesParams.endRadianAngle,
+        timeout: 0.05
       },
       {
         radius: 60.0,
-        position: [this.centerCoords.x + 100, 300],
+        initialPosition: [this.centerCoords.x - this.ww / 4, -100],
+        position: [this.centerCoords.x - this.ww / 4, -100],
+        finalPosition: [this.centerCoords.x - this.ww / 4, this.wh + 100],
         positionAmplitude: 40,
         glareOffset: this.bubblesParams.glareOffset,
         glareAngleStart: this.bubblesParams.startRadianAngle,
-        glareAngleEnd: this.bubblesParams.endRadianAngle
+        glareAngleEnd: this.bubblesParams.endRadianAngle,
+        timeout: 0.25
       },
       {
         radius: 40.0,
-        position: [this.centerCoords.x - 200, 150],
+        initialPosition: [this.centerCoords.x + 150, -100],
+        position: [this.centerCoords.x + 150, -100],
+        finalPosition: [this.centerCoords.x + 150, this.wh + 100],
         positionAmplitude: 30,
         glareOffset: this.bubblesParams.glareOffset,
         glareAngleStart: this.bubblesParams.startRadianAngle,
-        glareAngleEnd: this.bubblesParams.endRadianAngle
+        glareAngleEnd: this.bubblesParams.endRadianAngle,
+        timeout: 0.35
       },
     ];
 
@@ -89,6 +98,7 @@ export default class Story {
     this.getHueShiftAnimationSettings = this.getHueShiftAnimationSettings.bind(this);
     this.render = this.render.bind(this);
     this.resize = this.resize.bind(this);
+    this.animateBubbles = this.animateBubbles.bind(this);
   }
 
   resize() {
@@ -123,6 +133,13 @@ export default class Story {
     }
 
     this.textures[this.storyIndex].options.hueShift = hueAnimationSettings.initial;
+  }
+
+  resetBubbles() {
+    this.bubbles.forEach((_, index) => {
+      this.bubbles[index].position = [...this.bubbles[index].initialPosition];
+    });
+    this.materials[1].uniforms.time.value = 0;
   }
 
   addBubble(index) {
@@ -174,6 +191,9 @@ export default class Story {
           options: {
             value: loadedTexture.options,
           },
+          time: {
+            value: 0
+          },
           ...this.addBubble(index),
         });
 
@@ -193,7 +213,6 @@ export default class Story {
     };
 
     this.changeStory(0);
-    this.animationRequest = requestAnimationFrame(this.render);
   }
 
   endAnimation() {
@@ -204,6 +223,12 @@ export default class Story {
   changeStory(index) {
     this.storyIndex = index;
     this.camera.position.x = this.getScenePosition(index);
+    this.animationRequest = requestAnimationFrame(this.render);
+
+    if (this.textures[index].options.distort) {
+      this.resetBubbles();
+      this.animateBubbles();
+    }
 
     if (this.getHueShiftAnimationSettings(index)) {
       if (!this.hueIsAnimating) {
@@ -215,6 +240,18 @@ export default class Story {
 
   getScenePosition(index) {
     return this.wh * this.textureRatio * index;
+  }
+
+  bubblePositionAnimationTick(index, from, to) {
+    return (progress) => {
+      const pixelRatio = this.renderer.getPixelRatio();
+
+      const y = tick(from[1], to[1], progress) * pixelRatio;
+      const offset = this.bubbles[index].positionAmplitude * Math.pow(1 - progress, 0.8) * Math.sin(progress * Math.PI * 7);
+      const x = (offset + this.bubbles[index].initialPosition[0]) * pixelRatio;
+
+      this.bubbles[index].position = [x, y];
+    };
   }
 
   hueShiftIntensityAnimationTick(index, from, to) {
@@ -242,6 +279,13 @@ export default class Story {
     const offset = (Math.random() * variation * 2 + (1 - variation));
     animateEasingWithFPS(this.hueShiftIntensityAnimationTick(this.storyIndex, initial, final * offset), duration * offset, hueIntensityEasingFn)
       .then(this.animateHueShift);
+  }
+
+  animateBubbles() {
+    if (this.materials[1].uniforms.time.value < this.bubblesParams.duration / 1000) {
+      this.materials[1].uniforms.time.value += 0.01;
+      requestAnimationFrame(this.animateBubbles);
+    }
   }
 
   render() {

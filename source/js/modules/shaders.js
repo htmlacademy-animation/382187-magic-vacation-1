@@ -44,9 +44,15 @@ export const prepareStoryRawShaderMaterial = (uniforms) => (
       }
     `,
     fragmentShader: `
+      #ifndef HALF_PI
+      #define HALF_PI 1.5707963267948966
+      #define PI 3.1415926535897932384626433832795
+      #endif
+
       precision mediump float;
       uniform sampler2D map;
       varying vec2 vUv;
+      uniform float time;
       struct optionsStruct {
         float hueShift;
         bool distort;
@@ -54,10 +60,14 @@ export const prepareStoryRawShaderMaterial = (uniforms) => (
       uniform optionsStruct options;
       struct bubbleStruct {
         float radius;
+        vec2 initialPosition;
         vec2 position;
+        vec2 finalPosition;
+        float positionAmplitude;
         float glareOffset;
         float glareAngleStart;
         float glareAngleEnd;
+        float timeout;
       };
       struct distortionStruct {
         bubbleStruct bubbles[3];
@@ -77,15 +87,15 @@ export const prepareStoryRawShaderMaterial = (uniforms) => (
         return sqrt(pow(point.x - circle.x, 2.0) + pow(point.y - circle.y, 2.0));
       }
       bool isCurrentBubble(vec2 point, vec2 circle, float radius, float outlineWidth) {
-        float offset = getOffset(point, circle);
+        float offset = distance(point, circle);
         return offset < radius + outlineWidth;
       }
       bool isInsideCircle(vec2 point, vec2 circle, float radius) {
-        float offset = getOffset(point, circle);
+        float offset = distance(point, circle);
         return offset < radius;
       }
       bool isCircleOutline(vec2 point, vec2 circle, float radius, float outlineWidth) {
-        float offset = getOffset(point, circle);
+        float offset = distance(point, circle);
         return floor(offset) >= floor(radius) && floor(offset) <= floor(radius + outlineWidth);
       }
       bool isGlarePart(vec2 point, vec2 circle, float radius, float glareWidth, float glareAngleStart, float glareAngleEnd) {
@@ -93,6 +103,14 @@ export const prepareStoryRawShaderMaterial = (uniforms) => (
       }
       vec4 blendOutline(vec4 texture, vec4 outline) {
         return vec4(mix(texture.rgb, outline.rgb, outline.a), texture.a);
+      }
+      vec2 calculateBubblePosition(bubbleStruct bubble) {
+        float progress = sin((time - 1.0) * HALF_PI * 0.5) + 1.0 - bubble.timeout / 2.0;
+        float y = bubble.initialPosition[1] + progress * (bubble.finalPosition[1] - bubble.initialPosition[1]);
+        float bubbleOffset = bubble.positionAmplitude * exp(-0.5 * progress) * sin(progress * PI * 6.0);
+        float x = bubbleOffset + bubble.initialPosition[0];
+        vec2 currentPosition = vec2(x, y);
+        return currentPosition;
       }
       vec4 distort(sampler2D map, distortionStruct distortion) {
         float outlineWidth = 3.0;
@@ -103,8 +121,10 @@ export const prepareStoryRawShaderMaterial = (uniforms) => (
 
         for (int i = 0; i < 3; i++) {
           bubbleStruct currentBubble = distortion.bubbles[i];
-          vec2 currentPosition = currentBubble.position;
+
           float currentRadius = currentBubble.radius;
+          vec2 currentPosition = calculateBubblePosition(currentBubble);
+          currentBubble.position = currentPosition;
 
           if (isCurrentBubble(point, currentPosition, currentRadius, outlineWidth)) {
             bubble = currentBubble;
@@ -119,7 +139,7 @@ export const prepareStoryRawShaderMaterial = (uniforms) => (
         float glareOffset = bubble.glareOffset;
 
         float hr = radius * sqrt(1.0 - pow((radius - h) / radius, 2.0));
-        float offset = sqrt(pow(point.x - position.x, 2.0) + pow(point.y - position.y, 2.0));
+        float offset = distance(point, position);
 
         bool isInsidePoint = isInsideCircle(point, position, hr);
         bool isOutlinePoint = isCircleOutline(point, position, hr, outlineWidth);
