@@ -48,7 +48,7 @@ export default class Story {
     this.materials = [];
 
     this.bubblesParams = {
-      duration: 2000,
+      duration: 2100,
       glareOffset: 0.8,
       startRadianAngle: 1.96,
       endRadianAngle: 2.75
@@ -68,14 +68,14 @@ export default class Story {
       },
       {
         radius: 60.0,
-        initialPosition: [this.centerCoords.x - this.ww / 4, -100],
-        position: [this.centerCoords.x - this.ww / 4, -100],
-        finalPosition: [this.centerCoords.x - this.ww / 4, this.wh + 100],
+        initialPosition: [this.centerCoords.x - this.ww / 6, -100],
+        position: [this.centerCoords.x - this.ww / 6, -100],
+        finalPosition: [this.centerCoords.x - this.ww / 6, this.wh + 100],
         positionAmplitude: 40,
         glareOffset: this.bubblesParams.glareOffset,
         glareAngleStart: this.bubblesParams.startRadianAngle,
         glareAngleEnd: this.bubblesParams.endRadianAngle,
-        timeout: 0.25
+        timeout: 0.70
       },
       {
         radius: 40.0,
@@ -86,7 +86,7 @@ export default class Story {
         glareOffset: this.bubblesParams.glareOffset,
         glareAngleStart: this.bubblesParams.startRadianAngle,
         glareAngleEnd: this.bubblesParams.endRadianAngle,
-        timeout: 0.35
+        timeout: 0.90
       },
     ];
 
