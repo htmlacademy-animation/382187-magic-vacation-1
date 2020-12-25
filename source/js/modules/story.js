@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {prepareStoryRawShaderMaterial} from './shaders';
+import prepareRawShaderMaterial from './shaders/story';
 import {tick, animateEasingWithFPS, bezierEasing} from './helpers';
 
 const easeInOut = bezierEasing(0.41, 0, 0.54, 1);
@@ -184,7 +184,7 @@ export default class Story {
 
     loadManager.onLoad = () => {
       this.materials = loadedTextures.map((loadedTexture, index) => {
-        const rawShaderMaterialAttrs = prepareStoryRawShaderMaterial({
+        const rawShaderMaterialAttrs = prepareRawShaderMaterial({
           map: {
             value: loadedTexture.src,
           },
@@ -282,7 +282,7 @@ export default class Story {
   }
 
   animateBubbles() {
-    if (this.materials[1].uniforms.time.value < this.bubblesParams.duration / 1000) {
+    if (this.storyIndex === 1 && this.materials[1].uniforms.time.value < this.bubblesParams.duration / 1000) {
       this.materials[1].uniforms.time.value += 0.01;
       requestAnimationFrame(this.animateBubbles);
     }
