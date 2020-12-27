@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {prepareStoryRawShaderMaterial} from './shaders';
+import prepareRawShaderMaterial from './shaders/story';
 import {tick, animateEasingWithFPS, bezierEasing} from './helpers';
 
 const easeInOut = bezierEasing(0.41, 0, 0.54, 1);
@@ -36,12 +36,12 @@ export default class Story {
     this.backgroundColor = 0x5f458c;
 
     this.sceneParams = {
-      fov: 45,
+      fov: 35,
       aspect: this.ww / this.wh,
       near: 0.1,
       far: 1000,
       position: {
-        z: 800
+        z: 750
       }
     };
 
@@ -87,6 +87,34 @@ export default class Story {
         glareAngleStart: this.bubblesParams.startRadianAngle,
         glareAngleEnd: this.bubblesParams.endRadianAngle,
         timeout: 0.90
+      },
+    ];
+
+    this.lights = [
+      {
+        id: `DirectionalLight`,
+        type: `DirectionalLight`,
+        color: `rgb(255,255,255)`,
+        intensity: 0.84,
+        position: {x: 0, y: this.sceneParams.position.z * Math.tan(-15 * THREE.Math.DEG2RAD), z: this.sceneParams.position.z},
+      },
+      {
+        id: `PointLight1`,
+        type: `PointLight`,
+        color: `rgb(246,242,255)`,
+        intensity: 0.60,
+        decay: 2.0,
+        distance: 975,
+        position: {x: -785, y: -350, z: 710},
+      },
+      {
+        id: `PointLight2`,
+        type: `PointLight`,
+        color: `rgb(245,254,255)`,
+        intensity: 0.95,
+        decay: 2.0,
+        distance: 975,
+        position: {x: 730, y: 800, z: 985},
       },
     ];
 
@@ -161,6 +189,20 @@ export default class Story {
     return {};
   }
 
+  getLightGroup() {
+    const lightGroup = new THREE.Group();
+
+    this.lights.forEach((light) => {
+      const color = new THREE.Color(light.color);
+
+      const lightUnit = new THREE[light.type](color, light.intensity, light.distance, light.decay);
+      lightUnit.position.set(...Object.values(light.position));
+      lightGroup.add(lightUnit);
+    });
+
+    return lightGroup;
+  }
+
   init() {
     window.addEventListener(`resize`, this.resize);
     this.canvasElement = document.getElementById(this.canvasSelector);
@@ -184,7 +226,7 @@ export default class Story {
 
     loadManager.onLoad = () => {
       this.materials = loadedTextures.map((loadedTexture, index) => {
-        const rawShaderMaterialAttrs = prepareStoryRawShaderMaterial({
+        const rawShaderMaterialAttrs = prepareRawShaderMaterial({
           map: {
             value: loadedTexture.src,
           },
@@ -212,12 +254,32 @@ export default class Story {
       });
     };
 
+    const sphere = this.getSphere();
+    this.scene.add(sphere);
+
+    const lightGroup = this.getLightGroup();
+    lightGroup.position.z = this.camera.position.z;
+    this.scene.add(lightGroup);
+
     this.changeStory(0);
   }
 
   endAnimation() {
     window.removeEventListener(`resize`, this.resize);
     this.animationRequest = null;
+  }
+
+  getSphere() {
+    const geometry = new THREE.SphereGeometry(100, 50, 50);
+
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xB827B0,
+      metalness: 0.05,
+      emissive: 0x0,
+      roughness: 0.5
+    });
+
+    return new THREE.Mesh(geometry, material);
   }
 
   changeStory(index) {
@@ -282,7 +344,7 @@ export default class Story {
   }
 
   animateBubbles() {
-    if (this.materials[1].uniforms.time.value < this.bubblesParams.duration / 1000) {
+    if (this.storyIndex === 1 && this.materials[1].uniforms.time.value < this.bubblesParams.duration / 1000) {
       this.materials[1].uniforms.time.value += 0.01;
       requestAnimationFrame(this.animateBubbles);
     }
