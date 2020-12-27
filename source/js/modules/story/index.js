@@ -1,6 +1,8 @@
 import * as THREE from 'three';
-import prepareRawShaderMaterial from './shaders/story';
-import {tick, animateEasingWithFPS, bezierEasing} from './helpers';
+import prepareRawShaderMaterial from '../shaders/story';
+import {tick, animateEasingWithFPS, bezierEasing} from '../helpers';
+import SecondStory from './stories/second-story';
+import ThirdStory from './stories/third-story';
 
 const easeInOut = bezierEasing(0.41, 0, 0.54, 1);
 const hueIntensityEasingFn = (timingFraction) => {
@@ -27,9 +29,14 @@ export default class Story {
             duration: 2000,
             variation: 0.4,
           },
-        }
+        },
+        models: new SecondStory()
       },
-      {src: `./img/scene-3.png`, options: {hueShift: 0.0, distort: false}},
+      {
+        src: `./img/scene-3.png`,
+        options: {hueShift: 0.0, distort: false},
+        models: new ThirdStory()
+      },
       {src: `./img/scene-4.png`, options: {hueShift: 0.0, distort: false}}
     ];
     this.textureRatio = 2048 / 1024;
@@ -142,8 +149,8 @@ export default class Story {
 
     const distortedIndex = this.textures.findIndex((texture) => texture.options.distort);
 
-    const size = new THREE.Vector2();
-    const {width} = this.renderer.getSize(size);
+    const target = new THREE.Vector2();
+    const {width} = this.renderer.getSize(target);
     const pixelRatio = this.renderer.getPixelRatio();
 
     this.materials[distortedIndex].uniforms.distortion.value.resolution = [width * pixelRatio, width / this.textureRatio * pixelRatio];
@@ -221,7 +228,7 @@ export default class Story {
 
     const loadManager = new THREE.LoadingManager();
     const textureLoader = new THREE.TextureLoader(loadManager);
-    const loadedTextures = this.textures.map((texture) => ({src: textureLoader.load(texture.src), options: texture.options}));
+    const loadedTextures = this.textures.map((texture) => ({...texture, src: textureLoader.load(texture.src)}));
     const geometry = new THREE.PlaneGeometry(1, 1);
 
     loadManager.onLoad = () => {
@@ -249,6 +256,11 @@ export default class Story {
         image.position.x = this.getScenePosition(index);
 
         this.scene.add(image);
+
+        if (loadedTexture.models) {
+          loadedTexture.models.position.x = this.getScenePosition(index);
+          this.scene.add(loadedTexture.models);
+        }
 
         return material;
       });
