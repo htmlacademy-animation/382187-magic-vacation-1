@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import prepareRawShaderMaterial from '../shaders/story';
 import {tick, animateEasingWithFPS, bezierEasing} from '../helpers';
+import {bubblesParams, getBubblesConfig, getLightsConfig, getTexturesConfig} from './common';
 import SecondStory from './stories/second-story';
 import ThirdStory from './stories/third-story';
 
@@ -17,123 +18,36 @@ export default class Story {
     this.centerCoords = {x: this.ww / 2, y: this.wh / 2};
 
     this.canvasSelector = `story-canvas`;
-    this.textures = [
-      {src: `./img/scene-1.png`, options: {hueShift: 0.0, distort: false}},
-      {
-        src: `./img/scene-2.png`,
-        options: {hueShift: -0.25, distort: true},
-        animations: {
-          hue: {
-            initial: -0.1,
-            final: -0.25,
-            duration: 2000,
-            variation: 0.4,
-          },
-        },
-        models: new SecondStory()
-      },
-      {
-        src: `./img/scene-3.png`,
-        options: {hueShift: 0.0, distort: false},
-        models: new ThirdStory()
-      },
-      {src: `./img/scene-4.png`, options: {hueShift: 0.0, distort: false}}
-    ];
-    this.textureRatio = 2048 / 1024;
-    this.backgroundColor = 0x5f458c;
+    this.textures = getTexturesConfig(new SecondStory(), new ThirdStory());
 
     this.sceneParams = {
       fov: 35,
       aspect: this.ww / this.wh,
       near: 0.1,
       far: 1000,
+      textureRatio: 2048 / 1024,
+      backgroundColor: 0x5f458c,
       position: {
         z: 750
       }
     };
 
     this.materials = [];
-
-    this.bubblesParams = {
-      duration: 2100,
-      glareOffset: 0.8,
-      startRadianAngle: 1.96,
-      endRadianAngle: 2.75
-    };
-
-    this.bubbles = [
-      {
-        radius: 80.0,
-        initialPosition: [this.centerCoords.x, -100],
-        position: [this.centerCoords.x - this.centerCoords.x / 10, -100],
-        finalPosition: [this.centerCoords.x - this.centerCoords.x / 10, this.wh + 100],
-        positionAmplitude: 60,
-        glareOffset: this.bubblesParams.glareOffset,
-        glareAngleStart: this.bubblesParams.startRadianAngle,
-        glareAngleEnd: this.bubblesParams.endRadianAngle,
-        timeout: 0.05
-      },
-      {
-        radius: 60.0,
-        initialPosition: [this.centerCoords.x - this.ww / 6, -100],
-        position: [this.centerCoords.x - this.ww / 6, -100],
-        finalPosition: [this.centerCoords.x - this.ww / 6, this.wh + 100],
-        positionAmplitude: 40,
-        glareOffset: this.bubblesParams.glareOffset,
-        glareAngleStart: this.bubblesParams.startRadianAngle,
-        glareAngleEnd: this.bubblesParams.endRadianAngle,
-        timeout: 0.70
-      },
-      {
-        radius: 40.0,
-        initialPosition: [this.centerCoords.x + 150, -100],
-        position: [this.centerCoords.x + 150, -100],
-        finalPosition: [this.centerCoords.x + 150, this.wh + 100],
-        positionAmplitude: 30,
-        glareOffset: this.bubblesParams.glareOffset,
-        glareAngleStart: this.bubblesParams.startRadianAngle,
-        glareAngleEnd: this.bubblesParams.endRadianAngle,
-        timeout: 0.90
-      },
-    ];
-
-    this.lights = [
-      {
-        id: `DirectionalLight`,
-        type: `DirectionalLight`,
-        color: `rgb(255,255,255)`,
-        intensity: 0.84,
-        position: {x: 0, y: this.sceneParams.position.z * Math.tan(-15 * THREE.Math.DEG2RAD), z: this.sceneParams.position.z},
-      },
-      {
-        id: `PointLight1`,
-        type: `PointLight`,
-        color: `rgb(246,242,255)`,
-        intensity: 0.60,
-        decay: 2.0,
-        distance: 975,
-        position: {x: -785, y: -350, z: 710},
-      },
-      {
-        id: `PointLight2`,
-        type: `PointLight`,
-        color: `rgb(245,254,255)`,
-        intensity: 0.95,
-        decay: 2.0,
-        distance: 975,
-        position: {x: 730, y: 800, z: 985},
-      },
-    ];
+    this.bubbles = getBubblesConfig(this.centerCoords, this.ww, this.wh);
+    this.lights = getLightsConfig(this.sceneParams);
 
     this.hueIsAnimating = false;
-    this.animationRequest = null;
     this.storyIndex = 0;
+    this.isInitialised = false;
 
     this.animateHueShift = this.animateHueShift.bind(this);
     this.getHueShiftAnimationSettings = this.getHueShiftAnimationSettings.bind(this);
     this.render = this.render.bind(this);
     this.resize = this.resize.bind(this);
+    this.resetHueShift = this.resetHueShift.bind(this);
+    this.resetBubbles = this.resetBubbles.bind(this);
     this.animateBubbles = this.animateBubbles.bind(this);
+    this.animate = this.animate.bind(this);
   }
 
   resize() {
@@ -153,7 +67,9 @@ export default class Story {
     const {width} = this.renderer.getSize(target);
     const pixelRatio = this.renderer.getPixelRatio();
 
-    this.materials[distortedIndex].uniforms.distortion.value.resolution = [width * pixelRatio, width / this.textureRatio * pixelRatio];
+    this.materials[distortedIndex].uniforms.distortion.value.resolution = [
+      width * pixelRatio, width / this.sceneParams.textureRatio * pixelRatio
+    ];
   }
 
   getHueShiftAnimationSettings(index) {
@@ -187,7 +103,7 @@ export default class Story {
         distortion: {
           value: {
             bubbles: this.bubbles,
-            resolution: [width * pixelRatio, width / this.textureRatio * pixelRatio],
+            resolution: [width * pixelRatio, width / this.sceneParams.textureRatio * pixelRatio],
           }
         },
       };
@@ -210,14 +126,22 @@ export default class Story {
     return lightGroup;
   }
 
-  init() {
+  start() {
+    if (!this.isInitialized) {
+      this.init();
+      this.isInitialized = true;
+    }
+
     window.addEventListener(`resize`, this.resize);
+  }
+
+  init() {
     this.canvasElement = document.getElementById(this.canvasSelector);
     this.canvasElement.width = this.ww;
     this.canvasElement.height = this.wh;
 
     this.renderer = new THREE.WebGLRenderer({canvas: this.canvasElement});
-    this.renderer.setClearColor(this.backgroundColor, 1);
+    this.renderer.setClearColor(this.sceneParams.backgroundColor, 1);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.ww, this.wh);
 
@@ -251,7 +175,7 @@ export default class Story {
         material.needsUpdate = true;
 
         const image = new THREE.Mesh(geometry, material);
-        image.scale.x = this.wh * this.textureRatio;
+        image.scale.x = this.wh * this.sceneParams.textureRatio;
         image.scale.y = this.wh;
         image.position.x = this.getScenePosition(index);
 
@@ -266,66 +190,27 @@ export default class Story {
       });
     };
 
-    const sphere = this.getSphere();
-    this.scene.add(sphere);
-
     const lightGroup = this.getLightGroup();
     lightGroup.position.z = this.camera.position.z;
     this.scene.add(lightGroup);
 
     this.changeStory(0);
+    this.animate();
   }
 
   endAnimation() {
     window.removeEventListener(`resize`, this.resize);
     this.animationRequest = null;
-  }
-
-  getSphere() {
-    const geometry = new THREE.SphereGeometry(100, 50, 50);
-
-    const material = new THREE.MeshStandardMaterial({
-      color: 0xB827B0,
-      metalness: 0.05,
-      emissive: 0x0,
-      roughness: 0.5
-    });
-
-    return new THREE.Mesh(geometry, material);
+    this.bubbleAnimationRequest = null;
   }
 
   changeStory(index) {
     this.storyIndex = index;
     this.camera.position.x = this.getScenePosition(index);
-    this.animationRequest = requestAnimationFrame(this.render);
-
-    if (this.textures[index].options.distort) {
-      this.resetBubbles();
-      this.animateBubbles();
-    }
-
-    if (this.getHueShiftAnimationSettings(index)) {
-      if (!this.hueIsAnimating) {
-        this.resetHueShift();
-        this.animateHueShift();
-      }
-    }
   }
 
   getScenePosition(index) {
-    return this.wh * this.textureRatio * index;
-  }
-
-  bubblePositionAnimationTick(index, from, to) {
-    return (progress) => {
-      const pixelRatio = this.renderer.getPixelRatio();
-
-      const y = tick(from[1], to[1], progress) * pixelRatio;
-      const offset = this.bubbles[index].positionAmplitude * Math.pow(1 - progress, 0.8) * Math.sin(progress * Math.PI * 7);
-      const x = (offset + this.bubbles[index].initialPosition[0]) * pixelRatio;
-
-      this.bubbles[index].position = [x, y];
-    };
+    return this.wh * this.sceneParams.textureRatio * index;
   }
 
   hueShiftIntensityAnimationTick(index, from, to) {
@@ -351,22 +236,38 @@ export default class Story {
 
     const {initial, final, duration, variation} = hueAnimationSettings;
     const offset = (Math.random() * variation * 2 + (1 - variation));
-    animateEasingWithFPS(this.hueShiftIntensityAnimationTick(this.storyIndex, initial, final * offset), duration * offset, hueIntensityEasingFn)
+    animateEasingWithFPS(
+        this.hueShiftIntensityAnimationTick(this.storyIndex, initial, final * offset),
+        duration * offset,
+        hueIntensityEasingFn)
       .then(this.animateHueShift);
   }
 
   animateBubbles() {
-    if (this.storyIndex === 1 && this.materials[1].uniforms.time.value < this.bubblesParams.duration / 1000) {
+    if (
+      this.storyIndex === 1 &&
+      this.textures[1].options.distort &&
+      this.materials[1].uniforms.time.value < bubblesParams.duration / 1000
+    ) {
       this.materials[1].uniforms.time.value += 0.01;
-      requestAnimationFrame(this.animateBubbles);
     }
+  }
+
+  animate() {
+    requestAnimationFrame(this.animate);
+
+    this.animateBubbles();
+    if (this.getHueShiftAnimationSettings(this.storyIndex)) {
+      if (!this.hueIsAnimating) {
+        this.resetHueShift();
+        this.animateHueShift();
+      }
+    }
+
+    this.render();
   }
 
   render() {
     this.renderer.render(this.scene, this.camera);
-
-    if (this.animationRequest) {
-      requestAnimationFrame(this.render);
-    }
   }
 }

@@ -1,34 +1,23 @@
 import * as THREE from 'three';
-import {getSquareRadius} from '../../helpers';
+import {pyramidConfig, getMaterial} from '../common';
 
 class Pyramid extends THREE.Group {
   constructor() {
     super();
 
-    this.params = {
-      height: 280,
-      radius: getSquareRadius(250),
-      radialSegments: 4,
-      color: `#1960cf`,
-    };
-
+    this.config = pyramidConfig;
     this.addPyramid = this.addPyramid.bind(this);
 
     this.addPyramid();
   }
 
-  getMaterial(options = {}) {
-    const {color, ...other} = options;
-
-    return new THREE.MeshStandardMaterial({
-      color: new THREE.Color(color),
-      ...other
-    });
-  }
-
   addPyramid() {
-    const cone = new THREE.ConeBufferGeometry(this.params.radius, this.params.height, this.params.radialSegments);
-    const mesh = new THREE.Mesh(cone, this.getMaterial({color: this.params.color, flatShading: true}));
+    const cone = new THREE.ConeBufferGeometry(
+        this.config.radius,
+        this.config.height,
+        this.config.radialSegments
+    );
+    const mesh = new THREE.Mesh(cone, getMaterial({color: this.config.color, flatShading: true}));
     this.add(mesh);
   }
 }

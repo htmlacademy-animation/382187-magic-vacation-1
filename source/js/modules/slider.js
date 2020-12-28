@@ -82,7 +82,7 @@ export default () => {
     const {detail: {screenName}} = event;
 
     if (screenName === `story`) {
-      story.init();
+      story.start();
     } else {
       story.endAnimation();
     }

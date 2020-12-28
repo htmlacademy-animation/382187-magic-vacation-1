@@ -9,7 +9,7 @@ struct bubbleStruct {
   float radius;
   vec2 initialPosition;
   vec2 position;
-  vec2 finalPosition;
+  vec2 finalOffset;
   float positionAmplitude;
   float glareOffset;
   float glareAngleStart;
@@ -97,7 +97,7 @@ vec4 blendOutline(vec4 texture, vec4 outline) {
 
 vec2 calculateBubblePosition(bubbleStruct bubble) {
   float progress = sin((time - 1.0) * HALF_PI * 0.5) + 1.0 - bubble.timeout / 2.0;
-  float y = bubble.initialPosition[1] + progress * (bubble.finalPosition[1] - bubble.initialPosition[1]);
+  float y = bubble.initialPosition[1] + progress * (bubble.finalOffset[1]);
   float bubbleOffset = bubble.positionAmplitude * exp(-0.5 * progress) * sin(progress * PI * 6.0);
   float x = bubbleOffset + bubble.initialPosition[0];
   vec2 currentPosition = vec2(x, y);
