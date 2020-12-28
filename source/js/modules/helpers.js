@@ -262,3 +262,5 @@ const bezierEasing = (mX1, mY1, mX2, mY2) => {
 };
 
 export {bezierEasing};
+
+export const getSquareRadius = (width) => Math.hypot(width, width) / 2;
