@@ -10,7 +10,7 @@ import social from './modules/social.js';
 import FullPageScroll from './modules/full-page-scroll';
 import pageLoaded from './modules/page-loaded.js';
 import rules from './modules/rules.js';
-import start from './modules/start.js';
+import start from './modules/webgl/start';
 import letterAnimation from './modules/letter-animation.js';
 
 // init modules

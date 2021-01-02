@@ -1,14 +1,5 @@
 import * as THREE from 'three';
-import {getSquareRadius} from '../helpers';
-
-export const getMaterial = (options = {}) =>{
-  const {color, ...other} = options;
-
-  return new THREE.MeshStandardMaterial({
-    color: new THREE.Color(color),
-    ...other,
-  });
-};
+import {getSquareRadius} from '../../helpers';
 
 export const lanternConfig = {
   topCap: {
@@ -151,9 +142,13 @@ export const getLightsConfig = (sceneParams) => (
   ]
 );
 
-export const getTexturesConfig = (secondStoryModels, thirdStoryModels) => (
+export const getTexturesConfig = (storyModels) => (
   [
-    {src: `./img/scene-1.png`, options: {hueShift: 0.0, distort: false}},
+    {
+      src: `./img/scene-1.png`,
+      options: {hueShift: 0.0, distort: false},
+      models: storyModels.first
+    },
     {
       src: `./img/scene-2.png`,
       options: {hueShift: -0.25, distort: true},
@@ -165,13 +160,17 @@ export const getTexturesConfig = (secondStoryModels, thirdStoryModels) => (
           variation: 0.4,
         },
       },
-      models: secondStoryModels
+      models: storyModels.second
     },
     {
       src: `./img/scene-3.png`,
       options: {hueShift: 0.0, distort: false},
-      models: thirdStoryModels
+      models: storyModels.third
     },
-    {src: `./img/scene-4.png`, options: {hueShift: 0.0, distort: false}}
+    {
+      src: `./img/scene-4.png`,
+      options: {hueShift: 0.0, distort: false},
+      models: storyModels.fourth
+    }
   ]
 );

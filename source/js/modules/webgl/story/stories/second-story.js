@@ -2,28 +2,30 @@ import * as THREE from 'three';
 
 import Pyramid from '../objects/pyramid';
 import Lantern from '../objects/lantern';
+import {getSvgObject} from '../../svg-loader';
 
 class SecondStory extends THREE.Group {
   constructor() {
     super();
 
     this.constructChildren = this.constructChildren.bind(this);
-
     this.constructChildren();
   }
 
   constructChildren() {
-    this.addPyramid();
     this.addLantern();
+    this.addLeaf();
+    this.addPyramid();
   }
 
-  getMaterial(options = {}) {
-    const {color, ...other} = options;
+  async addLeaf() {
+    const svgObject = await getSvgObject();
+    const leaf = svgObject.getObject(`leaf-2`);
+    leaf.scale.set(0.85, 0.85, 0.85);
+    leaf.position.set(-115, 40, 30);
+    leaf.rotation.copy(new THREE.Euler(180 * THREE.Math.DEG2RAD, 3 * THREE.Math.DEG2RAD, 0), `XYZ`);
 
-    return new THREE.MeshStandardMaterial({
-      color: new THREE.Color(color),
-      ...other,
-    });
+    this.add(leaf);
   }
 
   addPyramid() {
@@ -31,8 +33,7 @@ class SecondStory extends THREE.Group {
     pyramid.scale.set(1.2, 1, 1.2);
 
     pyramid.rotation.copy(new THREE.Euler(10 * THREE.Math.DEG2RAD, 3 * THREE.Math.DEG2RAD, 0), `XYZ`);
-    pyramid.position.set(-20, 70, -110);
-
+    pyramid.position.set(-10, 70, -110);
 
     this.add(pyramid);
   }

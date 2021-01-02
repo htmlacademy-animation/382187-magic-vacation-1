@@ -8,15 +8,6 @@ class ThirdStory extends THREE.Group {
     this.addSnowman();
   }
 
-  getMaterial(options = {}) {
-    const {color, ...other} = options;
-
-    return new THREE.MeshStandardMaterial({
-      color: new THREE.Color(color),
-      ...other,
-    });
-  }
-
   addSnowman() {
     const snowman = new Snowman(this.getMaterial);
 

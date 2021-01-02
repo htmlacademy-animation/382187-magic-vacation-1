@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import {snowmanConfig, getMaterial} from '../common';
+import {getMaterial} from '../../common';
+import {snowmanConfig} from '../config';
 
 class Snowman extends THREE.Group {
   constructor() {

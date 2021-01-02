@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import {getSquareRadius} from '../../helpers';
-import {lanternConfig, getMaterial} from '../common';
+import {getSquareRadius} from '../../../helpers';
+import {getMaterial} from '../../common';
+import {lanternConfig} from '../config';
 
 class Lantern extends THREE.Group {
   constructor() {

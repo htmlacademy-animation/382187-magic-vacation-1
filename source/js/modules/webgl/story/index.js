@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import prepareRawShaderMaterial from '../shaders/story';
-import {tick, animateEasingWithFPS, bezierEasing} from '../helpers';
-import {bubblesParams, getBubblesConfig, getLightsConfig, getTexturesConfig} from './common';
+import {tick, animateEasingWithFPS, bezierEasing} from '../../helpers';
+import {bubblesParams, getBubblesConfig, getLightsConfig, getTexturesConfig} from './config';
+import FirstStory from './stories/first-story';
 import SecondStory from './stories/second-story';
 import ThirdStory from './stories/third-story';
 
@@ -18,7 +19,11 @@ export default class Story {
     this.centerCoords = {x: this.ww / 2, y: this.wh / 2};
 
     this.canvasSelector = `story-canvas`;
-    this.textures = getTexturesConfig(new SecondStory(), new ThirdStory());
+    this.textures = getTexturesConfig({
+      first: new FirstStory(),
+      second: new SecondStory(),
+      third: new ThirdStory()
+    });
 
     this.sceneParams = {
       fov: 35,
