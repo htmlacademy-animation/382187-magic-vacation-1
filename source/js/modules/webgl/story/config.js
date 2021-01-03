@@ -1,71 +1,4 @@
 import * as THREE from 'three';
-import {getSquareRadius} from '../../helpers';
-
-export const lanternConfig = {
-  topCap: {
-    widthTop: 45,
-    widthBottom: 57,
-    height: 6,
-    color: `#376ee0`,
-    radialSegments: 4,
-  },
-  topTrapezoid: {
-    widthTop: 42,
-    widthBottom: 34,
-    height: 60,
-    color: `#9db3ef`,
-    radialSegments: 4,
-  },
-  topBox: {
-    width: 37,
-    height: 4,
-    color: `#376ee0`,
-  },
-  middleCylinder: {
-    height: 230,
-    radius: 7,
-    radialSegments: 20,
-    color: `#376ee0`,
-  },
-  baseSphere: {
-    height: 16,
-    radius: 16,
-    segments: 20,
-    color: `#376ee0`,
-  },
-  baseCylinder: {
-    height: 120,
-    radius: 16,
-    radialSegments: 20,
-    color: `#376ee0`,
-  }
-};
-
-export const pyramidConfig = {
-  height: 280,
-  radius: getSquareRadius(250),
-  radialSegments: 4,
-  color: `#1960cf`,
-};
-
-export const snowmanConfig = {
-  topSphere: {
-    radius: 44,
-    segments: 20,
-    color: `#bccde6`,
-  },
-  cone: {
-    radius: 18,
-    height: 75,
-    radialSegments: 20,
-    color: `#c44717`,
-  },
-  baseSphere: {
-    radius: 75,
-    segments: 20,
-    color: `#bccde6`,
-  },
-};
 
 export const bubblesParams = {
   duration: 2100,
@@ -174,3 +107,51 @@ export const getTexturesConfig = (storyModels) => (
     }
   ]
 );
+
+export const firstStoryConfig = {
+  flower: {
+    position: {x: -140, y: 75, z: 100},
+    rotate: {x: 190, y: -25, z: -5},
+    scale: 0.4
+  },
+  carpet: {
+    scale: 0.35,
+    position: {x: -20, y: -15, z: 40},
+    rotate: {x: 20, y: 45, z: 180}
+  },
+  saturn: {
+    scale: 0.5,
+    position: {x: 30, y: 120, z: 100}
+  }
+};
+
+export const secondStoryConfig = {
+  leaf: {
+    scale: 0.85,
+    position: {x: -115, y: 40, z: 30},
+    rotate: {x: 180, y: 3, z: 0}
+  },
+  pyramid: {
+    scale: {x: 1.2, y: 1, z: 1.2},
+    position: {x: -10, y: 70, z: -110},
+    rotate: {x: 10, y: 3, z: 0}
+  },
+  lantern: {
+    scale: 0.46,
+    position: {x: 178, y: -95, z: 10},
+    rotate: {x: 12, y: 60, z: 0}
+  },
+};
+
+export const thirdStoryConfig = {
+  snowman: {
+    scale: 0.75,
+    position: {x: -20, y: -110, z: 0},
+    rotate: {x: 10, y: 40, z: 0}
+  },
+  road: {
+    scale: 0.35,
+    position: {x: -20, y: -20, z: 60},
+    rotate: {x: 20, y: 45, z: 180}
+  }
+};

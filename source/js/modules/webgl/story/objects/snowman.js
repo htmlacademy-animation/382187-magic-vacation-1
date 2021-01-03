@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+
 import {getMaterial} from '../../common';
-import {snowmanConfig} from '../config';
+import {snowmanConfig} from './config';
 
 class Snowman extends THREE.Group {
   constructor() {
@@ -8,8 +9,6 @@ class Snowman extends THREE.Group {
 
     this.config = snowmanConfig;
 
-    this.addBase = this.addBase.bind(this);
-    this.addTop = this.addTop.bind(this);
     this.constructChildren = this.constructChildren.bind(this);
 
     this.constructChildren();

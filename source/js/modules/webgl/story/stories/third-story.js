@@ -1,20 +1,36 @@
 import * as THREE from 'three';
+import {setMeshParams} from '../../common';
+import {thirdStoryConfig} from '../config';
+
 import Snowman from '../objects/snowman';
+import Road from '../objects/road';
 
 class ThirdStory extends THREE.Group {
   constructor() {
     super();
 
+    this.constructChildren = this.constructChildren.bind(this);
+
+    this.constructChildren();
+  }
+
+  constructChildren() {
     this.addSnowman();
+    this.addRoad();
   }
 
   addSnowman() {
-    const snowman = new Snowman(this.getMaterial);
+    const snowman = new Snowman();
+    setMeshParams(snowman, thirdStoryConfig.snowman);
 
-    snowman.scale.set(0.75, 0.75, 0.75);
-    snowman.rotation.copy(new THREE.Euler(10 * THREE.Math.DEG2RAD, 40 * THREE.Math.DEG2RAD, 0), `XYZ`);
-    snowman.position.set(-20, -110, 0);
     this.add(snowman);
+  }
+
+  addRoad() {
+    const road = new Road();
+    setMeshParams(road, thirdStoryConfig.road);
+
+    this.add(road);
   }
 }
 

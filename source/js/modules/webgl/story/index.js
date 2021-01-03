@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import prepareRawShaderMaterial from '../shaders/story';
 import {tick, animateEasingWithFPS, bezierEasing} from '../../helpers';
 import {bubblesParams, getBubblesConfig, getLightsConfig, getTexturesConfig} from './config';
@@ -180,8 +181,8 @@ export default class Story {
         material.needsUpdate = true;
 
         const image = new THREE.Mesh(geometry, material);
-        image.scale.x = this.wh * this.sceneParams.textureRatio;
-        image.scale.y = this.wh;
+        image.scale.x = this.wh * this.sceneParams.textureRatio / (1024 / this.wh);
+        image.scale.y = this.wh / (1024 / this.wh);
         image.position.x = this.getScenePosition(index);
 
         this.scene.add(image);

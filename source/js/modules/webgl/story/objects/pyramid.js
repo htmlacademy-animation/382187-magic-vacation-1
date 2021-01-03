@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+
 import {getMaterial} from '../../common';
-import {pyramidConfig} from '../config';
+import {pyramidConfig} from './config';
 
 class Pyramid extends THREE.Group {
   constructor() {
