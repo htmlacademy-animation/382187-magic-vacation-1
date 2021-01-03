@@ -1,5 +1,5 @@
 import Swiper from "swiper";
-import Story from './story';
+import Story from './webgl/story';
 
 export default () => {
   let storySlider;
@@ -82,7 +82,7 @@ export default () => {
     const {detail: {screenName}} = event;
 
     if (screenName === `story`) {
-      story.init();
+      story.start();
     } else {
       story.endAnimation();
     }
