@@ -2,8 +2,8 @@ export const svgsConfig = [
   {
     name: `flamingo`,
     scale: {x: 1.1, y: 1.2, z: 1.1},
-    position: {x: -300, y: 250, z: 100},
-    rotate: {x: 220, y: 140, z: 10},
+    position: {x: -250, y: 200, z: 100},
+    rotate: {x: 220, y: 160, z: 10},
   },
   {
     name: `keyhole`,
@@ -11,18 +11,20 @@ export const svgsConfig = [
   },
   {
     name: `snowflake`,
-    position: {x: -350, y: 0, z: 100},
+    scale: {x: 0.75, y: 0.75, z: 0.75},
+    position: {x: -250, y: 0, z: 100},
     rotate: {x: 20, y: 40, z: 0},
   },
   {
     name: `question`,
-    position: {x: 150, y: -200, z: 100},
+    scale: {x: 0.75, y: 0.75, z: 0.75},
+    position: {x: 60, y: -175, z: 100},
     rotate: {x: 170, y: 30, z: -20},
   },
   {
     name: `leaf-1`,
-    scale: {x: 1.1, y: 1.1, z: 1.1},
-    position: {x: 450, y: 200, z: 100},
-    rotate: {x: 270, y: 90, z: -20},
+    scale: {x: 1, y: 1, z: 1},
+    position: {x: 350, y: 200, z: 100},
+    rotate: {x: 280, y: 100, z: -40},
   },
 ];

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import prepareRawShaderMaterial from '../shaders/start';
 import {svgsConfig} from './config';
 import {setMeshParams} from '../common';
@@ -13,7 +14,7 @@ class Start {
 
     this.svgs = svgsConfig;
     this.sceneParams = {
-      fov: 45,
+      fov: 35,
       aspect: this.ww / this.wh,
       near: 0.1,
       far: 1000,
@@ -81,8 +82,8 @@ class Start {
 
     loadManager.onLoad = () => {
       const image = new THREE.Mesh(geometry, material);
-      image.scale.x = this.wh * this.sceneParams.textureRatio;
-      image.scale.y = this.wh;
+      image.scale.x = this.wh * this.sceneParams.textureRatio / (1024 / this.wh);
+      image.scale.y = this.wh / (1024 / this.wh);
 
       this.scene.add(image);
       this.render();
