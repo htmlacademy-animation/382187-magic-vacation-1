@@ -19,7 +19,11 @@ class Pyramid extends THREE.Group {
         this.config.height,
         this.config.radialSegments
     );
-    const mesh = new THREE.Mesh(cone, getMaterial({color: this.config.color, flatShading: true}));
+    const mesh = new THREE.Mesh(cone, getMaterial({
+      color: this.config.color,
+      flatShading: true,
+      ...this.config.reflectivitySettings
+    }));
     this.add(mesh);
   }
 }

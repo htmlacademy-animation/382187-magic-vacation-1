@@ -36,7 +36,7 @@ class SecondStory extends THREE.Group {
   }
 
   addLantern() {
-    const lantern = new Lantern(this.getMaterial);
+    const lantern = new Lantern();
     setMeshParams(lantern, secondStoryConfig.lantern);
 
     this.add(lantern);
