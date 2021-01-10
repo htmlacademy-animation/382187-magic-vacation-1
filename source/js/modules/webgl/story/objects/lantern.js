@@ -42,13 +42,19 @@ class Lantern extends THREE.Group {
         baseCylinder.height,
         baseCylinder.radialSegments
     );
-    const cylinderMesh = new THREE.Mesh(cylinder, getMaterial({color: baseCylinder.color}));
+    const cylinderMesh = new THREE.Mesh(cylinder, getMaterial({
+      color: baseCylinder.color,
+      ...baseCylinder.reflectivitySettings
+    }));
 
     const halfSphere = new THREE.SphereBufferGeometry(baseSphere.radius,
         baseSphere.segments, baseSphere.segments,
         Math.PI * 2.00, Math.PI * 2.00,
         0, Math.PI * 0.5);
-    const halfSphereMesh = new THREE.Mesh(halfSphere, getMaterial({color: baseSphere.color}));
+    const halfSphereMesh = new THREE.Mesh(halfSphere, getMaterial({
+      color: baseSphere.color,
+      ...baseSphere.reflectivitySettings
+    }));
 
     this.base.add(cylinderMesh);
     this.base.add(halfSphereMesh);
@@ -66,7 +72,10 @@ class Lantern extends THREE.Group {
         middleCylinder.height,
         middleCylinder.radialSegments
     );
-    const cylinderMesh = new THREE.Mesh(cylinder, getMaterial({color: middleCylinder.color}));
+    const cylinderMesh = new THREE.Mesh(cylinder, getMaterial({
+      color: middleCylinder.color,
+      ...middleCylinder.reflectivitySettings
+    }));
 
     const size = new THREE.Vector2();
     const currentGroupSize = new THREE.Box3().setFromObject(this).getSize(size);
@@ -85,7 +94,11 @@ class Lantern extends THREE.Group {
         topBox.height,
         topBox.width
     );
-    const boxMesh = new THREE.Mesh(box, getMaterial({color: topBox.color, flatShading: true}));
+    const boxMesh = new THREE.Mesh(box, getMaterial({
+      color: topBox.color,
+      flatShading: true,
+      ...topBox.reflectivitySettings
+    }));
 
     const trapezoid = new THREE.CylinderBufferGeometry(
         getSquareRadius(topTrapezoid.widthTop),
@@ -95,7 +108,11 @@ class Lantern extends THREE.Group {
     );
     const trapezoidMesh = new THREE.Mesh(
         trapezoid,
-        getMaterial({color: topTrapezoid.color, flatShading: true})
+        getMaterial({
+          color: topTrapezoid.color,
+          flatShading: true,
+          ...topTrapezoid.reflectivitySettings
+        })
     );
 
     const cap = new THREE.CylinderBufferGeometry(
@@ -104,7 +121,11 @@ class Lantern extends THREE.Group {
         topCap.height,
         topCap.radialSegments
     );
-    const capMesh = new THREE.Mesh(cap, getMaterial({color: topCap.color, flatShading: true}));
+    const capMesh = new THREE.Mesh(cap, getMaterial({
+      color: topCap.color,
+      flatShading: true,
+      ...topCap.reflectivitySettings
+    }));
 
     this.top.add(boxMesh);
     boxMesh.rotation.y = -45 * THREE.Math.DEG2RAD;

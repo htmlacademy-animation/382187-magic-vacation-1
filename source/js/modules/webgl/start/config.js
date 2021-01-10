@@ -1,9 +1,11 @@
+import * as THREE from 'three';
+
 export const svgsConfig = [
   {
     name: `flamingo`,
-    scale: {x: 1.1, y: 1.2, z: 1.1},
+    scale: {x: -1.2, y: 1.2, z: 1.2},
     position: {x: -250, y: 200, z: 100},
-    rotate: {x: 220, y: 160, z: 10},
+    rotate: {x: 30, y: 30, z: 15},
   },
   {
     name: `keyhole`,
@@ -12,19 +14,56 @@ export const svgsConfig = [
   {
     name: `snowflake`,
     scale: {x: 0.75, y: 0.75, z: 0.75},
-    position: {x: -250, y: 0, z: 100},
+    position: {x: -250, y: 40, z: 100},
     rotate: {x: 20, y: 40, z: 0},
   },
   {
     name: `question`,
     scale: {x: 0.75, y: 0.75, z: 0.75},
-    position: {x: 60, y: -175, z: 100},
-    rotate: {x: 170, y: 30, z: -20},
+    position: {x: 60, y: -150, z: 100},
+    rotate: {x: -30, y: -30, z: 10},
   },
   {
     name: `leaf-1`,
-    scale: {x: 1, y: 1, z: 1},
+    scale: {x: -1, y: 1, z: 1},
     position: {x: 350, y: 200, z: 100},
-    rotate: {x: 280, y: 100, z: -40},
+    rotate: {x: 25, y: 150, z: 45},
   },
 ];
+
+export const getLightsConfig = (sceneParams) => (
+  [
+    {
+      id: `DirectionalLight1`,
+      type: `DirectionalLight`,
+      color: `rgb(255,255,255)`,
+      intensity: 0.84,
+      position: {x: 0, y: sceneParams.position.z * Math.tan(-15 * THREE.Math.DEG2RAD), z: sceneParams.position.z},
+    },
+    {
+      id: `DirectionalLight2`,
+      type: `DirectionalLight`,
+      color: `rgb(255,255,255)`,
+      intensity: 0.5,
+      position: {x: 0, y: 500, z: 0},
+    },
+    {
+      id: `PointLight1`,
+      type: `PointLight`,
+      color: `rgb(246,242,255)`,
+      intensity: 0.60,
+      decay: 2.0,
+      distance: 975,
+      position: {x: -785, y: -350, z: 710},
+    },
+    {
+      id: `PointLight2`,
+      type: `PointLight`,
+      color: `rgb(245,254,255)`,
+      intensity: 0.95,
+      decay: 2.0,
+      distance: 975,
+      position: {x: 730, y: 800, z: 985},
+    },
+  ]
+);

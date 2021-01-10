@@ -6,6 +6,7 @@ import {bubblesParams, getBubblesConfig, getLightsConfig, getTexturesConfig} fro
 import FirstStory from './stories/first-story';
 import SecondStory from './stories/second-story';
 import ThirdStory from './stories/third-story';
+import FourthStory from './stories/fourth-story';
 
 const easeInOut = bezierEasing(0.41, 0, 0.54, 1);
 const hueIntensityEasingFn = (timingFraction) => {
@@ -23,7 +24,8 @@ export default class Story {
     this.textures = getTexturesConfig({
       first: new FirstStory(),
       second: new SecondStory(),
-      third: new ThirdStory()
+      third: new ThirdStory(),
+      fourth: new FourthStory()
     });
 
     this.sceneParams = {
@@ -128,6 +130,9 @@ export default class Story {
       lightUnit.position.set(...Object.values(light.position));
       lightGroup.add(lightUnit);
     });
+
+    const ambientLight = new THREE.AmbientLight(0x505050);
+    lightGroup.add(ambientLight);
 
     return lightGroup;
   }

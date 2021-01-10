@@ -1,4 +1,5 @@
 import {getSquareRadius} from '../../../helpers';
+import {colors, reflectivitySettings} from '../../common';
 
 export const carpetConfig = {
   width: 180,
@@ -20,31 +21,35 @@ export const roadConfig = {
   segments: 40,
 };
 
-export const saturnConfig = {
+export const getSaturnConfig = (isDarkTheme) => ({
   planet: {
     radius: 60,
-    color: `#FF0438`,
+    color: isDarkTheme ? colors.ShadowedDominantRed : colors.DominantRed,
     segments: 40,
+    ...reflectivitySettings.soft
   },
   ring: {
     width: 40,
     depth: 2,
     radius: 80,
-    color: `#7F47EA`,
+    color: isDarkTheme ? colors.ShadowedBrightPurple : colors.BrightPurple,
     segments: 40,
+    ...reflectivitySettings.soft
   },
   sphere: {
     radius: 10,
-    color: `#7F47EA`,
+    color: isDarkTheme ? colors.ShadowedBrightPurple : colors.BrightPurple,
     segments: 40,
+    ...reflectivitySettings.soft
   },
   line: {
     radius: 1,
     height: 1000,
-    color: `#7C8DA9`,
+    color: colors.MetalGrey,
     segments: 40,
+    ...reflectivitySettings.soft
   }
-};
+});
 
 export const lanternConfig = {
   topCap: {
@@ -53,6 +58,7 @@ export const lanternConfig = {
     height: 6,
     color: `#376ee0`,
     radialSegments: 4,
+    ...reflectivitySettings.soft
   },
   topTrapezoid: {
     widthTop: 42,
@@ -60,29 +66,34 @@ export const lanternConfig = {
     height: 60,
     color: `#9db3ef`,
     radialSegments: 4,
+    ...reflectivitySettings.soft
   },
   topBox: {
     width: 37,
     height: 4,
     color: `#376ee0`,
+    ...reflectivitySettings.soft
   },
   middleCylinder: {
     height: 230,
     radius: 7,
     radialSegments: 20,
     color: `#376ee0`,
+    ...reflectivitySettings.soft
   },
   baseSphere: {
     height: 16,
     radius: 16,
     segments: 20,
     color: `#376ee0`,
+    ...reflectivitySettings.soft
   },
   baseCylinder: {
     height: 120,
     radius: 16,
     radialSegments: 20,
     color: `#376ee0`,
+    ...reflectivitySettings.soft
   }
 };
 
@@ -91,23 +102,27 @@ export const pyramidConfig = {
   radius: getSquareRadius(250),
   radialSegments: 4,
   color: `#1960cf`,
+  ...reflectivitySettings.soft
 };
 
 export const snowmanConfig = {
   topSphere: {
     radius: 44,
     segments: 20,
-    color: `#bccde6`,
+    color: colors.SnowColor,
+    ...reflectivitySettings.strong
   },
   cone: {
     radius: 18,
     height: 75,
     radialSegments: 20,
-    color: `#c44717`,
+    color: colors.Orange,
+    ...reflectivitySettings.soft
   },
   baseSphere: {
     radius: 75,
     segments: 20,
-    color: `#bccde6`,
+    color: colors.SnowColor,
+    ...reflectivitySettings.strong
   },
 };

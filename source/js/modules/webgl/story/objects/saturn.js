@@ -1,13 +1,16 @@
 import * as THREE from 'three';
 
 import {getLathePointsForCircle, getMaterial} from '../../common';
-import {saturnConfig} from './config';
+import {getSaturnConfig} from './config';
+
+const defaultOptions = {isDarkTheme: false};
 
 class Saturn extends THREE.Group {
-  constructor() {
+  constructor(options = {...defaultOptions}) {
     super();
 
-    this.saturn = saturnConfig;
+    this.isDarkTheme = options.isDarkTheme;
+    this.saturn = getSaturnConfig(this.isDarkTheme);
 
     this.constructChildren = this.constructChildren.bind(this);
 
@@ -27,7 +30,10 @@ class Saturn extends THREE.Group {
         this.saturn.planet.segments,
         this.saturn.planet.segments
     );
-    const mesh = new THREE.Mesh(planet, getMaterial({color: this.saturn.planet.color}));
+    const mesh = new THREE.Mesh(planet, getMaterial({
+      color: this.saturn.planet.color,
+      ...this.saturn.planet.reflectivitySettings
+    }));
 
     this.add(mesh);
   }
@@ -44,6 +50,7 @@ class Saturn extends THREE.Group {
       color: this.saturn.ring.color,
       side: THREE.DoubleSide,
       flatShading: true,
+      ...this.saturn.ring.reflectivitySettings
     }));
     mesh.rotation.copy(new THREE.Euler(20 * THREE.Math.DEG2RAD, 0, 18 * THREE.Math.DEG2RAD), `XYZ`);
 
@@ -56,7 +63,10 @@ class Saturn extends THREE.Group {
         this.saturn.sphere.segments,
         this.saturn.sphere.segments
     );
-    const mesh = new THREE.Mesh(sphere, getMaterial({color: this.saturn.sphere.color}));
+    const mesh = new THREE.Mesh(sphere, getMaterial({
+      color: this.saturn.sphere.color,
+      ...this.saturn.sphere.reflectivitySettings
+    }));
 
     mesh.position.set(0, this.saturn.ring.radius + this.saturn.sphere.radius + 30, 0);
     this.add(mesh);
@@ -69,7 +79,10 @@ class Saturn extends THREE.Group {
         this.saturn.line.height,
         this.saturn.line.radialSegments
     );
-    const mesh = new THREE.Mesh(line, getMaterial({color: this.saturn.line.color}));
+    const mesh = new THREE.Mesh(line, getMaterial({
+      color: this.saturn.line.color,
+      ...this.saturn.line.reflectivitySettings
+    }));
 
     mesh.position.set(0, this.saturn.line.height / 2, 0);
     this.add(mesh);

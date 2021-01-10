@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import prepareRawShaderMaterial from '../shaders/start';
-import {svgsConfig} from './config';
+import {svgsConfig, getLightsConfig} from './config';
 import {setMeshParams} from '../common';
 import {getSvgObject} from '../svg-loader';
 
@@ -25,6 +25,8 @@ class Start {
         z: 800
       }
     };
+
+    this.lights = getLightsConfig(this.sceneParams);
 
     this.isInitialised = false;
 
@@ -90,6 +92,10 @@ class Start {
     };
 
     this.loadSvgs();
+
+    const lightGroup = this.getLightGroup();
+    lightGroup.position.z = this.camera.position.z;
+    this.scene.add(lightGroup);
   }
 
   async loadSvgs() {
@@ -99,6 +105,23 @@ class Start {
       setMeshParams(mesh, params);
       this.scene.add(mesh);
     });
+  }
+
+  getLightGroup() {
+    const lightGroup = new THREE.Group();
+
+    this.lights.forEach((light) => {
+      const color = new THREE.Color(light.color);
+
+      const lightUnit = new THREE[light.type](color, light.intensity, light.distance, light.decay);
+      lightUnit.position.set(...Object.values(light.position));
+      lightGroup.add(lightUnit);
+    });
+
+    const ambientLight = new THREE.AmbientLight(0x909090);
+    lightGroup.add(ambientLight);
+
+    return lightGroup;
   }
 
   render() {

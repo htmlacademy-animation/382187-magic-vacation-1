@@ -25,7 +25,10 @@ class Snowman extends THREE.Group {
         this.config.baseSphere.segments,
         this.config.baseSphere.segments
     );
-    const sphereMesh = new THREE.Mesh(sphere, getMaterial({color: this.config.baseSphere.color}));
+    const sphereMesh = new THREE.Mesh(sphere, getMaterial({
+      color: this.config.baseSphere.color,
+      ...this.config.baseSphere.reflectivitySettings
+    }));
 
     this.add(sphereMesh);
   }
@@ -38,14 +41,20 @@ class Snowman extends THREE.Group {
         this.config.topSphere.segments,
         this.config.topSphere.segments
     );
-    const sphereMesh = new THREE.Mesh(sphere, getMaterial({color: this.config.topSphere.color}));
+    const sphereMesh = new THREE.Mesh(sphere, getMaterial({
+      color: this.config.topSphere.color,
+      ...this.config.topSphere.reflectivitySettings
+    }));
 
     const cone = new THREE.ConeBufferGeometry(
         this.config.cone.radius,
         this.config.cone.height,
         this.config.cone.radialSegments
     );
-    const coneMesh = new THREE.Mesh(cone, getMaterial({color: this.config.cone.color}));
+    const coneMesh = new THREE.Mesh(cone, getMaterial({
+      color: this.config.cone.color,
+      ...this.config.cone.reflectivitySettings
+    }));
 
     this.top.add(sphereMesh);
     this.top.add(coneMesh);
