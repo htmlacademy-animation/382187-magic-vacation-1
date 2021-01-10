@@ -80,6 +80,8 @@ export const createSvgGroup = (data, config) => {
   const paths = data.paths;
   const group = new THREE.Group();
 
+  group.scale.y *= -1;
+
   for (let i = 0; i < paths.length; i++) {
     const path = paths[i];
 
@@ -89,7 +91,7 @@ export const createSvgGroup = (data, config) => {
       ...config.materialReflectivity,
     });
 
-    const shapes = path.toShapes(true);
+    const shapes = path.toShapes(false);
 
     for (let j = 0; j < shapes.length; j++) {
 
@@ -103,7 +105,7 @@ export const createSvgGroup = (data, config) => {
         bevelOffset: 0,
         bevelSegments: 1,
       });
-      geometry.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1));
+      geometry.applyMatrix4(new THREE.Matrix4().makeScale(1, 1, 1));
       const mesh = new THREE.Mesh(geometry, material);
 
       if (config.children) {
