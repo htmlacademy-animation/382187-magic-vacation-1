@@ -1,15 +1,24 @@
 varying vec2 vUv;
 
-void main() {
-  float stripes = 1.0 * vUv.y;
-  float rounded = floor(stripes);
+uniform vec3 mainColor;
+uniform vec3 stripeColor;
 
-  if (mod(rounded, 2.0) == 1.0)
+void main() {
+  float stripesY = 3.0 * vUv.y;
+  float roundedY = floor(stripesY);
+  float stripesX = 9.0 * vUv.x;
+  float roundedX = floor(stripesX);
+
+  if (
+    mod(roundedY, 2.0) == 1.0 &&
+    vUv.y < 0.55 && vUv.y > 0.40 &&
+    mod(roundedX, 2.0) == 1.0
+  )
   {
-    gl_FragColor = vec4(0.408, 0.298, 0.651, 1.0);
+    gl_FragColor = vec4(stripeColor, 1.0);
   }
   else
   {
-    gl_FragColor = vec4(0.663, 0.522, 0.847, 1.0);
+    gl_FragColor = vec4(mainColor, 1.0);
   }
 }
