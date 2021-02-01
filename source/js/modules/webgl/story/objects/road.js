@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
-import {getLathePointsForCircle, getLatheDegrees, getMaterial} from '../../common';
+import {getLathePointsForCircle, getLatheDegrees} from '../../common';
 import {roadConfig} from './config';
+import RoadMaterial from '../materials/road';
 
 class Road extends THREE.Group {
   constructor() {
@@ -18,12 +19,10 @@ class Road extends THREE.Group {
     const points = getLathePointsForCircle(this.road.width, this.road.depth, this.road.radius);
     const {start, length} = getLatheDegrees(this.road.degStart, this.road.degEnd);
 
+    const material = new RoadMaterial();
+
     const road = new THREE.LatheBufferGeometry(points, this.road.segments, start, length);
-    const mesh = new THREE.Mesh(road, getMaterial({
-      color: this.road.color,
-      side: THREE.DoubleSide,
-      flatShading: true,
-    }));
+    const mesh = new THREE.Mesh(road, material);
 
     this.add(mesh);
   }

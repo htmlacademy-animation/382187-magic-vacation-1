@@ -30,7 +30,7 @@ class FourthStory extends THREE.Group {
   }
 
   addCarpet() {
-    const carpet = new Carpet();
+    const carpet = new Carpet({isDark: true});
     setMeshParams(carpet, fourthStoryConfig.carpet);
     this.add(carpet);
   }
