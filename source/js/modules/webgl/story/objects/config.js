@@ -9,6 +9,7 @@ export const carpetConfig = {
   degEnd: 74,
   color: `#A481D1`,
   segments: 40,
+  stripes: 7,
 };
 
 export const roadConfig = {

@@ -131,7 +131,7 @@ export default class Story {
       lightGroup.add(lightUnit);
     });
 
-    const ambientLight = new THREE.AmbientLight(0x505050);
+    const ambientLight = new THREE.AmbientLight(0x404040);
     lightGroup.add(ambientLight);
 
     return lightGroup;
@@ -188,6 +188,8 @@ export default class Story {
         const image = new THREE.Mesh(geometry, material);
         image.scale.x = this.wh * this.sceneParams.textureRatio / (1024 / this.wh);
         image.scale.y = this.wh / (1024 / this.wh);
+        // image.scale.x = this.wh * this.sceneParams.textureRatio / (this.wh);
+        // image.scale.y = this.wh / (this.wh);
         image.position.x = this.getScenePosition(index);
 
         this.scene.add(image);

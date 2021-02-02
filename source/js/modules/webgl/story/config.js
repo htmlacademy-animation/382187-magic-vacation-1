@@ -119,7 +119,7 @@ export const firstStoryConfig = {
   flower: {
     position: {x: -145, y: 85, z: 100},
     rotate: {x: 0, y: 35, z: 8},
-    scale: 0.42
+    scale: {x: 0.42, y: -0.42, z: 0.42}
   },
   carpet: {
     scale: 0.35,
@@ -134,7 +134,7 @@ export const firstStoryConfig = {
 
 export const secondStoryConfig = {
   leaf: {
-    scale: 0.85,
+    scale: {x: 0.85, y: -0.85, z: 0.85},
     position: {x: -115, y: 40, z: 30},
     rotate: {x: 0, y: 3, z: 0}
   },
@@ -167,7 +167,7 @@ export const fourthStoryConfig = {
   flower: {
     position: {x: -135, y: 85, z: 100},
     rotate: {x: 0, y: 35, z: 8},
-    scale: 0.42
+    scale: {x: 0.42, y: -0.42, z: 0.42}
   },
   carpet: {
     scale: 0.35,
