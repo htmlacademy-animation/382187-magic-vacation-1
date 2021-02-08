@@ -1,5 +1,5 @@
 import Swiper from "swiper";
-import Story from './webgl/story';
+import Story from './3d/story';
 
 export default () => {
   let storySlider;
