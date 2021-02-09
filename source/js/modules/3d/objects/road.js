@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
-import {getLathePointsForCircle, getLatheDegrees, colors} from '../../common';
+import {getLathePointsForCircle, getLatheDegrees, colors} from '../common';
 import {roadConfig} from './config';
+
 import RoadMaterial from '../materials/road';
 
 class Road extends THREE.Group {

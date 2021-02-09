@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 
-import Pyramid from '../objects/pyramid';
-import Lantern from '../objects/lantern';
 import {getSvgObject} from '../../svg-loader';
 import {setMeshParams} from '../../common';
 import {secondStoryConfig} from '../config';
+
+import Pyramid from '../../objects/pyramid';
+import Lantern from '../../objects/lantern';
 
 class SecondStory extends THREE.Group {
   constructor() {

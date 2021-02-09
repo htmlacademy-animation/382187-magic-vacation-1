@@ -1,9 +1,11 @@
 import Swiper from "swiper";
+import Start from "./3d/start";
 import Story from './3d/story';
 
 export default () => {
   let storySlider;
   const story = new Story();
+  const start = new Start();
 
   const setSlider = function () {
     if (((window.innerWidth / window.innerHeight) < 1) || window.innerWidth < 769) {
@@ -80,6 +82,10 @@ export default () => {
 
   document.body.addEventListener(`screenChanged`, (event) => {
     const {detail: {screenName}} = event;
+
+    if (screenName === `top`) {
+      start.start();
+    }
 
     if (screenName === `story`) {
       story.start();
