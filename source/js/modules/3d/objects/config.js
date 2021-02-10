@@ -1,5 +1,5 @@
-import {getSquareRadius} from '../../../helpers';
-import {colors, reflectivitySettings} from '../../common';
+import {getSquareRadius} from '../../helpers';
+import {colors, reflectivitySettings} from '../common';
 
 export const carpetConfig = {
   width: 180,

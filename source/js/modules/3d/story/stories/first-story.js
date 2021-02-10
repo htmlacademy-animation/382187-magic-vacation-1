@@ -5,8 +5,8 @@ import {loadModel} from '../../load-object-model';
 import {setMeshParams, getMaterial} from '../../common';
 import {firstStoryConfig} from '../config';
 
-import Carpet from '../objects/carpet';
-import Saturn from '../objects/saturn';
+import Carpet from '../../objects/carpet';
+import Saturn from '../../objects/saturn';
 
 class FirstStory extends THREE.Group {
   constructor() {
@@ -15,7 +15,6 @@ class FirstStory extends THREE.Group {
     this.models = firstStoryConfig.models;
 
     this.constructChildren = this.constructChildren.bind(this);
-
     this.constructChildren();
   }
 
@@ -51,9 +50,7 @@ class FirstStory extends THREE.Group {
 
       loadModel(params, material, (mesh) => {
         mesh.name = params.name;
-        mesh.scale.set(params.scale, params.scale, params.scale);
-        mesh.position.set(...Object.values(params.position));
-        mesh.rotation.copy(new THREE.Euler(params.rotate.x * THREE.Math.DEG2RAD, params.rotate.y * THREE.Math.DEG2RAD, params.rotate.z * THREE.Math.DEG2RAD, params.rotationOrder || `XYZ`));
+        setMeshParams(mesh, params);
         this.add(mesh);
       });
     });

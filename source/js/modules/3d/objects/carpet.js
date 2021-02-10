@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 
-import {getLathePointsForCircle, getLatheDegrees, colors} from '../../common';
+import {getLathePointsForCircle, getLatheDegrees, colors} from '../common';
 import {carpetConfig} from './config';
-import CarpetMaterial from '../materials/carpet';
 
+import CarpetMaterial from '../materials/carpet';
 
 class Carpet extends THREE.Group {
   constructor({isDark} = {}) {

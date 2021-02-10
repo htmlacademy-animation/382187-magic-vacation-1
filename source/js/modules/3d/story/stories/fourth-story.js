@@ -4,15 +4,14 @@ import {getSvgObject} from '../../svg-loader';
 import {setMeshParams} from '../../common';
 import {fourthStoryConfig} from '../config';
 
-import Carpet from '../objects/carpet';
-import Saturn from '../objects/saturn';
+import Carpet from '../../objects/carpet';
+import Saturn from '../../objects/saturn';
 
 class FourthStory extends THREE.Group {
   constructor() {
     super();
 
     this.constructChildren = this.constructChildren.bind(this);
-
     this.constructChildren();
   }
 
@@ -36,7 +35,7 @@ class FourthStory extends THREE.Group {
   }
 
   addSaturn() {
-    const saturn = new Saturn({isDarkTheme: true});
+    const saturn = new Saturn({isDarkTheme: true, basic: false});
     setMeshParams(saturn, fourthStoryConfig.saturn);
     this.add(saturn);
   }
