@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {thirdStoryConfig} from '../config';
-import {setMeshParams,  getMaterial, reflectivitySettings, colors} from '../../common';
+import {setMeshParams, getMaterial, reflectivitySettings, colors} from '../../common';
 import {loadModel} from '../../load-object-model';
 
 import Snowman from '../../objects/snowman';

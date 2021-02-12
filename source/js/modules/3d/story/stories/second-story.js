@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import {getSvgObject} from '../../svg-loader';
-import {setMeshParams,  getMaterial, reflectivitySettings, colors} from '../../common';
+import {setMeshParams, getMaterial, reflectivitySettings, colors} from '../../common';
 import {secondStoryConfig} from '../config';
 import {loadModel} from '../../load-object-model';
 

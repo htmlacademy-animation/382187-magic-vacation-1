@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import {getSvgObject} from '../../svg-loader';
 import {fourthStoryConfig} from '../config';
-import {setMeshParams,  getMaterial, reflectivitySettings, colors} from '../../common';
+import {setMeshParams, getMaterial, reflectivitySettings, colors} from '../../common';
 import {loadModel} from '../../load-object-model';
 
 import Carpet from '../../objects/carpet';

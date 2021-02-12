@@ -35,7 +35,6 @@ class Wall extends THREE.Group {
 
   addFloor() {
     const {start, length} = getLatheDegrees(this.floor.start, this.floor.end);
-    console.log(this.floor);
     const geometry = new THREE.CircleGeometry(this.floor.radius, this.floor.segments, start, length);
     const mesh = new THREE.Mesh(geometry, getMaterial({
       color: this.floor.color,

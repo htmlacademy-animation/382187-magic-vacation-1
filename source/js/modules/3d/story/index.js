@@ -154,10 +154,8 @@ export default class Story {
     });
 
     const ambientLight = new THREE.AmbientLight(0x404040);
-    const ambientLight2 = new THREE.AmbientLight(0x404040);
 
     lightGroup.add(ambientLight);
-    // lightGroup.add(ambientLight2);
 
     return lightGroup;
   }

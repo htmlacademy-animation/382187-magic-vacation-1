@@ -2,7 +2,7 @@ import {getSquareRadius} from '../../helpers';
 import {colors, reflectivitySettings} from '../common';
 
 export const getWallConfig = (wallMaterialReflectivity, wallColor, floorColor) => ({
- wall: {
+  wall: {
     name: `wall`,
     type: `obj`,
     path: `3d/obj/WallCornerUnit.obj`,
@@ -12,7 +12,7 @@ export const getWallConfig = (wallMaterialReflectivity, wallColor, floorColor) =
     position: {x: 0, y: 0, z: 1},
     rotate: {x: 0, y: -45, z: 0},
   },
-  floor :{
+  floor: {
     radius: 1350,
     color: floorColor,
     materialReflectivity: reflectivitySettings.soft,
