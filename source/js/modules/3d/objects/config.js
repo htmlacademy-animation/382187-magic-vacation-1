@@ -1,6 +1,31 @@
 import {getSquareRadius} from '../../helpers';
 import {colors, reflectivitySettings} from '../common';
 
+export const getWallConfig = (wallMaterialReflectivity, wallColor, floorColor) => ({
+ wall: {
+    name: `wall`,
+    type: `obj`,
+    path: `3d/obj/WallCornerUnit.obj`,
+    materialReflectivity: wallMaterialReflectivity,
+    color: wallColor,
+    scale: 0.4,
+    position: {x: 0, y: 0, z: 1},
+    rotate: {x: 0, y: -45, z: 0},
+  },
+  floor :{
+    radius: 1350,
+    color: floorColor,
+    materialReflectivity: reflectivitySettings.soft,
+    segments: 8,
+    start: 0,
+    end: 90,
+    scale: 0.4,
+    position: {x: 0, y: 0, z: 1},
+    rotate: {x: -90, y: -135, z: 0},
+    rotationOrder: `YXZ`,
+  }
+});
+
 export const carpetConfig = {
   width: 180,
   depth: 3,

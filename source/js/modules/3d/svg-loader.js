@@ -62,7 +62,7 @@ const toExtrudeSvgs = [
     height: 413,
     depth: 4,
     cap: 2,
-    color: colors.Purple,
+    color: colors.DarkPurple,
     materialReflectivity: {}
   },
   {
