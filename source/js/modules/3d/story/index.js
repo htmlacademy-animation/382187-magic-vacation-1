@@ -1,8 +1,11 @@
 import * as THREE from 'three';
 
-// import prepareRawShaderMaterial from '../shaders/story';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+
 import {tick, animateEasingWithFPS, bezierEasing} from '../../helpers';
-import {bubblesParams, getBubblesConfig, getLightsConfig, getTexturesConfig} from './config';
+import {bubblesParams, getBubblesConfig, getLightsConfig, getTexturesConfig, objectsToAdd} from './config';
+import {getMaterial, setMeshParams} from '../common';
+import {loadModel} from '../load-object-model';
 
 import FirstStory from './stories/first-story';
 import SecondStory from './stories/second-story';
@@ -40,7 +43,7 @@ export default class Story {
         z: 1405
       },
       camera: {
-        position: {y: 800, z: 2550},
+        position: {y: 120, z: 300},
         rotation: {y: -15},
       }
     };
@@ -93,14 +96,14 @@ export default class Story {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.ww, this.wh);
 
-    const distortedIndex = this.textures.findIndex((texture) => texture.options.distort);
+    // const distortedIndex = this.textures.findIndex((texture) => texture.options.distort);
 
-    const {width} = this.sceneSize;
-    const pixelRatio = this.renderer.getPixelRatio();
+    // const {width} = this.sceneSize;
+    // const pixelRatio = this.renderer.getPixelRatio();
 
-    this.materials[distortedIndex].uniforms.distortion.value.resolution = [
-      width * pixelRatio, width / this.sceneParams.textureRatio * pixelRatio
-    ];
+    // this.materials[distortedIndex].uniforms.distortion.value.resolution = [
+    //   width * pixelRatio, width / this.sceneParams.textureRatio * pixelRatio
+    // ];
   }
 
   getHueShiftAnimationSettings(index) {
@@ -146,16 +149,23 @@ export default class Story {
     const lightGroup = new THREE.Group();
 
     this.lights.forEach((light) => {
-      const color = new THREE.Color(light.color);
-
-      const lightUnit = new THREE[light.type](color, light.intensity, light.distance, light.decay);
+      const lightUnit = light.light;
+      if (light.type === `PointLight`) {
+        lightUnit.castShadow = true;
+        lightUnit.shadow.mapSize.width = this.ww;
+        lightUnit.shadow.mapSize.height = this.wh;
+        lightUnit.shadow.camera.near = this.camera.near;
+        lightUnit.shadow.camera.far = this.camera.fov;
+      }
       lightUnit.position.set(...Object.values(light.position));
       lightGroup.add(lightUnit);
     });
 
-    const ambientLight = new THREE.AmbientLight(0x404040);
+    const ambientLight1 = new THREE.AmbientLight(0x404040);
+    const ambientLight2 = new THREE.AmbientLight(0x303030);
 
-    lightGroup.add(ambientLight);
+    lightGroup.add(ambientLight1);
+    lightGroup.add(ambientLight2);
 
     return lightGroup;
   }
@@ -163,7 +173,7 @@ export default class Story {
   setCamera() {
     this.camera.position.z = this.sceneParams.camera.position.z;
     this.camera.position.y = this.sceneParams.camera.position.y;
-    this.camera.rotation.copy(new THREE.Euler(this.sceneParams.camera.rotation.y * THREE.Math.DEG2RAD, 0, 0, `XYZ`));
+    this.camera.rotation.copy(new THREE.Euler(this.sceneParams.position.z * Math.tan(-15 * THREE.Math.DEG2RAD)), 0, 0, `XYZ`);
   }
 
   start() {
@@ -187,55 +197,20 @@ export default class Story {
 
     this.camera = new THREE.PerspectiveCamera(this.sceneParams.fov, this.sceneParams.aspect, this.sceneParams.near, this.sceneParams.far);
 
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.setCamera();
 
+    this.renderer.shadowMap.enabled = true;
+
+    this.controls.enableZoom = true;
+    this.controls.minPolarAngle = Math.PI * 1 / 4;
+    this.controls.maxPolarAngle = Math.PI * 3 / 4;
+    this.controls.update();
+
     this.scene = new THREE.Scene();
+    this.camera.lookAt(this.scene.position);
+
     this.sceneGroup = new THREE.Group();
-
-    // const loadManager = new THREE.LoadingManager();
-    // const textureLoader = new THREE.TextureLoader(loadManager);
-    // const loadedTextures = this.textures.map((texture) => ({...texture, src: textureLoader.load(texture.src)}));
-    // const geometry = new THREE.PlaneGeometry(1, 1);
-
-    // loadManager.onLoad = () => {
-    //   this.materials = loadedTextures.map((loadedTexture, index) => {
-    //     const rawShaderMaterialAttrs = prepareRawShaderMaterial({
-    //       map: {
-    //         value: loadedTexture.src,
-    //       },
-    //       options: {
-    //         value: loadedTexture.options,
-    //       },
-    //       time: {
-    //         value: 0
-    //       },
-    //       ...this.addBubble(index),
-    //     });
-
-    //     const material = new THREE.RawShaderMaterial(rawShaderMaterialAttrs);
-
-    //     material.needsUpdate = true;
-
-    //     const image = new THREE.Mesh(geometry, material);
-    //     image.scale.x = this.wh * this.sceneParams.textureRatio / (1024 / this.wh);
-    //     image.scale.y = this.wh / (1024 / this.wh);
-    //     // image.scale.x = this.wh * this.sceneParams.textureRatio / (this.wh);
-    //     // image.scale.y = this.wh / (this.wh);
-    //     image.position.x = this.getScenePosition(index);
-
-    //     this.scene.add(image);
-
-    //     if (loadedTexture.models) {
-    //       loadedTexture.models.position.x = this.getScenePosition(index);
-    //       this.scene.add(loadedTexture.models);
-    //     }
-
-    //     return material;
-    //   });
-    // };
-
-
-    // const geometry = new THREE.PlaneGeometry(1, 1);
 
     this.materials = this.textures.map((story, index) => {
 
@@ -245,16 +220,20 @@ export default class Story {
         return;
       }
 
-      models.position.y = 540;
-      models.position.z = 2000;
       models.rotation.copy(new THREE.Euler(0, index * 90 * THREE.Math.DEG2RAD, 0, `XYZ`));
-      models.scale.set(0.75, 0.75, 0.75);
+      models.scale.set(0.25, 0.25, 0.25);
+
       this.sceneGroup.add(models);
     });
 
-    this.sceneGroup.position.y = 100;
-
     this.scene.add(this.sceneGroup);
+
+    this.addSuitcase();
+
+    // Эти объекты добавляются не в самом классе сцены
+    this.sceneGroup.children[0].addObject(objectsToAdd.dog);
+    this.sceneGroup.children[2].addObject(objectsToAdd.compass);
+    this.sceneGroup.children[3].addObject(objectsToAdd.sonya);
 
     const lightGroup = this.getLightGroup();
     lightGroup.position.z = this.camera.position.z;
@@ -262,6 +241,22 @@ export default class Story {
 
     this.changeStory(0);
     this.animate();
+  }
+
+  addSuitcase() {
+    this.suitcaseGroup = new THREE.Group();
+
+    const params = objectsToAdd.suitcase;
+    const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
+
+    loadModel(params, material, (mesh) => {
+      mesh.name = params.name;
+      mesh.castShadow = params.castShadow;
+      mesh.receiveShadow = params.castShadow;
+      setMeshParams(mesh, params);
+      this.suitcaseGroup.add(mesh);
+      this.scene.add(this.suitcaseGroup);
+    });
   }
 
   endAnimation() {
@@ -316,19 +311,12 @@ export default class Story {
 
   animate() {
     requestAnimationFrame(this.animate);
-
-    // // this.animateBubbles();
-    // if (this.getHueShiftAnimationSettings(this.storyIndex)) {
-    //   if (!this.hueIsAnimating) {
-    //     this.resetHueShift();
-    //     this.animateHueShift();
-    //   }
-    // }
-
+    this.controls.update();
     this.render();
   }
 
   render() {
+    this.camera.lookAt(this.scene.position);
     this.renderer.render(this.scene, this.camera);
   }
 }

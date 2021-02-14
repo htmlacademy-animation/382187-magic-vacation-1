@@ -38,6 +38,8 @@ class ThirdStory extends THREE.Group {
 
     loadModel(params, material, (mesh) => {
       mesh.name = params.name;
+      mesh.castShadow = params.castShadow;
+      mesh.receiveShadow = params.castShadow;
       setMeshParams(mesh, params);
       this.add(mesh);
     });
@@ -45,7 +47,13 @@ class ThirdStory extends THREE.Group {
 
   loadModels() {
     this.models.forEach((params) => {
-      this.addObject(params);
+      const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
+
+      loadModel(params, material, (mesh) => {
+        mesh.name = params.name;
+        setMeshParams(mesh, params);
+        this.add(mesh);
+      });
     });
   }
 
