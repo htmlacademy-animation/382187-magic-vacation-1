@@ -2,65 +2,79 @@ import * as THREE from 'three';
 
 import {reflectivitySettings, colors} from '../common';
 
-export const svgsConfig = [
-  {
+export const keyholeConfig = {
+  name: `keyhole`,
+  position: {x: -1000, y: 1000, z: 0},
+};
+
+export const svgsConfig = {
+  flamingo: {
     name: `flamingo`,
-    scale: {x: -1, y: 1, z: 1},
-    position: {x: -250, y: 150, z: 100},
-    rotate: {x: 210, y: -30, z: -15},
+    scale: {x: 1, y: 1, z: 1},
+    finalPosition: {x: -210, y: 150, z: 100},
+    position: {x: -15, y: 15, z: 15},
+    rotate: {x: 15, y: 170, z: -20},
   },
-  {
-    name: `keyhole`,
-    position: {x: -1000, y: 1000, z: 0},
-  },
-  {
+  snowflake: {
     name: `snowflake`,
     scale: {x: 0.75, y: 0.75, z: 0.75},
-    position: {x: -250, y: 0, z: 100},
+    finalPosition: {x: -210, y: 0, z: 100},
+    position: {x: 0, y: 0, z: 0},
     rotate: {x: 20, y: 40, z: 0},
   },
-  {
+  question: {
     name: `question`,
     scale: {x: 0.75, y: 0.75, z: 0.75},
-    position: {x: 60, y: -150, z: 100},
+    finalPosition: {x: 60, y: -120, z: 100},
+    position: {x: 15, y: -15, z: 10},
     rotate: {x: -30, y: -30, z: 10},
   },
-  {
-    name: `leaf-1`,
-    scale: {x: 0.9, y: -0.9, z: 0.9},
-    position: {x: 300, y: 140, z: 100},
-    rotate: {x: 0, y: -20, z: -40},
+  leaf: {
+    name: `leaf`,
+    scale: {x: 0.8, y: 0.8, z: 0.8},
+    finalPosition: {x: 280, y: 110, z: 100},
+    position: {x: 20, y: 15, z: 20},
+    rotate: {x: 0, y: -60, z: -70},
   },
-];
+};
 
-export const modelsConfig = [
-  {
+export const saturnModelConfig = {
+  scale: {x: 0.35, y: 0.35, z: 0.35},
+  position: {x: 15, y: -15, z: 10},
+  finalPosition: {x: 220, y: -50, z: 100},
+};
+
+export const modelsConfig = {
+  airplane: {
     name: `airplane`,
     type: `obj`,
     path: `3d/obj/airplane.obj`,
     materialReflectivity: reflectivitySettings.basic,
     color: colors.White,
-    scale: 0.5,
-    position: {x: 70, y: 80, z: 100},
-    rotate: {x: 90, y: 140, z: -30},
+    scale: {x: 0.7, y: 0.7, z: 0.7},
+    finalPosition: {x: 120, y: 30, z: 100},
+    position: {x: 5, y: 5, z: 5},
+    rotate: {x: 135, y: 0, z: 60},
   },
-  {
+  suitcase: {
     name: `suitcase`,
     type: `gltf`,
     path: `3d/gltf/suitcase.gltf`,
-    scale: 0.4,
-    position: {x: -70, y: -120, z: 30},
-    rotate: {x: 15, y: 210, z: 20},
+    scale: {x: 0.6, y: 0.6, z: 0.6},
+    finalPosition: {x: -50, y: -120, z: 40},
+    position: {x: -5, y: -5, z: -5},
+    rotate: {x: 20, y: 110, z: 0},
   },
-  {
+  watermelon: {
     name: `watermelon`,
     type: `gltf`,
     path: `3d/gltf/watermelon.gltf`,
-    scale: 1,
-    position: {x: -370, y: -100, z: 40},
-    rotate: {x: 0, y: 0, z: 130},
+    scale: {x: 1, y: 1, z: 1},
+    finalPosition: {x: -370, y: -100, z: 40},
+    position: {x: -10, y: -10, z: 5},
+    rotate: {x: 0, y: 0, z: 70},
   },
-];
+};
 
 export const getLightsConfig = (sceneParams) => (
   [

@@ -3,12 +3,10 @@ import {SVGLoader} from 'three/examples/jsm/loaders/SVGLoader.js';
 import {colors, reflectivitySettings} from './common';
 import SVGObject from './svg-object';
 
-const svgLoader = new SVGLoader();
-
 const toExtrudeSvgs = [
   {
     name: `flamingo`,
-    src: `./img/flamingo.svg`,
+    src: `img/flamingo.svg`,
     height: 85,
     depth: 8,
     cap: 2,
@@ -17,7 +15,7 @@ const toExtrudeSvgs = [
   },
   {
     name: `snowflake`,
-    src: `./img/snowflake.svg`,
+    src: `img/snowflake.svg`,
     height: 74,
     depth: 8,
     cap: 2,
@@ -26,7 +24,7 @@ const toExtrudeSvgs = [
   },
   {
     name: `question`,
-    src: `./img/question.svg`,
+    src: `img/question.svg`,
     height: 56,
     depth: 8,
     cap: 2,
@@ -35,7 +33,7 @@ const toExtrudeSvgs = [
   },
   {
     name: `leaf-1`,
-    src: `./img/leaf.svg`,
+    src: `img/leaf.svg`,
     height: 117,
     depth: 8,
     cap: 2,
@@ -44,7 +42,7 @@ const toExtrudeSvgs = [
   },
   {
     name: `keyhole`,
-    src: `./img/keyhole.svg`,
+    src: `img/keyhole.svg`,
     height: 2000,
     depth: 20,
     cap: 2,
@@ -58,7 +56,7 @@ const toExtrudeSvgs = [
   },
   {
     name: `flower`,
-    src: `./img/flower.svg`,
+    src: `img/flower.svg`,
     height: 413,
     depth: 4,
     cap: 2,
@@ -67,7 +65,7 @@ const toExtrudeSvgs = [
   },
   {
     name: `leaf-2`,
-    src: `./img/leaf.svg`,
+    src: `img/leaf.svg`,
     height: 335.108,
     depth: 3,
     cap: 3,
@@ -76,7 +74,7 @@ const toExtrudeSvgs = [
   },
 ];
 
-export const createSvgGroup = (data, config) => {
+const createSvgGroup = (data, settings) => {
   const paths = data.paths;
   const group = new THREE.Group();
 
@@ -86,9 +84,9 @@ export const createSvgGroup = (data, config) => {
     const path = paths[i];
 
     const material = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(config.color),
+      color: new THREE.Color(settings.color),
       side: THREE.DoubleSide,
-      ...config.materialReflectivity,
+      ...settings.materialReflectivity,
     });
 
     const shapes = path.toShapes(false);
@@ -98,18 +96,18 @@ export const createSvgGroup = (data, config) => {
       const shape = shapes[j];
       const geometry = new THREE.ExtrudeBufferGeometry(shape, {
         steps: 2,
-        depth: config.depth,
+        depth: settings.depth,
         bevelEnabled: true,
-        bevelThickness: config.cap,
-        bevelSize: config.cap,
+        bevelThickness: settings.cap,
+        bevelSize: settings.cap,
         bevelOffset: 0,
-        bevelSegments: 1,
+        bevelSegments: 2,
       });
       geometry.applyMatrix4(new THREE.Matrix4().makeScale(1, 1, 1));
       const mesh = new THREE.Mesh(geometry, material);
 
-      if (config.children) {
-        const content = config.children;
+      if (settings.children) {
+        const content = settings.children;
 
         const size = new THREE.Vector3();
         new THREE.Box3().setFromObject(content).getSize(size);
@@ -122,30 +120,37 @@ export const createSvgGroup = (data, config) => {
     }
   }
 
-  group.name = config.name;
+  group.name = settings.name;
 
   return group;
 };
 
-export const promisifiedLoader = (loader, url) => {
-  return new Promise((resolve, reject) => {
-    loader.load(url, (data) => resolve(data), null, reject);
+const loadedSvgs = new Promise((resolve) => {
+  let loadCount = 0;
+
+  const group = new THREE.Group();
+  const loadManager = new THREE.LoadingManager();
+  const loader = new SVGLoader(loadManager);
+
+  toExtrudeSvgs.forEach((path) => {
+    loader.load(path.src, (data) => {
+      const svgGroup = createSvgGroup(data, path);
+      group.add(svgGroup);
+      loadCount++;
+    });
   });
-};
 
-export const loadedSvgs = (svgs) => svgs.reduce(async (resultPromise, path) => {
-  const data = await promisifiedLoader(svgLoader, path.src);
-  const svgGroup = createSvgGroup(data, path);
-
-  const result = await resultPromise;
-  result.add(svgGroup);
-  return result;
-}, new THREE.Group());
+  loadManager.onLoad = () => {
+    if (loadCount === toExtrudeSvgs.length) {
+      resolve(group);
+    }
+  };
+});
 
 let svgObject;
 export const getSvgObject = async () => {
   if (!svgObject) {
-    const svgs = await loadedSvgs(toExtrudeSvgs);
+    const svgs = await loadedSvgs;
     svgObject = new SVGObject(svgs);
   }
   return svgObject;

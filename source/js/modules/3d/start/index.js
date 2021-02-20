@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-import prepareRawShaderMaterial from '../shaders/start';
-import {svgsConfig, getLightsConfig} from './config';
+import {WEBGL} from 'three/examples/jsm/WebGL';
+import {getLightsConfig} from './config';
 
 import StartStory from './start';
 
@@ -12,7 +12,6 @@ class Start {
 
     this.canvasSelector = `start-canvas`;
 
-    this.svgs = svgsConfig;
     this.sceneParams = {
       fov: 35,
       aspect: this.ww / this.wh,
@@ -30,10 +29,13 @@ class Start {
 
     this.lights = getLightsConfig(this.sceneParams);
 
+    this.animationRequest = null;
+
     this.isInitialised = false;
 
     this.resize = this.resize.bind(this);
     this.render = this.render.bind(this);
+    this.animate = this.animate.bind(this);
   }
 
   get fov() {
@@ -59,11 +61,17 @@ class Start {
 
   start() {
     if (!this.isInitialized) {
-      this.init();
-      this.isInitialized = true;
-    }
+      if (WEBGL.isWebGLAvailable()) {
+        this.init();
+        this.isInitialized = true;
+      }
 
-    window.addEventListener(`resize`, this.resize);
+      if (!this.animationRequest) {
+        this.animationRequest = requestAnimationFrame(this.animate);
+      }
+
+      window.addEventListener(`resize`, this.resize);
+    }
   }
 
   init() {
@@ -86,28 +94,12 @@ class Start {
 
     this.scene = new THREE.Scene();
 
-    const loadManager = new THREE.LoadingManager();
-    const textureLoader = new THREE.TextureLoader(loadManager);
-    const loadedTexture = textureLoader.load(this.sceneParams.texturePath);
-    const material = new THREE.RawShaderMaterial(prepareRawShaderMaterial({map: {value: loadedTexture}}));
-    const geometry = new THREE.PlaneGeometry(1, 1);
     this.story.position.z = this.camera.position.z * 0.5;
     this.scene.add(this.story);
 
     const lightGroup = this.getLightGroup();
     lightGroup.position.z = this.camera.position.z;
     this.scene.add(lightGroup);
-
-    loadManager.onLoad = () => {
-      const image = new THREE.Mesh(geometry, material);
-      image.scale.x = this.wh * this.sceneParams.textureRatio / (1024 / this.wh);
-      image.scale.y = this.wh / (1024 / this.wh);
-      image.position.z = this.camera.position.z * 0.5;
-
-      this.scene.add(image);
-
-      this.render();
-    };
   }
 
   getLightGroup() {
@@ -121,14 +113,19 @@ class Start {
       lightGroup.add(lightUnit);
     });
 
-    const ambientLight = new THREE.AmbientLight(0x202020);
-    lightGroup.add(ambientLight);
-
     return lightGroup;
   }
 
+  animate() {
+    if (this.animationRequest) {
+      requestAnimationFrame(this.animate);
+    }
+
+    this.story.update();
+    this.render();
+  }
+
   render() {
-    requestAnimationFrame(this.render);
     this.renderer.render(this.scene, this.camera);
   }
 }

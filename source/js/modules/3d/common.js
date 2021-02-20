@@ -10,6 +10,9 @@ export const getMaterial = (options = {}) =>{
 };
 
 export const setMeshParams = (mesh, params) => {
+  if (!mesh) {
+    return;
+  }
   if (params.position) {
     mesh.position.set(...Object.values(params.position));
   }
