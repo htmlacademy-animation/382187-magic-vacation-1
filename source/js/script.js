@@ -11,9 +11,11 @@ import FullPageScroll from './modules/full-page-scroll';
 import pageLoaded from './modules/page-loaded.js';
 import rules from './modules/rules.js';
 import letterAnimation from './modules/letter-animation.js';
+import {getSvgObject} from './modules/3d/svg-loader';
 
 // init modules
 mobileHeight();
+getSvgObject();
 slider();
 menu();
 footer();

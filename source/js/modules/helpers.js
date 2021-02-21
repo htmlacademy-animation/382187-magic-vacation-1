@@ -13,6 +13,8 @@ export const makeEaseOut = (func) => {
   };
 };
 
+export const easeOutQuad = (t) => (--t) * t * t + 1;
+
 export const animateEasing = (render, duration, easing) => new Promise((resolve) => {
   let start = Date.now();
   (function loop() {
