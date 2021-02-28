@@ -69304,8 +69304,8 @@ const svgsConfig = {
     position: {x: 15, y: -15, z: 10},
     rotate: {x: -30, y: -30, z: 10},
   },
-  leaf: {
-    name: `leaf-2`,
+  leaf2: {
+    name: `leaf2`,
     scale: {x: 0.8, y: 0.8, z: 0.8},
     finalPosition: {x: 280, y: 110, z: 100},
     position: {x: 20, y: 15, z: 20},
@@ -70615,10 +70615,8 @@ class FourthStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
     const svgObject = await Object(_svg_loader__WEBPACK_IMPORTED_MODULE_1__["getSvgObject"])();
     const flower = svgObject.getObject(`flower`);
 
-    if (flower) {
-      Object(_common__WEBPACK_IMPORTED_MODULE_3__["setMeshParams"])(flower, _config__WEBPACK_IMPORTED_MODULE_2__["fourthStoryConfig"].flower);
-      this.add(flower);
-    }
+    Object(_common__WEBPACK_IMPORTED_MODULE_3__["setMeshParams"])(flower, _config__WEBPACK_IMPORTED_MODULE_2__["fourthStoryConfig"].flower);
+    this.add(flower);
   }
 
   addCarpet() {
@@ -70720,7 +70718,7 @@ class SecondStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
 
   async addLeaf() {
     const svgObject = await Object(_svg_loader__WEBPACK_IMPORTED_MODULE_1__["getSvgObject"])();
-    const leaf1 = svgObject.getObject(`leaf-1`);
+    const leaf1 = svgObject.getObject(`leaf1`);
     Object(_common__WEBPACK_IMPORTED_MODULE_2__["setMeshParams"])(leaf1, _config__WEBPACK_IMPORTED_MODULE_3__["secondStoryConfig"].leaf1);
 
     this.add(leaf1);
@@ -70889,7 +70887,7 @@ const toExtrudeSvgs = [
     materialReflectivity: _common__WEBPACK_IMPORTED_MODULE_2__["reflectivitySettings"].basic
   },
   {
-    name: `leaf-1`,
+    name: `leaf1`,
     src: `img/leaf.svg`,
     height: 117,
     depth: 8,
@@ -70921,7 +70919,16 @@ const toExtrudeSvgs = [
     materialReflectivity: {}
   },
   {
-    name: `leaf-2`,
+    name: `flower`,
+    src: `img/flower.svg`,
+    height: 413,
+    depth: 4,
+    cap: 2,
+    color: _common__WEBPACK_IMPORTED_MODULE_2__["colors"].DarkPurple,
+    materialReflectivity: {}
+  },
+  {
+    name: `leaf2`,
     src: `img/leaf.svg`,
     height: 335.108,
     depth: 3,
@@ -71032,7 +71039,10 @@ class SVGObject {
 
   getObject(name) {
     const svg = this.svgs.getObjectByName(name);
-    return svg;
+    if (svg) {
+      return svg;
+    }
+    return null;
   }
 }
 
