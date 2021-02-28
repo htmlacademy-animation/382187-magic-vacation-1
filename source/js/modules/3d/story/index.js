@@ -336,7 +336,7 @@ export default class Story {
 
       // Анимируем падение
       if (t < SUITCASE_POSITION_ANIMATION_TIME_SEC) {
-        const positionY = tick(params.position.y, params.finalPosition.y, t);
+        const positionY = tick(params.position.y, params.finalPosition.y, 1);
         const position = [params.finalPosition.x, positionY, params.finalPosition.z];
 
         this.suitcase.root.position.set(...position);

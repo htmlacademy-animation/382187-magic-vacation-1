@@ -123,13 +123,14 @@ export const firstStoryConfig = {
       name: `static`,
       type: `gltf`,
       path: `3d/gltf/scene1-static-output-1.gltf`,
+      castShadow: true,
       scale: 0.55,
-      position: {x: -20, y: 0, z: 5},
+      position: {x: 0, y: 0, z: 5},
       rotate: {x: 0, y: -45, z: 0},
     },
   ],
   flower: {
-    position: {x: -170, y: 215, z: 185},
+    position: {x: -130, y: 205, z: 185},
     rotate: {x: 0, y: 45, z: 0},
     scale: {x: 0.5, y: -0.5, z: 0.5}
   },
@@ -226,7 +227,7 @@ export const fourthStoryConfig = {
     },
   ],
   flower: {
-    position: {x: -170, y: 215, z: 185},
+    position: {x: -130, y: 205, z: 185},
     rotate: {x: 0, y: 45, z: 0},
     scale: {x: 0.5, y: -0.5, z: 0.5}
   },
@@ -251,8 +252,8 @@ export const objectsToAdd = {
     receiveShadow: true,
     scale: {x: 0.12, y: 0.125, z: 0.12},
     finalScale: {x: 0.12, y: 0.12, z: 0.12},
-    position: {x: -50, y: 18, z: 130},
-    finalPosition: {x: -50, y: 0, z: 130},
+    position: {x: -50, y: 15, z: 120},
+    finalPosition: {x: -50, y: 0, z: 120},
     rotate: {x: 0, y: -20, z: 0},
   },
   dog: {
