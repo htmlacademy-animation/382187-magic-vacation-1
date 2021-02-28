@@ -30,7 +30,7 @@ export const svgsConfig = {
     rotate: {x: -30, y: -30, z: 10},
   },
   leaf: {
-    name: `leaf`,
+    name: `leaf-2`,
     scale: {x: 0.8, y: 0.8, z: 0.8},
     finalPosition: {x: 280, y: 110, z: 100},
     position: {x: 20, y: 15, z: 20},
