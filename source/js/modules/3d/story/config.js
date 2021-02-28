@@ -249,8 +249,10 @@ export const objectsToAdd = {
     path: `3d/gltf/suitcase.gltf`,
     castShadow: true,
     receiveShadow: true,
-    scale: 0.12,
-    position: {x: -50, y: 5, z: 130},
+    scale: {x: 0.12, y: 0.125, z: 0.12},
+    finalScale: {x: 0.12, y: 0.12, z: 0.12},
+    position: {x: -50, y: 18, z: 130},
+    finalPosition: {x: -50, y: 0, z: 130},
     rotate: {x: 0, y: -20, z: 0},
   },
   dog: {

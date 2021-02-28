@@ -62,7 +62,7 @@ class SecondStory extends THREE.Group {
 
   async addLeaf() {
     const svgObject = await getSvgObject();
-    const leaf1 = svgObject.getObject(`leaf-1`);
+    const leaf1 = svgObject.getObject(`leaf1`);
     setMeshParams(leaf1, secondStoryConfig.leaf1);
 
     this.add(leaf1);

@@ -63,6 +63,7 @@ class FourthStory extends THREE.Group {
   async addFlower() {
     const svgObject = await getSvgObject();
     const flower = svgObject.getObject(`flower`);
+
     setMeshParams(flower, fourthStoryConfig.flower);
     this.add(flower);
   }

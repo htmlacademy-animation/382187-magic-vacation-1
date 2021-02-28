@@ -125,6 +125,11 @@ class Start {
     this.render();
   }
 
+  endAnimation() {
+    window.removeEventListener(`resize`, this.resize);
+    this.animationRequest = null;
+  }
+
   render() {
     this.renderer.render(this.scene, this.camera);
   }

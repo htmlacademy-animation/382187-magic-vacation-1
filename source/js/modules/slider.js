@@ -85,6 +85,8 @@ export default () => {
 
     if (screenName === `top`) {
       start.start();
+    } else {
+      start.endAnimation();
     }
 
     if (screenName === `story`) {

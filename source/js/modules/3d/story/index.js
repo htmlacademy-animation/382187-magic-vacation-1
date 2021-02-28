@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 
-import {tick, animateEasingWithFPS, bezierEasing} from '../../helpers';
+import {tick, easeInOutQuad, animateEasingWithFPS, bezierEasing} from '../../helpers';
 import {bubblesParams, getBubblesConfig, getLightsConfig, getTexturesConfig, objectsToAdd} from './config';
 import {getMaterial, setMeshParams} from '../common';
 import {loadModel} from '../load-object-model';
@@ -16,6 +16,9 @@ const easeInOut = bezierEasing(0.41, 0, 0.54, 1);
 const hueIntensityEasingFn = (timingFraction) => {
   return easeInOut(Math.sin(timingFraction * Math.PI));
 };
+
+const SUITCASE_SQUASH_ANIMATION_TIME_SEC = 1.3;
+const SUITCASE_POSITION_ANIMATION_TIME_SEC = 0.4;
 
 export default class Story {
   constructor() {
@@ -48,6 +51,8 @@ export default class Story {
       }
     };
 
+    this.suitcase = null;
+
     this.materials = [];
     this.bubbles = getBubblesConfig(this.centerCoords, this.ww, this.wh);
     this.lights = getLightsConfig(this.sceneParams);
@@ -55,6 +60,8 @@ export default class Story {
     this.hueIsAnimating = false;
     this.storyIndex = 0;
     this.isInitialised = false;
+
+    this.startTime = -1;
 
     this.animateHueShift = this.animateHueShift.bind(this);
     this.getHueShiftAnimationSettings = this.getHueShiftAnimationSettings.bind(this);
@@ -244,18 +251,26 @@ export default class Story {
   }
 
   addSuitcase() {
-    this.suitcaseGroup = new THREE.Group();
-
     const params = objectsToAdd.suitcase;
     const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
 
     loadModel(params, material, (mesh) => {
+      const outerGroup = new THREE.Group();
+      const fluctuationGroup = new THREE.Group();
+
       mesh.name = params.name;
       mesh.castShadow = params.castShadow;
       mesh.receiveShadow = params.castShadow;
-      setMeshParams(mesh, params);
-      this.suitcaseGroup.add(mesh);
-      this.scene.add(this.suitcaseGroup);
+
+      setMeshParams(fluctuationGroup, {rotate: params.rotate});
+      setMeshParams(outerGroup, {scale: params.scale});
+      setMeshParams(outerGroup, {position: params.position});
+
+      this.suitcase = {root: outerGroup, fluctation: fluctuationGroup, mesh, params: objectsToAdd.suitcase};
+
+      fluctuationGroup.add(mesh);
+      outerGroup.add(fluctuationGroup);
+      this.scene.add(outerGroup);
     });
   }
 
@@ -309,9 +324,40 @@ export default class Story {
     }
   }
 
+  animateSuitcase() {
+    if (this.suitcase) {
+      if (this.startTime < 0) {
+        this.startTime = new THREE.Clock();
+        return;
+      }
+
+      const t = this.startTime.getElapsedTime();
+      const params = this.suitcase.params;
+
+      // Анимируем падение
+      if (t < SUITCASE_POSITION_ANIMATION_TIME_SEC) {
+        const positionY = tick(params.position.y, params.finalPosition.y, t);
+        const position = [params.finalPosition.x, positionY, params.finalPosition.z];
+
+        this.suitcase.root.position.set(...position);
+      // Анимируем сжатие / растяжение
+      } else if (t > SUITCASE_POSITION_ANIMATION_TIME_SEC && t < SUITCASE_SQUASH_ANIMATION_TIME_SEC) {
+        let scaleX;
+        let scaleY;
+        let scaleZ;
+
+        scaleY = tick(params.scale.y, params.finalScale.y, easeInOutQuad(t));
+        scaleX = scaleZ = 0.05 * 1 / (Math.sqrt(scaleY)) - 0.022;
+
+        this.suitcase.root.scale.set(scaleX, scaleY, scaleZ);
+      }
+    }
+  }
+
   animate() {
     requestAnimationFrame(this.animate);
     this.controls.update();
+    this.animateSuitcase();
     this.render();
   }
 

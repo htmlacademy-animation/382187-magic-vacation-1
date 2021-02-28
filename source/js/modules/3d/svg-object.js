@@ -5,7 +5,10 @@ class SVGObject {
 
   getObject(name) {
     const svg = this.svgs.getObjectByName(name);
-    return svg;
+    if (svg) {
+      return svg;
+    }
+    return null;
   }
 }
 
