@@ -32,7 +32,7 @@ const toExtrudeSvgs = [
     materialReflectivity: reflectivitySettings.basic
   },
   {
-    name: `leaf-1`,
+    name: `leaf1`,
     src: `img/leaf.svg`,
     height: 117,
     depth: 8,
@@ -64,7 +64,16 @@ const toExtrudeSvgs = [
     materialReflectivity: {}
   },
   {
-    name: `leaf-2`,
+    name: `flower`,
+    src: `img/flower.svg`,
+    height: 413,
+    depth: 4,
+    cap: 2,
+    color: colors.DarkPurple,
+    materialReflectivity: {}
+  },
+  {
+    name: `leaf2`,
     src: `img/leaf.svg`,
     height: 335.108,
     depth: 3,
