@@ -52,6 +52,7 @@ export default class Story {
     };
 
     this.suitcase = null;
+    this.dog = null;
 
     this.materials = [];
     this.bubbles = getBubblesConfig(this.centerCoords, this.ww, this.wh);
@@ -197,7 +198,10 @@ export default class Story {
     this.canvasElement.width = this.ww;
     this.canvasElement.height = this.wh;
 
-    this.renderer = new THREE.WebGLRenderer({canvas: this.canvasElement});
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvasElement,
+      powerPreference: `high-performance`
+    });
     this.renderer.setClearColor(this.sceneParams.backgroundColor, 1);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.ww, this.wh);
@@ -238,9 +242,11 @@ export default class Story {
     this.addSuitcase();
 
     // Эти объекты добавляются не в самом классе сцены
-    this.sceneGroup.children[0].addObject(objectsToAdd.dog);
-    this.sceneGroup.children[2].addObject(objectsToAdd.compass);
-    this.sceneGroup.children[3].addObject(objectsToAdd.sonya);
+    // this.sceneGroup.children[0].addObject(objectsToAdd.dog);
+    // this.sceneGroup.children[2].addObject(objectsToAdd.compass);
+    // this.sceneGroup.children[3].addObject(objectsToAdd.sonya);
+
+    // this.dog = this.sceneGroup.children[0].children[4].children[0].children[0];
 
     const lightGroup = this.getLightGroup();
     lightGroup.position.z = this.camera.position.z;
@@ -354,10 +360,21 @@ export default class Story {
     }
   }
 
+  animateDog() {
+
+  }
+
   animate() {
     requestAnimationFrame(this.animate);
     this.controls.update();
     this.animateSuitcase();
+
+    // TODO Base logic on index
+    this.sceneGroup.children[0].update();
+    this.sceneGroup.children[1].update();
+    this.sceneGroup.children[2].update();
+    this.sceneGroup.children[3].update();
+
     this.render();
   }
 
