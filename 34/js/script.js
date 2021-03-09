@@ -71157,6 +71157,15 @@ const toExtrudeSvgs = [
     materialReflectivity: _common__WEBPACK_IMPORTED_MODULE_2__["reflectivitySettings"].basic
   },
   {
+    name: `bigLeaf`,
+    src: `img/leaf2.svg`,
+    height: 335.108,
+    depth: 2,
+    cap: 2,
+    color: _common__WEBPACK_IMPORTED_MODULE_2__["colors"].Green,
+    materialReflectivity: _common__WEBPACK_IMPORTED_MODULE_2__["reflectivitySettings"].basic
+  },
+  {
     name: `keyhole`,
     src: `img/keyhole.svg`,
     height: 2000,
