@@ -7,9 +7,6 @@ import Snowman from '../../objects/snowman';
 import Road from '../../objects/road';
 import Wall from '../../objects/wall';
 
-// Значения завышены временно для того, чтобы было возможность затестировать
-const COMPASS_ARROW_ANIMATION_TIME_SEC = 15;
-
 class ThirdStory extends THREE.Group {
   constructor() {
     super();
@@ -39,9 +36,7 @@ class ThirdStory extends THREE.Group {
 
     const t = this.startTime.getElapsedTime();
 
-    if (t < COMPASS_ARROW_ANIMATION_TIME_SEC) {
-      this.animateCompassArrow(t);
-    }
+    this.animateCompassArrow(t);
   }
 
   addWall() {

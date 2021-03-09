@@ -9,9 +9,6 @@ import Carpet from '../../objects/carpet';
 import Saturn from '../../objects/saturn';
 import Wall from '../../objects/wall';
 
-// Временно намерено завышено для возможности тестирования в опубликованной версии
-const SONYA_ANIMATION_SEC = 20;
-
 class FourthStory extends THREE.Group {
   constructor() {
     super();
@@ -42,9 +39,7 @@ class FourthStory extends THREE.Group {
 
     const t = this.startTime.getElapsedTime();
 
-    if (t < SONYA_ANIMATION_SEC) {
-      this.animateSonya(t);
-    }
+    this.animateSonya(t);
   }
 
   addWall() {

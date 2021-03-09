@@ -10,8 +10,7 @@ import Pyramid from '../../objects/pyramid';
 import Lantern from '../../objects/lantern';
 import Wall from '../../objects/wall';
 
-// Временно намерено завышено для возможности тестирования в опубликованной версии
-const LEAVES_ANIMATION_TIME_SEC = 18;
+const LEAVES_ANIMATION_CYCLE_SEC = 8;
 
 class SecondStory extends THREE.Group {
   constructor() {
@@ -43,9 +42,7 @@ class SecondStory extends THREE.Group {
 
     const t = this.startTime.getElapsedTime();
 
-    if (t < LEAVES_ANIMATION_TIME_SEC) {
-      this.animateLeaves(t);
-    }
+    this.animateLeaves(t);
   }
 
   addWall() {
@@ -114,14 +111,15 @@ class SecondStory extends THREE.Group {
       return;
     }
 
-    const amps = [0.022, 0.018];
-    const periods = [7, 6];
+    const amps = [0.0192, 0.019];
+    const periods = [5.1, 5];
 
-    const points = [new THREE.Vector3(5, -70, 0), new THREE.Vector3(20, -150, 0)];
+    const points = [new THREE.Vector3(0, -150, 0), new THREE.Vector3(20, -150, 0)];
     const axis = new THREE.Vector3(0, 0, 1);
+    const decay = Math.floor(t / LEAVES_ANIMATION_CYCLE_SEC * 100) % 100 < 15 ? 1 : easeOutQuad(t % LEAVES_ANIMATION_CYCLE_SEC);
 
     this.leaves.forEach((leaf, index) => {
-      rotateAboutPoint(leaf.mesh, points[index], axis, -amps[index] * Math.sin((9 * Math.PI * t) / periods[index]) / (easeOutQuad(t)));
+      rotateAboutPoint(leaf.mesh, points[index], axis, -amps[index] * Math.sin((9 * Math.PI * t) / periods[index]) / decay);
     });
   }
 }

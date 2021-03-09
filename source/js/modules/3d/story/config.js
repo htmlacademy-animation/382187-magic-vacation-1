@@ -172,7 +172,7 @@ export const secondStoryConfig = {
   },
   smallLeaf: {
     scale: {x: 0.80, y: 0.80, z: 0.80},
-    position: {x: -125, y: 80, z: 180},
+    position: {x: -125, y: 85, z: 180},
     rotate: {x: -15, y: 45, z: 15},
   },
   pyramid: {

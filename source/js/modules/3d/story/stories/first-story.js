@@ -9,8 +9,7 @@ import Carpet from '../../objects/carpet';
 import Saturn from '../../objects/saturn';
 import Wall from '../../objects/wall';
 
-const DOG_TAIL_ANIMATION_TIME_SEC = 3;
-const SATURN_ANIMATION_TIME_SEC = 5;
+const DOG_TAIL_ANIMATION_CYCLE_SEC = 4;
 
 class FirstStory extends THREE.Group {
   constructor() {
@@ -43,13 +42,8 @@ class FirstStory extends THREE.Group {
 
     const t = this.startTime.getElapsedTime();
 
-    if (t < DOG_TAIL_ANIMATION_TIME_SEC) {
-      this.animateDogTail(t);
-    }
-
-    if (t < SATURN_ANIMATION_TIME_SEC) {
-      this.animateSaturn(t);
-    }
+    this.animateDogTail(t);
+    this.animateSaturn(t);
   }
 
   addWall() {
@@ -133,10 +127,10 @@ class FirstStory extends THREE.Group {
       return;
     }
 
-    const progress = Math.floor(t / DOG_TAIL_ANIMATION_TIME_SEC * 100);
+    const progress = Math.floor(t / DOG_TAIL_ANIMATION_CYCLE_SEC * 100) % 100;
 
-    const amp = progress > 30 && progress < 50 ? 0.6 : 0.8;
-    const period = progress > 40 && progress < 90 ? 2 : 3;
+    const amp = progress > 30 && progress < 50 ? 0.5 : 0.8;
+    const period = progress > 40 && progress < 80 ? 2 : 3;
 
     this.dogTail.rotation.x = amp * Math.sin((10 * Math.PI * t) / period);
   }
