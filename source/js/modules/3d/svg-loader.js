@@ -50,6 +50,15 @@ const toExtrudeSvgs = [
     materialReflectivity: reflectivitySettings.basic
   },
   {
+    name: `bigLeaf`,
+    src: `img/leaf2.svg`,
+    height: 335.108,
+    depth: 2,
+    cap: 2,
+    color: colors.Green,
+    materialReflectivity: reflectivitySettings.basic
+  },
+  {
     name: `keyhole`,
     src: `img/keyhole.svg`,
     height: 2000,
