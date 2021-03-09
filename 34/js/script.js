@@ -69945,7 +69945,7 @@ const secondStoryConfig = {
   },
   smallLeaf: {
     scale: {x: 0.80, y: 0.80, z: 0.80},
-    position: {x: -125, y: 80, z: 180},
+    position: {x: -125, y: 85, z: 180},
     rotate: {x: -15, y: 45, z: 15},
   },
   pyramid: {
@@ -70506,8 +70506,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const DOG_TAIL_ANIMATION_TIME_SEC = 3;
-const SATURN_ANIMATION_TIME_SEC = 5;
+const DOG_TAIL_ANIMATION_CYCLE_SEC = 4;
 
 class FirstStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
   constructor() {
@@ -70540,13 +70539,8 @@ class FirstStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
 
     const t = this.startTime.getElapsedTime();
 
-    if (t < DOG_TAIL_ANIMATION_TIME_SEC) {
-      this.animateDogTail(t);
-    }
-
-    if (t < SATURN_ANIMATION_TIME_SEC) {
-      this.animateSaturn(t);
-    }
+    this.animateDogTail(t);
+    this.animateSaturn(t);
   }
 
   addWall() {
@@ -70630,10 +70624,10 @@ class FirstStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
       return;
     }
 
-    const progress = Math.floor(t / DOG_TAIL_ANIMATION_TIME_SEC * 100);
+    const progress = Math.floor(t / DOG_TAIL_ANIMATION_CYCLE_SEC * 100) % 100;
 
-    const amp = progress > 30 && progress < 50 ? 0.6 : 0.8;
-    const period = progress > 40 && progress < 90 ? 2 : 3;
+    const amp = progress > 30 && progress < 50 ? 0.5 : 0.8;
+    const period = progress > 40 && progress < 80 ? 2 : 3;
 
     this.dogTail.rotation.x = amp * Math.sin((10 * Math.PI * t) / period);
   }
@@ -70687,9 +70681,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// Временно намерено завышено для возможности тестирования в опубликованной версии
-const SONYA_ANIMATION_SEC = 20;
-
 class FourthStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
   constructor() {
     super();
@@ -70720,9 +70711,7 @@ class FourthStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
 
     const t = this.startTime.getElapsedTime();
 
-    if (t < SONYA_ANIMATION_SEC) {
-      this.animateSonya(t);
-    }
+    this.animateSonya(t);
   }
 
   addWall() {
@@ -70844,8 +70833,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// Временно намерено завышено для возможности тестирования в опубликованной версии
-const LEAVES_ANIMATION_TIME_SEC = 18;
+const LEAVES_ANIMATION_CYCLE_SEC = 8;
 
 class SecondStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
   constructor() {
@@ -70877,9 +70865,7 @@ class SecondStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
 
     const t = this.startTime.getElapsedTime();
 
-    if (t < LEAVES_ANIMATION_TIME_SEC) {
-      this.animateLeaves(t);
-    }
+    this.animateLeaves(t);
   }
 
   addWall() {
@@ -70948,14 +70934,15 @@ class SecondStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
       return;
     }
 
-    const amps = [0.022, 0.018];
-    const periods = [7, 6];
+    const amps = [0.0192, 0.019];
+    const periods = [5.1, 5];
 
-    const points = [new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](5, -70, 0), new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](20, -150, 0)];
+    const points = [new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](0, -150, 0), new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](20, -150, 0)];
     const axis = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](0, 0, 1);
+    const decay = Math.floor(t / LEAVES_ANIMATION_CYCLE_SEC * 100) % 100 < 15 ? 1 : Object(_helpers__WEBPACK_IMPORTED_MODULE_5__["easeOutQuad"])(t % LEAVES_ANIMATION_CYCLE_SEC);
 
     this.leaves.forEach((leaf, index) => {
-      Object(_common__WEBPACK_IMPORTED_MODULE_2__["rotateAboutPoint"])(leaf.mesh, points[index], axis, -amps[index] * Math.sin((9 * Math.PI * t) / periods[index]) / (Object(_helpers__WEBPACK_IMPORTED_MODULE_5__["easeOutQuad"])(t)));
+      Object(_common__WEBPACK_IMPORTED_MODULE_2__["rotateAboutPoint"])(leaf.mesh, points[index], axis, -amps[index] * Math.sin((9 * Math.PI * t) / periods[index]) / decay);
     });
   }
 }
@@ -70990,9 +70977,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// Значения завышены временно для того, чтобы было возможность затестировать
-const COMPASS_ARROW_ANIMATION_TIME_SEC = 15;
-
 class ThirdStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
   constructor() {
     super();
@@ -71022,9 +71006,7 @@ class ThirdStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
 
     const t = this.startTime.getElapsedTime();
 
-    if (t < COMPASS_ARROW_ANIMATION_TIME_SEC) {
-      this.animateCompassArrow(t);
-    }
+    this.animateCompassArrow(t);
   }
 
   addWall() {
