@@ -79,7 +79,10 @@ class Start {
     this.canvasElement.width = this.ww;
     this.canvasElement.height = this.wh;
 
-    this.renderer = new THREE.WebGLRenderer({canvas: this.canvasElement});
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: this.canvasElement,
+      powerPreference: `high-performance`
+    });
     this.renderer.setClearColor(this.sceneParams.backgroundColor, 1);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.ww, this.wh);

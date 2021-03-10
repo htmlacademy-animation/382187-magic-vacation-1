@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import {getSvgObject} from '../../svg-loader';
-import {fourthStoryConfig} from '../config';
+import {fourthStoryConfig, objectsToAdd} from '../config';
 import {setMeshParams, getMaterial, reflectivitySettings, colors} from '../../common';
 import {loadModel} from '../../load-object-model';
 
@@ -14,6 +14,9 @@ class FourthStory extends THREE.Group {
     super();
 
     this.models = fourthStoryConfig.models;
+    this.sonya = null;
+
+    this.startTime = -1;
 
     this.constructChildren = this.constructChildren.bind(this);
     this.constructChildren();
@@ -25,6 +28,18 @@ class FourthStory extends THREE.Group {
     this.addFlower();
     this.addCarpet();
     this.addSaturn();
+    this.addSonya();
+  }
+
+  update() {
+    if (this.startTime < 0) {
+      this.startTime = new THREE.Clock();
+      return;
+    }
+
+    const t = this.startTime.getElapsedTime();
+
+    this.animateSonya(t);
   }
 
   addWall() {
@@ -36,22 +51,9 @@ class FourthStory extends THREE.Group {
     this.add(wall);
   }
 
-  addObject(params) {
-    const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
-
-    loadModel(params, material, (mesh) => {
-      mesh.name = params.name;
-      mesh.castShadow = params.castShadow;
-      mesh.receiveShadow = params.castShadow;
-      setMeshParams(mesh, params);
-      this.add(mesh);
-    });
-  }
-
   loadModels() {
     this.models.forEach((params) => {
       const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
-
       loadModel(params, material, (mesh) => {
         mesh.name = params.name;
         setMeshParams(mesh, params);
@@ -78,6 +80,49 @@ class FourthStory extends THREE.Group {
     const saturn = new Saturn({isDarkTheme: true, basic: false});
     setMeshParams(saturn, fourthStoryConfig.saturn);
     this.add(saturn);
+  }
+
+  addSonya() {
+    const params = objectsToAdd.sonya;
+    const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
+
+    loadModel(params, material, (mesh) => {
+      mesh.name = params.name;
+      const outerGroup = new THREE.Group();
+      const fluctuationGroup = new THREE.Group();
+
+      setMeshParams(fluctuationGroup, {scale: params.scale});
+      setMeshParams(fluctuationGroup, {rotate: params.rotate});
+      setMeshParams(outerGroup, {position: params.position});
+
+      this.sonya = {
+        body: {root: outerGroup, fluctuation: fluctuationGroup, mesh, params},
+        hands: {
+          right: mesh.children[0].children[0].children[1],
+          left: mesh.children[0].children[0].children[2],
+        }
+      };
+
+      fluctuationGroup.add(mesh);
+      outerGroup.add(fluctuationGroup);
+      this.add(outerGroup);
+    });
+  }
+
+  animateSonya(t) {
+    if (!this.sonya) {
+      return;
+    }
+
+    const meshAmp = 7;
+    const meshPeriod = 2;
+
+    const handsAmp = 0.2;
+    const handsPeriod = 4;
+
+    this.sonya.body.fluctuation.position.y = meshAmp * Math.sin((Math.PI * t) / meshPeriod);
+    this.sonya.hands.left.rotation.y = handsAmp * Math.sin((Math.PI * t) / -handsPeriod) + 0.9;
+    this.sonya.hands.right.rotation.y = handsAmp * Math.sin((Math.PI * t) / handsPeriod) - 0.9;
   }
 }
 

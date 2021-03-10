@@ -32,10 +32,28 @@ const toExtrudeSvgs = [
     materialReflectivity: reflectivitySettings.basic
   },
   {
-    name: `leaf1`,
+    name: `smallLeaf`,
     src: `img/leaf.svg`,
     height: 117,
     depth: 8,
+    cap: 2,
+    color: colors.Green,
+    materialReflectivity: reflectivitySettings.basic
+  },
+  {
+    name: `bigLeaf`,
+    src: `img/leaf2.svg`,
+    height: 335.108,
+    depth: 2,
+    cap: 2,
+    color: colors.Green,
+    materialReflectivity: reflectivitySettings.basic
+  },
+  {
+    name: `bigLeaf`,
+    src: `img/leaf2.svg`,
+    height: 335.108,
+    depth: 2,
     cap: 2,
     color: colors.Green,
     materialReflectivity: reflectivitySettings.basic
@@ -71,15 +89,6 @@ const toExtrudeSvgs = [
     cap: 2,
     color: colors.DarkPurple,
     materialReflectivity: {}
-  },
-  {
-    name: `leaf2`,
-    src: `img/leaf.svg`,
-    height: 335.108,
-    depth: 3,
-    cap: 3,
-    color: colors.Green,
-    materialReflectivity: reflectivitySettings.basic
   },
 ];
 

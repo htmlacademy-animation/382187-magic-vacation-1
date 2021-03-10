@@ -123,13 +123,14 @@ export const firstStoryConfig = {
       name: `static`,
       type: `gltf`,
       path: `3d/gltf/scene1-static-output-1.gltf`,
+      castShadow: true,
       scale: 0.55,
-      position: {x: -20, y: 0, z: 5},
+      position: {x: 0, y: 0, z: 5},
       rotate: {x: 0, y: -45, z: 0},
     },
   ],
   flower: {
-    position: {x: -170, y: 215, z: 185},
+    position: {x: -130, y: 205, z: 185},
     rotate: {x: 0, y: 45, z: 0},
     scale: {x: 0.5, y: -0.5, z: 0.5}
   },
@@ -164,10 +165,15 @@ export const secondStoryConfig = {
       rotate: {x: 0, y: -20, z: 0},
     },
   ],
-  leaf1: {
-    scale: {x: 0.85, y: -0.85, z: 0.85},
-    position: {x: -120, y: 100, z: 180},
-    rotate: {x: 0, y: 30, z: 0}
+  bigLeaf: {
+    scale: {x: 1.2, y: 1.2, z: 1.2},
+    position: {x: -90, y: 140, z: 190},
+    rotate: {x: 0, y: 45, z: 0},
+  },
+  smallLeaf: {
+    scale: {x: 0.80, y: 0.80, z: 0.80},
+    position: {x: -125, y: 85, z: 180},
+    rotate: {x: -15, y: 45, z: 15},
   },
   pyramid: {
     scale: 0.55,
@@ -226,7 +232,7 @@ export const fourthStoryConfig = {
     },
   ],
   flower: {
-    position: {x: -170, y: 215, z: 185},
+    position: {x: -130, y: 205, z: 185},
     rotate: {x: 0, y: 45, z: 0},
     scale: {x: 0.5, y: -0.5, z: 0.5}
   },
@@ -251,22 +257,22 @@ export const objectsToAdd = {
     receiveShadow: true,
     scale: {x: 0.12, y: 0.125, z: 0.12},
     finalScale: {x: 0.12, y: 0.12, z: 0.12},
-    position: {x: -50, y: 18, z: 130},
-    finalPosition: {x: -50, y: 0, z: 130},
+    position: {x: -50, y: 15, z: 120},
+    finalPosition: {x: -50, y: 0, z: 120},
     rotate: {x: 0, y: -20, z: 0},
   },
   dog: {
-    name: `static`,
+    name: `dog`,
     type: `gltf`,
     path: `3d/gltf/dog.gltf`,
     castShadow: true,
     receiveShadow: true,
-    scale: 0.55,
+    scale: {x: 0.55, y: 0.55, z: 0.55},
     position: {x: 40, y: 0, z: 380},
     rotate: {x: 0, y: 15, z: 0},
   },
   compass: {
-    name: `static`,
+    name: `compass`,
     type: `gltf`,
     path: `3d/gltf/compass.gltf`,
     castShadow: true,
@@ -276,13 +282,13 @@ export const objectsToAdd = {
     rotate: {x: 0, y: -45, z: 0},
   },
   sonya: {
-    name: `static`,
+    name: `sonya`,
     type: `gltf`,
     path: `3d/gltf/sonya.gltf`,
     castShadow: true,
     receiveShadow: true,
     scale: 0.55,
-    position: {x: 40, y: 40, z: 300},
+    position: {x: 40, y: 50, z: 300},
     rotate: {x: 0, y: -45, z: 0},
   }
 };

@@ -29,8 +29,8 @@ export const svgsConfig = {
     position: {x: 15, y: -15, z: 10},
     rotate: {x: -30, y: -30, z: 10},
   },
-  leaf2: {
-    name: `leaf2`,
+  bigLeaf: {
+    name: `bigLeaf`,
     scale: {x: 0.8, y: 0.8, z: 0.8},
     finalPosition: {x: 280, y: 110, z: 100},
     position: {x: 20, y: 15, z: 20},

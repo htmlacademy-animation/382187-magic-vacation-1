@@ -24,7 +24,11 @@ class Wall extends THREE.Group {
   }
 
   addWall() {
-    const material = getMaterial({color: this.wall.color, ...this.wall.materialReflectivity});
+    const material = getMaterial({
+      side: THREE.DoubleSide,
+      color: this.wall.color,
+      ...this.wall.materialReflectivity
+    });
 
     loadModel(this.wall, material, (mesh) => {
       mesh.name = this.wall.name;
@@ -40,6 +44,7 @@ class Wall extends THREE.Group {
     const geometry = new THREE.CircleGeometry(this.floor.radius, this.floor.segments, start, length);
     const mesh = new THREE.Mesh(geometry, getMaterial({
       color: this.floor.color,
+      side: THREE.DoubleSide,
       ...this.floor.materialReflectivity,
     }));
     mesh.castShadow = this.floor.castShadow;
