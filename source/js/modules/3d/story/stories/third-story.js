@@ -4,6 +4,7 @@ import {setMeshParams, getMaterial, reflectivitySettings, colors} from '../../co
 import {loadModel} from '../../load-object-model';
 
 import Snowman from '../../objects/snowman';
+import Fencing from '../../objects/fencing';
 import Road from '../../objects/road';
 import Wall from '../../objects/wall';
 
@@ -24,6 +25,7 @@ class ThirdStory extends THREE.Group {
     this.addWall();
     this.loadModels();
     this.addSnowman();
+    this.addFencing();
     this.addRoad();
     this.addCompass();
   }
@@ -53,7 +55,6 @@ class ThirdStory extends THREE.Group {
       const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
 
       loadModel(params, material, (mesh) => {
-        mesh.name = params.name;
         setMeshParams(mesh, params);
         this.add(mesh);
       });
@@ -63,14 +64,18 @@ class ThirdStory extends THREE.Group {
   addSnowman() {
     const snowman = new Snowman();
     setMeshParams(snowman, thirdStoryConfig.snowman);
-
     this.add(snowman);
+  }
+
+  addFencing() {
+    const fencing = new Fencing();
+    setMeshParams(fencing, thirdStoryConfig.fencing);
+    this.add(fencing);
   }
 
   addRoad() {
     const road = new Road();
     setMeshParams(road, thirdStoryConfig.road);
-
     this.add(road);
   }
 
@@ -79,7 +84,6 @@ class ThirdStory extends THREE.Group {
     const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
 
     loadModel(params, material, (mesh) => {
-      mesh.name = params.name;
       this.compassArrow = mesh.children[0].children[0];
       setMeshParams(mesh, params);
       this.add(mesh);

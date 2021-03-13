@@ -13,22 +13,32 @@ export const setMeshParams = (mesh, params) => {
   if (!mesh) {
     return;
   }
-  if (params.position) {
-    mesh.position.set(...Object.values(params.position));
+  const {name, position, scale, rotate, rotationOrder, castShadow, receiveShadow} = params;
+  if (name) {
+    mesh.name = name;
   }
-  if (typeof params.scale === `number`) {
-    mesh.scale.set(params.scale, params.scale, params.scale);
+  if (position) {
+    mesh.position.set(...Object.values(position));
   }
-  if (typeof params.scale === `object`) {
-    mesh.scale.set(...Object.values(params.scale));
+  if (typeof scale === `number`) {
+    mesh.scale.set(scale, scale, scale);
   }
-  if (params.rotate) {
+  if (typeof scale === `object`) {
+    mesh.scale.set(...Object.values(scale));
+  }
+  if (rotate) {
     mesh.rotation.copy(new THREE.Euler(
-        params.rotate.x * THREE.Math.DEG2RAD,
-        params.rotate.y * THREE.Math.DEG2RAD,
-        params.rotate.z * THREE.Math.DEG2RAD,
-        params.rotationOrder || `XYZ`)
+        rotate.x * THREE.Math.DEG2RAD,
+        rotate.y * THREE.Math.DEG2RAD,
+        rotate.z * THREE.Math.DEG2RAD,
+        rotationOrder || `XYZ`)
     );
+  }
+  if (castShadow) {
+    mesh.castShadow = castShadow;
+  }
+  if (receiveShadow) {
+    mesh.receiveShadow = receiveShadow;
   }
 };
 
@@ -49,6 +59,12 @@ export const getLatheDegrees = (degStart, degEnd) => {
   const length = THREE.Math.DEG2RAD * (degEnd - degStart);
 
   return {start, length};
+};
+
+export const getAngleCoords = (cx, cy, radius, angle) => {
+  const x = cx + radius * Math.cos(angle);
+  const y = cy + radius * Math.sin(angle);
+  return {x, y};
 };
 
 export const rotateAboutPoint = (obj, point, axis, theta, pointIsWorld) => {

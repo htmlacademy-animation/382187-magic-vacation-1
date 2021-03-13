@@ -1,7 +1,7 @@
 import {getSquareRadius} from '../../helpers';
 import {colors, reflectivitySettings} from '../common';
 
-export const getWallConfig = (wallMaterialReflectivity, wallColor, floorColor, receiveShadow = false, castShadow = false) => ({
+export const getWallConfig = (wallMaterialReflectivity, wallColor, floorColor, receiveShadow = true, castShadow = false) => ({
   wall: {
     name: `wall`,
     type: `obj`,
@@ -11,7 +11,7 @@ export const getWallConfig = (wallMaterialReflectivity, wallColor, floorColor, r
     receiveShadow,
     castShadow,
     scale: 0.6,
-    position: {x: 0, y: 0, z: 1},
+    position: {x: 0, y: 0, z: 0},
     rotate: {x: 0, y: -45, z: 0},
   },
   floor: {
@@ -24,7 +24,7 @@ export const getWallConfig = (wallMaterialReflectivity, wallColor, floorColor, r
     scale: 0.6,
     receiveShadow,
     castShadow,
-    position: {x: 0, y: 0, z: 1},
+    position: {x: 0, y: 0, z: 0},
     rotate: {x: -90, y: -135, z: 0},
     rotationOrder: `YXZ`,
   }
@@ -154,5 +154,22 @@ export const snowmanConfig = {
     segments: 20,
     color: colors.SnowColor,
     ...reflectivitySettings.strong
+  },
+};
+
+export const fencingConfig = {
+  name: 'fencing',
+  cylinder: {
+    height: 100,
+    radius: 16,
+    radialSegments: 20,
+    color: colors.Grey,
+  },
+  settings: {
+    count: 5,
+    radius: 670,
+    degStart: 0,
+    degEnd: 80,
+    offset: 15,
   },
 };

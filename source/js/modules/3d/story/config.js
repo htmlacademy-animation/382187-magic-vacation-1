@@ -49,38 +49,26 @@ export const getLightsConfig = (sceneParams) => ([
   {
     id: `DirectionalLight1`,
     type: `DirectionalLight`,
-    color: `rgb(255,255,255)`,
-    intensity: 0.84,
     light: new THREE.DirectionalLight(new THREE.Color(colors.White), 0.84),
     position: {x: 0, y: sceneParams.position.z * Math.tan(-15 * THREE.Math.DEG2RAD), z: sceneParams.position.z},
   },
   {
     id: `DirectionalLight2`,
     type: `DirectionalLight`,
-    color: `rgb(255,255,255)`,
-    intensity: 0.7,
     light: new THREE.DirectionalLight(new THREE.Color(colors.White), 0.7),
     position: {x: 0, y: 500, z: 0},
   },
   {
     id: `PointLight1`,
     type: `PointLight`,
-    color: `rgb(246,242,255)`,
-    intensity: 0.80,
-    decay: 2.0,
-    distance: 975,
-    light: new THREE.PointLight(new THREE.Color(`rgb(246,242,255)`), 0.8, 975, 2.0),
+    light: new THREE.PointLight(new THREE.Color(`rgb(246,242,255)`), 0.6, 975, 2.0),
     position: {x: -785, y: -250, z: 710},
   },
   {
     id: `PointLight2`,
     type: `PointLight`,
-    color: `rgb(245,254,255)`,
-    intensity: 0.95,
-    decay: 2.0,
-    distance: 975,
     light: new THREE.PointLight(new THREE.Color(`rgb(245,254,255)`), 0.95, 975, 2.0),
-    position: {x: 730, y: 800, z: 985},
+    position: {x: 730, y: 300, z: 150},
   },
 ]);
 
@@ -123,26 +111,31 @@ export const firstStoryConfig = {
       name: `static`,
       type: `gltf`,
       path: `3d/gltf/scene1-static-output-1.gltf`,
-      castShadow: true,
       scale: 0.55,
       position: {x: 0, y: 0, z: 5},
       rotate: {x: 0, y: -45, z: 0},
+      castShadow: true,
+      receiveShadow: true,
     },
   ],
   flower: {
     position: {x: -130, y: 205, z: 185},
     rotate: {x: 0, y: 45, z: 0},
-    scale: {x: 0.5, y: -0.5, z: 0.5}
+    scale: {x: 0.5, y: -0.5, z: 0.5},
+    castShadow: true,
+    receiveShadow: true,
   },
   carpet: {
     scale: 0.6,
     position: {x: 0, y: 2, z: 0},
-    rotate: {x: 0, y: 45, z: 180}
+    rotate: {x: 0, y: 45, z: 180},
   },
   saturn: {
     scale: 0.6,
     position: {x: 50, y: 300, z: 250},
-    rotate: {x: -15, y: 0, z: 0}
+    rotate: {x: -15, y: 0, z: 0},
+    castShadow: true,
+    receiveShadow: true,
   }
 };
 
@@ -155,6 +148,8 @@ export const secondStoryConfig = {
       scale: 0.55,
       position: {x: 0, y: 0, z: 5},
       rotate: {x: 0, y: -45, z: 0},
+      castShadow: true,
+      receiveShadow: true,
     },
     {
       name: `suitcase`,
@@ -163,27 +158,37 @@ export const secondStoryConfig = {
       scale: 0.5,
       position: {x: -180, y: 5, z: 460},
       rotate: {x: 0, y: -20, z: 0},
+      castShadow: true,
+      receiveShadow: true,
     },
   ],
   bigLeaf: {
     scale: {x: 1.2, y: 1.2, z: 1.2},
     position: {x: -90, y: 140, z: 190},
     rotate: {x: 0, y: 45, z: 0},
+    castShadow: true,
+    receiveShadow: true,
   },
   smallLeaf: {
     scale: {x: 0.80, y: 0.80, z: 0.80},
     position: {x: -125, y: 85, z: 180},
     rotate: {x: -15, y: 45, z: 15},
+    castShadow: true,
+    receiveShadow: true,
   },
   pyramid: {
     scale: 0.55,
     position: {x: 10, y: 80, z: 190},
-    rotate: {x: 0, y: 0, z: 0}
+    rotate: {x: 0, y: 0, z: 0},
+    castShadow: true,
+    receiveShadow: true,
   },
   lantern: {
     scale: 0.5,
     position: {x: 230, y: 40, z: 350},
-    rotate: {x: 0, y: 45, z: 0}
+    rotate: {x: 0, y: 45, z: 0},
+    castShadow: true,
+    receiveShadow: true,
   },
 };
 
@@ -194,14 +199,25 @@ export const thirdStoryConfig = {
       type: `gltf`,
       path: `3d/gltf/scene3-static-output-1.gltf`,
       scale: 0.55,
-      position: {x: 0, y: 0, z: 5},
+      position: {x: 0, y: 1, z: 5},
       rotate: {x: 0, y: -45, z: 0},
+      castShadow: true,
+      receiveShadow: true,
     },
   ],
   snowman: {
     scale: 0.65,
     position: {x: -70, y: 70, z: 250},
-    rotate: {x: 10, y: 40, z: 0}
+    rotate: {x: 10, y: 40, z: 0},
+    castShadow: true,
+    receiveShadow: true,
+  },
+  fencing: {
+    scale: 0.55,
+    position: {x: 0, y: 56, z: 50},
+    rotate: {x: 0, y: -45, z: 0},
+    castShadow: true,
+    receiveShadow: true,
   },
   road: {
     scale: 0.6,
