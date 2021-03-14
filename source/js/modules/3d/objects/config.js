@@ -10,7 +10,7 @@ export const getWallConfig = (wallMaterialReflectivity, wallColor, floorColor, r
     color: wallColor,
     receiveShadow,
     castShadow,
-    scale: 0.6,
+    scale: 1,
     position: {x: 0, y: 0, z: 0},
     rotate: {x: 0, y: -45, z: 0},
   },
@@ -21,7 +21,7 @@ export const getWallConfig = (wallMaterialReflectivity, wallColor, floorColor, r
     segments: 8,
     start: 0,
     end: 90,
-    scale: 0.6,
+    scale: 1,
     receiveShadow,
     castShadow,
     position: {x: 0, y: 0, z: 0},
@@ -109,6 +109,7 @@ export const lanternConfig = {
     radius: 7,
     radialSegments: 20,
     color: `#376ee0`,
+    castShadow: true,
     ...reflectivitySettings.soft
   },
   baseSphere: {
@@ -158,7 +159,7 @@ export const snowmanConfig = {
 };
 
 export const fencingConfig = {
-  name: 'fencing',
+  name: `fencing`,
   cylinder: {
     height: 100,
     radius: 16,

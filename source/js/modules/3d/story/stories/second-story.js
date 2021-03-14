@@ -59,7 +59,6 @@ class SecondStory extends THREE.Group {
       const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
 
       loadModel(params, material, (mesh) => {
-        mesh.name = params.name;
         setMeshParams(mesh, params);
         this.add(mesh);
       });
@@ -112,7 +111,7 @@ class SecondStory extends THREE.Group {
     }
 
     const amps = [0.0192, 0.019];
-    const periods = [5.1, 5];
+    const periods = [5.05, 5];
 
     const points = [new THREE.Vector3(0, -150, 0), new THREE.Vector3(20, -150, 0)];
     const axis = new THREE.Vector3(0, 0, 1);

@@ -2,8 +2,8 @@ import * as THREE from 'three';
 
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 
-import {tick, easeInOutQuad, animateEasingWithFPS, bezierEasing} from '../../helpers';
-import {bubblesParams, getBubblesConfig, getLightsConfig, getTexturesConfig, objectsToAdd} from './config';
+import {tick, easeInOutQuad} from '../../helpers';
+import {getBubblesConfig, getLightsConfig, getTexturesConfig, objectsToAdd} from './config';
 import {getMaterial, setMeshParams} from '../common';
 import {loadModel} from '../load-object-model';
 
@@ -12,13 +12,8 @@ import SecondStory from './stories/second-story';
 import ThirdStory from './stories/third-story';
 import FourthStory from './stories/fourth-story';
 
-const easeInOut = bezierEasing(0.41, 0, 0.54, 1);
-const hueIntensityEasingFn = (timingFraction) => {
-  return easeInOut(Math.sin(timingFraction * Math.PI));
-};
-
-const SUITCASE_SQUASH_ANIMATION_TIME_SEC = 1.3;
-const SUITCASE_POSITION_ANIMATION_TIME_SEC = 0.4;
+const SUITCASE_SQUASH_ANIMATION_TIME_SEC = 1.1;
+const SUITCASE_POSITION_ANIMATION_TIME_SEC = 0.3;
 
 export default class Story {
   constructor() {
@@ -39,14 +34,14 @@ export default class Story {
       fov: this.fov,
       aspect: this.ww / this.wh,
       near: 0.1,
-      far: 1405,
+      far: 2550,
       textureRatio: 2048 / 1024,
       backgroundColor: 0x5f458c,
       position: {
-        z: 1405
+        z: 2550
       },
       camera: {
-        position: {y: 120, z: 300},
+        position: {y: 800, z: 1950},
         rotation: {y: -15},
       }
     };
@@ -64,13 +59,8 @@ export default class Story {
 
     this.startTime = -1;
 
-    this.animateHueShift = this.animateHueShift.bind(this);
-    this.getHueShiftAnimationSettings = this.getHueShiftAnimationSettings.bind(this);
     this.render = this.render.bind(this);
     this.resize = this.resize.bind(this);
-    this.resetHueShift = this.resetHueShift.bind(this);
-    this.resetBubbles = this.resetBubbles.bind(this);
-    this.animateBubbles = this.animateBubbles.bind(this);
     this.animate = this.animate.bind(this);
   }
 
@@ -103,54 +93,6 @@ export default class Story {
     this.camera.aspect = this.ww / this.wh;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.ww, this.wh);
-
-    // const distortedIndex = this.textures.findIndex((texture) => texture.options.distort);
-
-    // const {width} = this.sceneSize;
-    // const pixelRatio = this.renderer.getPixelRatio();
-
-    // this.materials[distortedIndex].uniforms.distortion.value.resolution = [
-    //   width * pixelRatio, width / this.sceneParams.textureRatio * pixelRatio
-    // ];
-  }
-
-  getHueShiftAnimationSettings(index) {
-    const texture = this.textures[index];
-    return texture.animations && texture.animations.hue;
-  }
-
-  resetHueShift() {
-    const hueAnimationSettings = this.getHueShiftAnimationSettings(this.storyIndex);
-    if (!hueAnimationSettings) {
-      return;
-    }
-
-    this.textures[this.storyIndex].options.hueShift = hueAnimationSettings.initial;
-  }
-
-  resetBubbles() {
-    this.bubbles.forEach((_, index) => {
-      this.bubbles[index].position = [...this.bubbles[index].initialPosition];
-    });
-    this.materials[1].uniforms.time.value = 0;
-  }
-
-  addBubble(index) {
-    const {width} = this.sceneSize;
-    const pixelRatio = this.renderer.getPixelRatio();
-
-    if (this.textures[index].options.distort) {
-      return {
-        distortion: {
-          value: {
-            bubbles: this.bubbles,
-            resolution: [width * pixelRatio, width / this.sceneParams.textureRatio * pixelRatio],
-          }
-        },
-      };
-    }
-
-    return {};
   }
 
   getLightGroup() {
@@ -163,17 +105,16 @@ export default class Story {
         lightUnit.shadow.mapSize.width = this.ww;
         lightUnit.shadow.mapSize.height = this.wh;
         lightUnit.shadow.camera.near = this.camera.near;
-        lightUnit.shadow.camera.far = this.camera.fov;
+        lightUnit.shadow.camera.far = this.camera.far;
       }
       lightUnit.position.set(...Object.values(light.position));
       lightGroup.add(lightUnit);
     });
 
     const ambientLight1 = new THREE.AmbientLight(0x404040);
-    const ambientLight2 = new THREE.AmbientLight(0x303030);
+
 
     lightGroup.add(ambientLight1);
-    lightGroup.add(ambientLight2);
 
     return lightGroup;
   }
@@ -181,7 +122,6 @@ export default class Story {
   setCamera() {
     this.camera.position.z = this.sceneParams.camera.position.z;
     this.camera.position.y = this.sceneParams.camera.position.y;
-    this.camera.rotation.copy(new THREE.Euler(this.sceneParams.position.z * Math.tan(-15 * THREE.Math.DEG2RAD)), 0, 0, `XYZ`);
   }
 
   start() {
@@ -212,10 +152,11 @@ export default class Story {
     this.setCamera();
 
     this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    this.controls.enableZoom = true;
+    this.controls.enableZoom = false;
     this.controls.minPolarAngle = Math.PI * 1 / 4;
-    this.controls.maxPolarAngle = Math.PI * 3 / 4;
+    this.controls.maxPolarAngle = Math.PI * 2 / 5;
     this.controls.update();
 
     this.scene = new THREE.Scene();
@@ -232,7 +173,7 @@ export default class Story {
       }
 
       models.rotation.copy(new THREE.Euler(0, index * 90 * THREE.Math.DEG2RAD, 0, `XYZ`));
-      models.scale.set(0.25, 0.25, 0.25);
+      models.scale.set(1, 1, 1);
 
       this.sceneGroup.add(models);
     });
@@ -241,15 +182,7 @@ export default class Story {
 
     this.addSuitcase();
 
-    // Эти объекты добавляются не в самом классе сцены
-    // this.sceneGroup.children[0].addObject(objectsToAdd.dog);
-    // this.sceneGroup.children[2].addObject(objectsToAdd.compass);
-    // this.sceneGroup.children[3].addObject(objectsToAdd.sonya);
-
-    // this.dog = this.sceneGroup.children[0].children[4].children[0].children[0];
-
     const lightGroup = this.getLightGroup();
-    lightGroup.position.z = this.camera.position.z;
     this.scene.add(lightGroup);
 
     this.changeStory(0);
@@ -262,11 +195,9 @@ export default class Story {
 
     loadModel(params, material, (mesh) => {
       const outerGroup = new THREE.Group();
+      outerGroup.castShadow = params.castShadow;
+      outerGroup.receiveShadow = params.receiveShadow;
       const fluctuationGroup = new THREE.Group();
-
-      mesh.name = params.name;
-      mesh.castShadow = params.castShadow;
-      mesh.receiveShadow = params.castShadow;
 
       setMeshParams(fluctuationGroup, {rotate: params.rotate});
       setMeshParams(outerGroup, {scale: params.scale});
@@ -288,46 +219,6 @@ export default class Story {
 
   changeStory(index) {
     this.storyIndex = index;
-  }
-
-  hueShiftIntensityAnimationTick(index, from, to) {
-    return (progress) => {
-      const hueAnimationSettings = this.getHueShiftAnimationSettings(index);
-      if (!hueAnimationSettings) {
-        this.textures[index].options.hueShift = hueAnimationSettings.initial;
-        return;
-      }
-
-      const hueShift = tick(from, to, progress);
-      this.textures[index].options.hueShift = hueShift;
-    };
-  }
-
-  animateHueShift() {
-    const hueAnimationSettings = this.getHueShiftAnimationSettings(this.storyIndex);
-    if (!hueAnimationSettings) {
-      this.hueIsAnimating = false;
-      return;
-    }
-    this.hueIsAnimating = true;
-
-    const {initial, final, duration, variation} = hueAnimationSettings;
-    const offset = (Math.random() * variation * 2 + (1 - variation));
-    animateEasingWithFPS(
-        this.hueShiftIntensityAnimationTick(this.storyIndex, initial, final * offset),
-        duration * offset,
-        hueIntensityEasingFn)
-      .then(this.animateHueShift);
-  }
-
-  animateBubbles() {
-    if (
-      this.storyIndex === 1 &&
-      this.textures[1].options.distort &&
-      this.materials[1].uniforms.time.value < bubblesParams.duration / 1000
-    ) {
-      this.materials[1].uniforms.time.value += 0.01;
-    }
   }
 
   animateSuitcase() {
@@ -353,15 +244,11 @@ export default class Story {
         let scaleZ;
 
         scaleY = tick(params.scale.y, params.finalScale.y, easeInOutQuad(t));
-        scaleX = scaleZ = 0.05 * 1 / (Math.sqrt(scaleY)) - 0.022;
+        scaleX = scaleZ = 1 / (Math.sqrt(scaleY)) + 0.002;
 
         this.suitcase.root.scale.set(scaleX, scaleY, scaleZ);
       }
     }
-  }
-
-  animateDog() {
-
   }
 
   animate() {

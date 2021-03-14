@@ -55,24 +55,11 @@ class FirstStory extends THREE.Group {
     this.add(wall);
   }
 
-  addObject(params) {
-    const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
-
-    loadModel(params, material, (mesh) => {
-      mesh.name = params.name;
-      mesh.castShadow = params.castShadow;
-      mesh.receiveShadow = params.castShadow;
-      setMeshParams(mesh, params);
-      this.add(mesh);
-    });
-  }
-
   loadModels() {
     this.models.forEach((params) => {
       const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
 
       loadModel(params, material, (mesh) => {
-        mesh.name = params.name;
         setMeshParams(mesh, params);
         this.add(mesh);
       });
@@ -95,6 +82,7 @@ class FirstStory extends THREE.Group {
   addSaturn() {
     const mesh = new Saturn();
     const params = firstStoryConfig.saturn;
+    mesh.castShadow = true;
 
     const outerGroup = new THREE.Group();
     const fluctuationGroup = new THREE.Group();
@@ -115,7 +103,6 @@ class FirstStory extends THREE.Group {
     const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
 
     loadModel(params, material, (mesh) => {
-      mesh.name = params.name;
       this.dogTail = mesh.children[0].children[0];
       setMeshParams(mesh, params);
       this.add(mesh);
