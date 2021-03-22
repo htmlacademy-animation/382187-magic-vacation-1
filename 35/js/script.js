@@ -69453,8 +69453,8 @@ const modelsConfig = {
     type: `gltf`,
     path: `3d/gltf/suitcase.gltf`,
     scale: {x: 0.55, y: 0.55, z: 0.55},
-    position: {x: 15, y: 50, z: 5},
-    finalPosition: {x: -58, y: -132, z: 100},
+    position: {x: -25, y: 100, z: 5},
+    finalPosition: {x: -70, y: -120, z: 100},
     rotate: {x: -240, y: 20, z: -90},
     finalRotate: {x: -320, y: 130, z: -180},
   },
@@ -69693,7 +69693,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const INITIAL_ANIMATION_TIME_SEC = 2;
+const INITIAL_ANIMATION_TIME_SEC = 1.9;
 
 class StartStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
   constructor() {
@@ -69764,12 +69764,12 @@ class StartStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
       const scaleY = Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["tick"])(0, finalScale.y, easeOutQuadProgress);
       const scaleZ = Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["tick"])(0, finalScale.z, easeOutQuadProgress);
 
+      const initialPosition = item.params.position;
       const finalPosition = item.params.finalPosition;
 
-
-      const positionX = Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["tick"])(0, finalPosition.x, progress);
-      const positionY = Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["tick"])(0, finalPosition.y, progress);
-      const positionZ = Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["tick"])(0, finalPosition.z, progress);
+      const positionX = Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["tick"])(initialPosition.x, finalPosition.x, progress);
+      const positionY = Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["tick"])(initialPosition.y, finalPosition.y, progress);
+      const positionZ = Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["tick"])(initialPosition.z, finalPosition.z, progress);
 
       const position = [positionX, positionY, positionZ];
 
@@ -69779,8 +69779,8 @@ class StartStory extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
       const finalRotate = item.params.finalRotate;
 
       if (finalRotate && progress > 0.15) {
-        item.fluctuation.rotation.x += 0.014;
-        item.fluctuation.rotation.y += 0.013;
+        item.fluctuation.rotation.x += 0.015;
+        item.fluctuation.rotation.y += 0.015;
       }
 
     });
@@ -72842,13 +72842,13 @@ __webpack_require__.r(__webpack_exports__);
     const {detail: {screenName}} = event;
 
     if (screenName === `top`) {
-      start.start();
+      setTimeout(() => start.start(), 300);
     } else {
       start.endAnimation();
     }
 
     if (screenName === `story`) {
-      story.start();
+      setTimeout(() => story.start(), 300);
     } else {
       story.endAnimation();
     }
