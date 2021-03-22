@@ -8,7 +8,7 @@ import {getSvgObject} from '../svg-loader';
 
 import Saturn from '../objects/saturn';
 
-const INITIAL_ANIMATION_TIME_SEC = 2;
+const INITIAL_ANIMATION_TIME_SEC = 1.9;
 
 class StartStory extends THREE.Group {
   constructor() {
@@ -79,12 +79,12 @@ class StartStory extends THREE.Group {
       const scaleY = tick(0, finalScale.y, easeOutQuadProgress);
       const scaleZ = tick(0, finalScale.z, easeOutQuadProgress);
 
+      const initialPosition = item.params.position;
       const finalPosition = item.params.finalPosition;
 
-
-      const positionX = tick(0, finalPosition.x, progress);
-      const positionY = tick(0, finalPosition.y, progress);
-      const positionZ = tick(0, finalPosition.z, progress);
+      const positionX = tick(initialPosition.x, finalPosition.x, progress);
+      const positionY = tick(initialPosition.y, finalPosition.y, progress);
+      const positionZ = tick(initialPosition.z, finalPosition.z, progress);
 
       const position = [positionX, positionY, positionZ];
 
@@ -94,8 +94,8 @@ class StartStory extends THREE.Group {
       const finalRotate = item.params.finalRotate;
 
       if (finalRotate && progress > 0.15) {
-        item.fluctuation.rotation.x += 0.014;
-        item.fluctuation.rotation.y += 0.013;
+        item.fluctuation.rotation.x += 0.015;
+        item.fluctuation.rotation.y += 0.015;
       }
 
     });
