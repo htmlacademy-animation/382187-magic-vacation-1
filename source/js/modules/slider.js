@@ -84,13 +84,13 @@ export default () => {
     const {detail: {screenName}} = event;
 
     if (screenName === `top`) {
-      start.start();
+      setTimeout(() => start.start(), 300);
     } else {
       start.endAnimation();
     }
 
     if (screenName === `story`) {
-      story.start();
+      setTimeout(() => story.start(), 300);
     } else {
       story.endAnimation();
     }

@@ -31,9 +31,6 @@ class Wall extends THREE.Group {
     });
 
     loadModel(this.wall, material, (mesh) => {
-      mesh.name = this.wall.name;
-      mesh.receiveShadow = this.wall.receiveShadow;
-      mesh.castShadow = this.wall.castShadow;
       setMeshParams(mesh, this.wall);
       this.add(mesh);
     });
@@ -47,8 +44,6 @@ class Wall extends THREE.Group {
       side: THREE.DoubleSide,
       ...this.floor.materialReflectivity,
     }));
-    mesh.castShadow = this.floor.castShadow;
-    mesh.receiveShadow = this.floor.receiveShadow;
     setMeshParams(mesh, this.floor);
     this.add(mesh);
   }

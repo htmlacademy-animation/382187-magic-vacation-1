@@ -63,7 +63,6 @@ export const loadModels = async (models) => new Promise((resolve) => {
     const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
 
     loader.load(params.path, (model) => loadingFn(model, material, (mesh) => {
-      mesh.name = params.name;
       setMeshParams(mesh, params);
       meshes.push(mesh);
     }));

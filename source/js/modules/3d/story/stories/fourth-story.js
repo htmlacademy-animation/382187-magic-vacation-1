@@ -55,7 +55,6 @@ class FourthStory extends THREE.Group {
     this.models.forEach((params) => {
       const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
       loadModel(params, material, (mesh) => {
-        mesh.name = params.name;
         setMeshParams(mesh, params);
         this.add(mesh);
       });
@@ -65,7 +64,6 @@ class FourthStory extends THREE.Group {
   async addFlower() {
     const svgObject = await getSvgObject();
     const flower = svgObject.getObject(`flower`);
-
     setMeshParams(flower, fourthStoryConfig.flower);
     this.add(flower);
   }
@@ -87,8 +85,9 @@ class FourthStory extends THREE.Group {
     const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
 
     loadModel(params, material, (mesh) => {
-      mesh.name = params.name;
       const outerGroup = new THREE.Group();
+      outerGroup.castShadow = true;
+      outerGroup.receiveShadow = true;
       const fluctuationGroup = new THREE.Group();
 
       setMeshParams(fluctuationGroup, {scale: params.scale});

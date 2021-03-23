@@ -122,9 +122,9 @@ class Start {
   animate() {
     if (this.animationRequest) {
       requestAnimationFrame(this.animate);
+      this.story.update();
     }
 
-    this.story.update();
     this.render();
   }
 
