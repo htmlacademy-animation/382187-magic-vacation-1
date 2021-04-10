@@ -7,6 +7,7 @@ import {tick, easeOutQuad} from '../../helpers';
 import {getSvgObject} from '../svg-loader';
 
 import Saturn from '../objects/saturn';
+import Airplane from '../objects/plane';
 
 const INITIAL_ANIMATION_TIME_SEC = 1.9;
 
@@ -15,7 +16,10 @@ class StartStory extends THREE.Group {
     super();
 
     this.svgs = svgsConfig;
-    this.models = modelsConfig;
+    this.models = {
+      suitcase: modelsConfig.suitcase,
+      watermelon: modelsConfig.watermelon
+    };
 
     this.animatedItems = {};
 
@@ -30,6 +34,7 @@ class StartStory extends THREE.Group {
     this.loadModels();
     this.loadSvgs();
     this.addSaturn();
+    this.addAirplane();
   }
 
   addToAnimatedItems(key, value) {
@@ -48,7 +53,7 @@ class StartStory extends THREE.Group {
       this.infiniteAnimation(t);
       return;
     }
-
+    this.airplane.update();
     this.initialAnimation(t);
   }
 
@@ -127,6 +132,11 @@ class StartStory extends THREE.Group {
       outerGroup.add(fluctuationGroup);
       this.add(outerGroup);
     });
+  }
+
+  addAirplane() {
+    this.airplane = new Airplane();
+    this.add(this.airplane);
   }
 
   addSaturn() {

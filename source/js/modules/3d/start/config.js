@@ -44,6 +44,7 @@ export const saturnModelConfig = {
   finalPosition: {x: 220, y: -50, z: 100},
 };
 
+
 export const modelsConfig = {
   airplane: {
     name: `airplane`,
@@ -53,8 +54,10 @@ export const modelsConfig = {
     color: colors.White,
     scale: {x: 0.7, y: 0.7, z: 0.7},
     finalPosition: {x: 120, y: 30, z: 100},
-    position: {x: 5, y: 5, z: 5},
-    rotate: {x: 135, y: 0, z: 60},
+    position: {x: 70, y: 10, z: -95},
+    // rotate: {x: 135, y: 0, z: 60},
+    // rotate: {x: 45, y: 0, z: 60},
+    rotate: {x: 220, y: 0, z: 0},
   },
   suitcase: {
     name: `suitcase`,
