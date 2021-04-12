@@ -174,3 +174,15 @@ export const fencingConfig = {
     offset: 15,
   },
 };
+
+export const airplaneConfig = {
+  name: `airplane`,
+  type: `obj`,
+  path: `3d/obj/airplane.obj`,
+  materialReflectivity: reflectivitySettings.basic,
+  color: colors.White,
+  scale: {x: 0.7, y: 0.7, z: 0.7},
+  finalPosition: {x: 120, y: 30, z: 120},
+  position: {x: 80, y: -75, z: -55},
+  rotate: {x: -60, y: 45, z: 0},
+};
