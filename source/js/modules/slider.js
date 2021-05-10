@@ -1,11 +1,7 @@
 import Swiper from "swiper";
-import Start from "./3d/start";
-import Story from './3d/story';
 
-export default () => {
+export default ({scene}) => {
   let storySlider;
-  const story = new Story();
-  const start = new Start();
 
   const setSlider = function () {
     if (((window.innerWidth / window.innerHeight) < 1) || window.innerWidth < 769) {
@@ -20,13 +16,13 @@ export default () => {
         on: {
           slideChange: () => {
             if (storySlider.activeIndex === 0 || storySlider.activeIndex === 1) {
-              story.changeStory(0);
+              scene.changeScene(1);
             } else if (storySlider.activeIndex === 2 || storySlider.activeIndex === 3) {
-              story.changeStory(1);
+              scene.changeScene(2);
             } else if (storySlider.activeIndex === 4 || storySlider.activeIndex === 5) {
-              story.changeStory(2);
+              scene.changeScene(3);
             } else if (storySlider.activeIndex === 6 || storySlider.activeIndex === 7) {
-              story.changeStory(3);
+              scene.changeScene(4);
             }
           },
           resize: () => {
@@ -54,13 +50,13 @@ export default () => {
         on: {
           slideChange: () => {
             if (storySlider.activeIndex === 0) {
-              story.changeStory(0);
+              scene.changeScene(1);
             } else if (storySlider.activeIndex === 2) {
-              story.changeStory(1);
+              scene.changeScene(2);
             } else if (storySlider.activeIndex === 4) {
-              story.changeStory(2);
+              scene.changeScene(3);
             } else if (storySlider.activeIndex === 6) {
-              story.changeStory(3);
+              scene.changeScene(4);
             }
           },
           resize: () => {
@@ -83,16 +79,12 @@ export default () => {
   document.body.addEventListener(`screenChanged`, (event) => {
     const {detail: {screenName}} = event;
 
-    if (screenName === `top`) {
-      setTimeout(() => start.start(), 300);
-    } else {
-      start.endAnimation();
+    if (screenName === `story`) {
+      scene.changeScene(1);
     }
 
-    if (screenName === `story`) {
-      setTimeout(() => story.start(), 300);
-    } else {
-      story.endAnimation();
+    if (screenName !== `story` || screenName !== `top`) {
+      scene.endAnimation();
     }
   });
 

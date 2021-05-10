@@ -9,7 +9,7 @@ import {getSvgObject} from '../svg-loader';
 import Saturn from '../objects/saturn';
 import Airplane from '../objects/plane';
 
-const INITIAL_ANIMATION_TIME_SEC = 1.9;
+const INITIAL_ANIMATION_TIME_SEC = 1.85;
 
 class StartStory extends THREE.Group {
   constructor() {
@@ -48,7 +48,7 @@ class StartStory extends THREE.Group {
     }
 
     const t = this.startTime.getElapsedTime();
-
+    // TODO invalidate positions
     if (t > INITIAL_ANIMATION_TIME_SEC) {
       this.infiniteAnimation(t);
       return;
@@ -102,7 +102,6 @@ class StartStory extends THREE.Group {
         item.fluctuation.rotation.x += 0.015;
         item.fluctuation.rotation.y += 0.015;
       }
-
     });
   }
 

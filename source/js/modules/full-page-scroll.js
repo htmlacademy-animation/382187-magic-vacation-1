@@ -2,6 +2,8 @@ import throttle from 'lodash/throttle';
 import timer from './timer.js';
 import prizes from './prizes.js';
 
+import Story from './3d/story/index';
+
 export default class FullPageScroll {
   constructor() {
     this.THROTTLE_TIMEOUT = 2000;
@@ -20,13 +22,17 @@ export default class FullPageScroll {
     this.previousScreen = 0;
     this.onScrollHandler = this.onScroll.bind(this);
     this.onUrlHashChengedHandler = this.onUrlHashChanged.bind(this);
+
+    this.setScene();
   }
 
   init() {
     document.addEventListener(`wheel`, throttle(this.onScrollHandler, this.THROTTLE_TIMEOUT, {trailing: false}));
     window.addEventListener(`popstate`, this.onUrlHashChengedHandler);
 
+    this.changePageDisplay();
     this.onUrlHashChanged();
+    this.initScene();
   }
 
   onScroll(evt) {
@@ -126,5 +132,32 @@ export default class FullPageScroll {
       this.activeScreen = Math.max(0, --this.activeScreen);
       this.previousScreen = Math.min(this.screenElements.length - 1, this.activeScreen + 1);
     }
+  }
+
+  setScene() {
+    this.scene = new Story();
+  }
+
+  initScene() {
+    const init = (screenName) => {
+      if (screenName === `top` || screenName === `story`) {
+        this.scene.start(screenName);
+      } else {
+        this.scene.endAnimation();
+      }
+    };
+
+    init(this.screenElements[this.activeScreen].id);
+
+    document.body.addEventListener(`screenChanged`, (event) => {
+      const {detail} = event;
+      const {screenName} = detail;
+
+      init(screenName);
+    });
+  }
+
+  getScene() {
+    return this.scene;
   }
 }

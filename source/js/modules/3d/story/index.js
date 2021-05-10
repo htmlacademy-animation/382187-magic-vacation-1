@@ -1,20 +1,32 @@
 import * as THREE from 'three';
 
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
-
 import {tick, easeInOutQuad} from '../../helpers';
 import {getBubblesConfig, getLightsConfig, getTexturesConfig, objectsToAdd} from './config';
 import {getMaterial, setMeshParams} from '../common';
 import {loadModel} from '../load-object-model';
+import {getSvgObject} from '../svg-loader';
 
+import StartStory from '../start/start';
 import FirstStory from './stories/first-story';
 import SecondStory from './stories/second-story';
 import ThirdStory from './stories/third-story';
 import FourthStory from './stories/fourth-story';
 
-const SUITCASE_SQUASH_ANIMATION_TIME_SEC = 1.1;
-const SUITCASE_POSITION_ANIMATION_TIME_SEC = 0.3;
+import CameraRig from '../camera-rig';
 
+const SUITCASE_SQUASH_ANIMATION_TIME_SEC = 2.0;
+const SUITCASE_POSITION_ANIMATION_TIME_SEC = 1.4;
+
+const getCameraRigStageState = (index, config) => {
+  return {
+    depth: index === 0 ? 100 : config.deltaDepth,
+    dollyLength: config.dollyLength,
+    polePosition: config.radius,
+    horizonAngle: (index > 0 ? index - 1 : 0) * config.deltaHorizonAngle
+  };
+};
+
+const box = new THREE.Box3();
 export default class Story {
   constructor() {
     this.ww = window.innerWidth;
@@ -22,13 +34,15 @@ export default class Story {
 
     this.centerCoords = {x: this.ww / 2, y: this.wh / 2};
 
-    this.canvasSelector = `story-canvas`;
+    this.canvasSelector = `start-canvas`;
     this.textures = getTexturesConfig({
       first: new FirstStory(),
       second: new SecondStory(),
       third: new ThirdStory(),
       fourth: new FourthStory()
     });
+
+    this.startStory = new StartStory();
 
     this.sceneParams = {
       fov: this.fov,
@@ -42,8 +56,16 @@ export default class Story {
       },
       camera: {
         position: {y: 800, z: 1950},
-        rotation: {y: -15},
+        rotation: {y: 15},
       }
+    };
+
+    this.config = {
+      deltaDepth: 0,
+      deltaHorizonAngle: 90 * THREE.Math.DEG2RAD,
+      radius: 0,
+      dollyLengthStart: 3000,
+      dollyLength: 0
     };
 
     this.suitcase = null;
@@ -54,10 +76,24 @@ export default class Story {
     this.lights = getLightsConfig(this.sceneParams);
 
     this.hueIsAnimating = false;
-    this.storyIndex = 0;
+    this.sceneIndex = 0;
     this.isInitialised = false;
 
     this.startTime = -1;
+    this.cameraStartTime = -1;
+    this.time = -1;
+
+
+    this.cameraSettings = {
+      intro: {
+        position: {x: 0, y: 0, z: this.sceneParams.position.z},
+        rotation: 0,
+      },
+      room: {
+        position: {x: 0, y: 0, z: 400},
+        rotation: 0, // 15
+      },
+    };
 
     this.render = this.render.bind(this);
     this.resize = this.resize.bind(this);
@@ -79,7 +115,7 @@ export default class Story {
   }
 
   get scenePosition() {
-    return this.wh * this.sceneParams.textureRatio * this.storyIndex;
+    return this.wh * this.sceneParams.textureRatio * this.sceneIndex;
   }
 
   resize() {
@@ -113,8 +149,23 @@ export default class Story {
 
     const ambientLight1 = new THREE.AmbientLight(0x404040);
 
-
     lightGroup.add(ambientLight1);
+
+    return lightGroup;
+  }
+
+  createLight(lights) {
+    const lightGroup = new THREE.Group();
+
+    lights.forEach(({light, position, castShadow}) => {
+      if (position) {
+        light.position.set(...Object.values(position));
+      }
+      if (castShadow) {
+        light.castShadow = true;
+      }
+      lightGroup.add(light);
+    });
 
     return lightGroup;
   }
@@ -127,7 +178,12 @@ export default class Story {
   start() {
     if (!this.isInitialized) {
       this.init();
-      this.isInitialized = true;
+      this.initialized = true;
+      this.scene.visible = false;
+      getSvgObject().then(() => {
+        this.scene.visible = true;
+        this.animate();
+      });
     }
 
     window.addEventListener(`resize`, this.resize);
@@ -148,24 +204,21 @@ export default class Story {
 
     this.camera = new THREE.PerspectiveCamera(this.sceneParams.fov, this.sceneParams.aspect, this.sceneParams.near, this.sceneParams.far);
 
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.setCamera();
-
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    this.controls.enableZoom = false;
-    this.controls.minPolarAngle = Math.PI * 1 / 4;
-    this.controls.maxPolarAngle = Math.PI * 2 / 5;
-    this.controls.update();
+    this.setCamera();
 
     this.scene = new THREE.Scene();
-    this.camera.lookAt(this.scene.position);
 
-    this.sceneGroup = new THREE.Group();
+    // Add the Camera Rig
+    this.rig = new CameraRig(this.config);
+    this.rig.addObjectToCameraNull(this.camera);
+    this.scene.add(this.rig);
+
+    this.storyGroup = new THREE.Group();
 
     this.materials = this.textures.map((story, index) => {
-
       const models = story.models;
 
       if (!models) {
@@ -174,19 +227,29 @@ export default class Story {
 
       models.rotation.copy(new THREE.Euler(0, index * 90 * THREE.Math.DEG2RAD, 0, `XYZ`));
       models.scale.set(1, 1, 1);
-
-      this.sceneGroup.add(models);
+      this.storyGroup.add(models);
     });
 
-    this.scene.add(this.sceneGroup);
+    this.startStory.position.z = 4050;
+    this.startStory.position.y = -450;
+
+    box.setFromObject(this.storyGroup);
+    box.getCenter(this.storyGroup.position); // this re-sets the mesh position
+    this.storyGroup.position.multiplyScalar(-1);
+
+    this.pivot = new THREE.Group();
+    this.scene.add(this.pivot);
+    this.pivot.add(this.storyGroup);
+    this.pivot.add(this.startStory);
+    this.pivot.position.z = 0;
+    this.pivot.position.y = 1250;
 
     this.addSuitcase();
 
     const lightGroup = this.getLightGroup();
     this.scene.add(lightGroup);
 
-    this.changeStory(0);
-    this.animate();
+    this.rig.addObjectToCameraNull(lightGroup);
   }
 
   addSuitcase() {
@@ -217,8 +280,10 @@ export default class Story {
     this.bubbleAnimationRequest = null;
   }
 
-  changeStory(index) {
-    this.storyIndex = index;
+  changeScene(index) {
+    this.sceneIndex = index;
+    this.rig.changeStateTo(getCameraRigStageState(index, this.config));
+    this.renderer.render(this.scene, this.camera);
   }
 
   animateSuitcase() {
@@ -253,20 +318,48 @@ export default class Story {
 
   animate() {
     requestAnimationFrame(this.animate);
-    this.controls.update();
-    this.animateSuitcase();
 
-    // TODO Base logic on index
-    this.sceneGroup.children[0].update();
-    this.sceneGroup.children[1].update();
-    this.sceneGroup.children[2].update();
-    this.sceneGroup.children[3].update();
+    const nowT = Date.now();
 
+    if (this.cameraStartTime < 0) {
+      this.cameraStartTime = this.time = nowT;
+
+      return;
+    }
+
+    const t = (nowT - this.cameraStartTime) * 0.001;
+    const dt = (nowT - this.time) * 0.001;
+
+    this.rig.update(dt, t);
+
+    this.time = nowT;
+
+    this.animateScene(this.sceneIndex);
     this.render();
   }
 
+  animateScene(index) {
+    switch (index) {
+      case 0:
+        this.startStory.update();
+        break;
+      case 1:
+        this.animateSuitcase();
+        this.storyGroup.children[0].update();
+        break;
+      case 2:
+        this.storyGroup.children[1].update();
+        break;
+      case 3:
+        this.storyGroup.children[2].update();
+        break;
+      case 4:
+        this.storyGroup.children[3].update();
+        break;
+    }
+  }
+
   render() {
-    this.camera.lookAt(this.scene.position);
     this.renderer.render(this.scene, this.camera);
   }
 }

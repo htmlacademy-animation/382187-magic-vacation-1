@@ -4,7 +4,7 @@ import {reflectivitySettings, colors} from '../common';
 
 export const keyholeConfig = {
   name: `keyhole`,
-  position: {x: -1000, y: 1000, z: 0},
+  position: {x: -1000, y: 1000, z: -20},
 };
 
 export const svgsConfig = {
@@ -32,8 +32,8 @@ export const svgsConfig = {
   bigLeaf: {
     name: `bigLeaf`,
     scale: {x: 0.8, y: 0.8, z: 0.8},
-    finalPosition: {x: 280, y: 110, z: 100},
-    position: {x: 20, y: 15, z: 20},
+    finalPosition: {x: 300, y: 180, z: 100},
+    position: {x: 20, y: 15, z: 10},
     rotate: {x: 0, y: -60, z: -70},
   },
 };
@@ -43,7 +43,6 @@ export const saturnModelConfig = {
   position: {x: 15, y: -15, z: 10},
   finalPosition: {x: 220, y: -50, z: 100},
 };
-
 
 export const modelsConfig = {
   airplane: {
@@ -55,8 +54,6 @@ export const modelsConfig = {
     scale: {x: 0.7, y: 0.7, z: 0.7},
     finalPosition: {x: 120, y: 30, z: 100},
     position: {x: 70, y: 10, z: -95},
-    // rotate: {x: 135, y: 0, z: 60},
-    // rotate: {x: 45, y: 0, z: 60},
     rotate: {x: 220, y: 0, z: 0},
   },
   suitcase: {
