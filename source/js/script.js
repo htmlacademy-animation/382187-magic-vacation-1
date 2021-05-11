@@ -11,12 +11,13 @@ import FullPageScroll from './modules/full-page-scroll';
 import pageLoaded from './modules/page-loaded.js';
 import rules from './modules/rules.js';
 import letterAnimation from './modules/letter-animation.js';
-// import {getSvgObject} from './modules/3d/svg-loader';
+
+const fullPageScroll = new FullPageScroll();
+fullPageScroll.init();
 
 // init modules
 mobileHeight();
-// getSvgObject();
-slider();
+slider({scene: fullPageScroll.getScene()});
 menu();
 footer();
 chat();
@@ -26,6 +27,3 @@ social();
 pageLoaded();
 rules();
 letterAnimation();
-
-const fullPageScroll = new FullPageScroll();
-fullPageScroll.init();

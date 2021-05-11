@@ -8,6 +8,7 @@
 
   &--hidden {
     visibility: hidden;
+    display: none;
   }
 
   @media (max-width: $tablet) and (orientation: portrait) {
@@ -28,19 +29,6 @@
   justify-content: center;
   align-items: center;
   z-index: 1;
-}
-
-.screen__canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-// Temp style
-.screen__canvas#story-canvas {
-  z-index: 10;
 }
 
 .screen__disclaimer {
@@ -303,11 +291,11 @@
 }
 
 .screen--story {
-  background-color: $c-dark;
-  background-image: url("../img/slide1.jpg"), url("../img/slide2.jpg"), url("../img/slide3.jpg"), url("../img/slide4.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+  // background-color: $c-dark;
+  // background-image: url("../img/slide1.jpg"), url("../img/slide2.jpg"), url("../img/slide3.jpg"), url("../img/slide4.jpg");
+  // background-repeat: no-repeat;
+  // background-size: cover;
+  // background-position: center;
 
   @media (orientation: portrait) {
     background-size: auto calc(100vh - 13.8rem), 100% 25rem;
