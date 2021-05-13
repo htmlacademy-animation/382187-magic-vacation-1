@@ -26,6 +26,11 @@ const getCameraRigStageState = (index, config) => {
   };
 };
 
+const ScreenName = {
+  start: `start`,
+  rooms: `rooms`,
+};
+
 const box = new THREE.Box3();
 export default class Story {
   constructor() {
@@ -76,13 +81,13 @@ export default class Story {
     this.lights = getLightsConfig(this.sceneParams);
 
     this.hueIsAnimating = false;
+    this.prevSceneIndex = 0;
     this.sceneIndex = 0;
     this.isInitialised = false;
 
     this.startTime = -1;
     this.cameraStartTime = -1;
     this.time = -1;
-
 
     this.cameraSettings = {
       intro: {
@@ -98,6 +103,13 @@ export default class Story {
     this.render = this.render.bind(this);
     this.resize = this.resize.bind(this);
     this.animate = this.animate.bind(this);
+    this.createStartLight = this.createStartLight.bind(this);
+    this.createRoomsLight = this.createRoomsLight.bind(this);
+
+    this.screenLights = {
+      [ScreenName.start]: this.createStartLight,
+      [ScreenName.rooms]: this.createRoomsLight,
+    };
   }
 
   get sceneSize() {
@@ -131,29 +143,6 @@ export default class Story {
     this.renderer.setSize(this.ww, this.wh);
   }
 
-  getLightGroup() {
-    const lightGroup = new THREE.Group();
-
-    this.lights.forEach((light) => {
-      const lightUnit = light.light;
-      if (light.type === `PointLight`) {
-        lightUnit.castShadow = true;
-        lightUnit.shadow.mapSize.width = this.ww;
-        lightUnit.shadow.mapSize.height = this.wh;
-        lightUnit.shadow.camera.near = this.camera.near;
-        lightUnit.shadow.camera.far = this.camera.far;
-      }
-      lightUnit.position.set(...Object.values(light.position));
-      lightGroup.add(lightUnit);
-    });
-
-    const ambientLight1 = new THREE.AmbientLight(0x404040);
-
-    lightGroup.add(ambientLight1);
-
-    return lightGroup;
-  }
-
   createLight(lights) {
     const lightGroup = new THREE.Group();
 
@@ -168,6 +157,39 @@ export default class Story {
     });
 
     return lightGroup;
+  }
+
+  createStartLight() {
+    const light = this.createLight(this.lights.start);
+    light.name = `light-${ScreenName.start}`;
+
+    return light;
+  }
+
+  createRoomsLight() {
+    const light = this.createLight(this.lights.rooms);
+    light.name = `light-${ScreenName.rooms}`;
+
+    return light;
+  }
+
+  setLight() {
+    const [current, previous] = this.sceneIndex === 0 ? [ScreenName.start, ScreenName.rooms] : [ScreenName.rooms, ScreenName.start];
+
+    const currentLight = this.scene.getObjectByName(`light-${current}`);
+    const previousLight = this.scene.getObjectByName(`light-${previous}`);
+
+    if (currentLight) {
+      currentLight.visible = true;
+    } else {
+      const light = this.screenLights[current]();
+      this.scene.add(light);
+      this.rig.addObjectToCameraNull(light);
+    }
+
+    if (previousLight) {
+      previousLight.visible = false;
+    }
   }
 
   setCamera() {
@@ -237,6 +259,8 @@ export default class Story {
     box.getCenter(this.storyGroup.position); // this re-sets the mesh position
     this.storyGroup.position.multiplyScalar(-1);
 
+    this.storyGroup.visible = false;
+
     this.pivot = new THREE.Group();
     this.scene.add(this.pivot);
     this.pivot.add(this.storyGroup);
@@ -245,11 +269,7 @@ export default class Story {
     this.pivot.position.y = 1250;
 
     this.addSuitcase();
-
-    const lightGroup = this.getLightGroup();
-    this.scene.add(lightGroup);
-
-    this.rig.addObjectToCameraNull(lightGroup);
+    this.setLight();
   }
 
   addSuitcase() {
@@ -270,7 +290,7 @@ export default class Story {
 
       fluctuationGroup.add(mesh);
       outerGroup.add(fluctuationGroup);
-      this.scene.add(outerGroup);
+      this.rig.addSuitcase(outerGroup);
     });
   }
 
@@ -281,8 +301,26 @@ export default class Story {
   }
 
   changeScene(index) {
+    this.prevSceneIndex = this.sceneIndex;
     this.sceneIndex = index;
-    this.rig.changeStateTo(getCameraRigStageState(index, this.config));
+    this.setLight();
+
+    if (this.sceneIndex > 0) {
+      this.storyGroup.visible = true;
+      this.rig.changeStateTo(getCameraRigStageState(index, this.config));
+
+      if (this.prevSceneIndex === 0 && this.sceneIndex === 1) {
+        setTimeout(() => {
+          this.startStory.visible = false;
+        }, 400);
+      }
+    }
+
+    if (this.sceneIndex === 0) {
+      this.startStory.visible = true;
+      this.storyGroup.visible = false;
+    }
+
     this.renderer.render(this.scene, this.camera);
   }
 

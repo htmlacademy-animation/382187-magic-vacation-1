@@ -1,7 +1,5 @@
 import * as THREE from 'three';
 
-import {colors} from '../common';
-
 export const bubblesParams = {
   duration: 2100,
   glareOffset: 0.8,
@@ -45,32 +43,48 @@ export const getBubblesConfig = (centerCoords, ww, wh) => ([
   },
 ]);
 
-export const getLightsConfig = (sceneParams) => ([
-  {
-    id: `DirectionalLight1`,
-    type: `DirectionalLight`,
-    light: new THREE.DirectionalLight(new THREE.Color(colors.White), 0.84),
-    position: {x: 0, y: sceneParams.position.z * Math.tan(-15 * THREE.Math.DEG2RAD), z: sceneParams.position.z},
-  },
-  {
-    id: `DirectionalLight2`,
-    type: `DirectionalLight`,
-    light: new THREE.DirectionalLight(new THREE.Color(colors.White), 0.7),
-    position: {x: 0, y: 500, z: 0},
-  },
-  {
-    id: `PointLight1`,
-    type: `PointLight`,
-    light: new THREE.PointLight(new THREE.Color(`rgb(246,242,255)`), 0.6, 975, 2.0),
-    position: {x: -785, y: -350, z: 710},
-  },
-  {
-    id: `PointLight2`,
-    type: `PointLight`,
-    light: new THREE.PointLight(new THREE.Color(`rgb(245,254,255)`), 0.95, 975, 2.0),
-    position: {x: 730, y: 800, z: 985},
-  },
-]);
+// TODO. Подобрать более точные точечные источники света
+export const getLightsConfig = (sceneParams) => ({
+  start: [
+    {
+      light: new THREE.HemisphereLight(0xffffff, 0x444444),
+      position: {x: 0, y: 300, z: 0},
+    },
+    {
+      light: new THREE.DirectionalLight(0xffffff, 0.3),
+      position: {x: 75, y: 300, z: 75},
+    },
+    {
+      light: new THREE.AmbientLight(0x404040),
+    }
+  ],
+  rooms: [
+    {
+      light: new THREE.DirectionalLight(0xffffff, 0.84),
+      position: {x: 0, y: sceneParams.position.z * Math.tan(-15 * THREE.Math.DEG2RAD), z: sceneParams.position.z},
+    },
+    {
+      light: new THREE.DirectionalLight(0xffffff, 0.5),
+      position: {x: 0, y: 500, z: 0},
+    },
+    {
+      light: new THREE.PointLight(0xf6f2ff, 0.6, 875, 2),
+      position: {x: -785, y: -350, z: 710},
+      castShadow: true,
+    },
+    {
+      light: new THREE.PointLight(0xf5ffff, 0.95, 975, 2),
+      position: {x: 730, y: 800, z: 985},
+      castShadow: true,
+    },
+    {
+      light: new THREE.AmbientLight(0x404040),
+    },
+    {
+      light: new THREE.AmbientLight(0x404040),
+    }
+  ]
+});
 
 export const getTexturesConfig = (storyModels) => (
   [
@@ -151,16 +165,6 @@ export const secondStoryConfig = {
       castShadow: true,
       receiveShadow: true,
     },
-    {
-      name: `suitcase`,
-      type: `gltf`,
-      path: `3d/gltf/suitcase.gltf`,
-      scale: 1,
-      position: {x: -360, y: 1, z: 790},
-      rotate: {x: 0, y: -20, z: 0},
-      castShadow: true,
-      receiveShadow: true,
-    },
   ],
   bigLeaf: {
     scale: {x: 2.5, y: 2.5, z: 2.5},
@@ -235,16 +239,6 @@ export const fourthStoryConfig = {
       scale: 1,
       position: {x: 0, y: 0, z: 5},
       rotate: {x: 0, y: -45, z: 0},
-    },
-    {
-      name: `suitcase`,
-      type: `gltf`,
-      path: `3d/gltf/suitcase.gltf`,
-      castShadow: true,
-      receiveShadow: true,
-      scale: 1,
-      position: {x: -400, y: 5, z: 775},
-      rotate: {x: 0, y: -25, z: 0},
     },
   ],
   flower: {
