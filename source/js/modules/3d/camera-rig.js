@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import TweenState from './tween-state';
 
+import {cameraRigSettings} from './story/config';
+
 class CameraRig extends THREE.Group {
 
   constructor(settings) {
@@ -13,6 +15,13 @@ class CameraRig extends THREE.Group {
     this._dollyLength = settings.dollyLengthStart;
     this._polePosition = settings.radius;
     this._horizonAngle = 0;
+
+    this._pitchAngle = 0;
+    this._targetAroundAngle = 0;
+    this._targetPitchAngle = 0;
+
+    this._pitchToggled = true;
+
     this._depthChanged = true;
     this._dollyLengthChanged = true;
     this._polePositionChanged = true;
@@ -99,6 +108,46 @@ class CameraRig extends THREE.Group {
     return this._horizonAngle;
   }
 
+  set pitchToggled(value) {
+    this._pitchToggled = value;
+  }
+
+  set pitchAngle(value) {
+    if (value === this._pitchAngle) {
+      return;
+    }
+    this._pitchAngle = value;
+    this._pitchAngleChanged = true;
+  }
+
+  get pitchAngle() {
+    return this._pitchAngle;
+  }
+
+  set targetAroundAngle(value) {
+    if (value === this._targetAroundAngle) {
+      return;
+    }
+    this._targetAroundAngle = value;
+    this._aroundAngleChanged = true;
+  }
+
+  get targetAroundAngle() {
+    return this._targetAroundAngle;
+  }
+
+  set targetPitchAngle(value) {
+    if (value === this._targetPitchAngle) {
+      return;
+    }
+    this._targetPitchAngle = value;
+    this._pitchAngleChanged = true;
+  }
+
+  get targetPitchAngle() {
+    return this._targetPitchAngle;
+  }
+
   invalidate() {
     if (this._depthChanged) {
       this.depthTrack.position.z = -this._depth;
@@ -111,20 +160,47 @@ class CameraRig extends THREE.Group {
     }
 
     if (this._dollyLengthChanged) {
-      // Set new position
-
       this.dollyBend.position.z = this._dollyLength;
-
       this._dollyLengthChanged = false;
     }
 
     if (this._polePositionChanged) {
-      // Set new position
-
       this.poleHand.position.y = this._polePosition;
-
       this._polePositionChanged = false;
     }
+
+    if (this._pitchToggled && (this._pitchAngleChanged || this._targetPitchAngle !== this._pitchAngle)) {
+      if (Math.abs(this._targetPitchAngle - this._pitchAngle) < 0.001) {
+        this._pitchAngle = this._targetPitchAngle;
+      } else {
+        this._pitchAngle += (this._targetPitchAngle - this._pitchAngle) * 0.15;
+      }
+
+      this.depthTrack.rotation.x = this._pitchAngle;
+      this._pitchAngleChanged = false;
+    }
+
+    this.addMouseListeners();
+  }
+
+  addMouseListeners() {
+    if (this.hasMousemoveHandler) {
+      return;
+    }
+
+    const mousemoveHandler = (event) => {
+      let pY = event.pageY;
+      const winH = window.innerWidth;
+
+      pY /= winH * 0.5;
+
+      this.targetPitchAngle = cameraRigSettings.pitchAmplitude * pY;
+    };
+
+    document.addEventListener(`mousemove`, mousemoveHandler);
+
+    this.mousemoveHandler = mousemoveHandler;
+    this.hasMousemoveHandler = true;
   }
 
   addObjectToCameraNull(object) {
@@ -132,6 +208,7 @@ class CameraRig extends THREE.Group {
   }
 
   addSuitcase(suitcase) {
+    // TODO. Разобраться почему вращение трека на реакцию мыши не влияет на позицию чемодана
     this.depthTrack.add(suitcase);
   }
 

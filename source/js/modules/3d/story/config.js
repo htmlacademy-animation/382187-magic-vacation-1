@@ -7,6 +7,16 @@ export const bubblesParams = {
   endRadianAngle: 2.75
 };
 
+// Camera Rig Settings
+export const cameraRigSettings = {
+  deltaDepth: 0,
+  deltaHorizonAngle: 90 * THREE.Math.DEG2RAD,
+  radius: 0,
+  dollyLengthStart: 3000,
+  dollyLength: 0,
+  pitchAmplitude: 0.8 * THREE.Math.DEG2RAD
+};
+
 export const getBubblesConfig = (centerCoords, ww, wh) => ([
   {
     radius: 80.0,
