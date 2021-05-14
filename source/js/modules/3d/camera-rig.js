@@ -131,6 +131,10 @@ class CameraRig extends THREE.Group {
     this.cameraNull.add(object);
   }
 
+  addSuitcase(suitcase) {
+    this.depthTrack.add(suitcase);
+  }
+
   update(dt, t) {
     if (this.tween) {
       this.tween.update(dt, t);
