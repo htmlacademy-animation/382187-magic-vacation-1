@@ -37,17 +37,21 @@ class CameraRig extends THREE.Group {
   constructRigElements() {
     // Construct parts
     const depthTrack = new THREE.Group();
+    const suitcaseGroup = new THREE.Group();
     const dollyBend = new THREE.Group();
     const poleHand = new THREE.Group();
     const cameraNull = new THREE.Group();
 
     // Connect
     this.add(depthTrack);
+    this.add(suitcaseGroup);
+
     depthTrack.add(dollyBend);
     dollyBend.add(poleHand);
     poleHand.add(cameraNull);
 
     this.depthTrack = depthTrack;
+    this.suitcaseGroup = suitcaseGroup;
     this.dollyBend = dollyBend;
     this.poleHand = poleHand;
     this.cameraNull = cameraNull;
@@ -156,6 +160,7 @@ class CameraRig extends THREE.Group {
 
     if (this._horizonAngleChanged) {
       this.depthTrack.rotation.y = this._horizonAngle;
+      this.suitcaseGroup.rotation.y = this._horizonAngle;
       this._horizonAngleChanged = false;
     }
 
@@ -208,8 +213,7 @@ class CameraRig extends THREE.Group {
   }
 
   addSuitcase(suitcase) {
-    // TODO. Разобраться почему вращение трека на реакцию мыши не влияет на позицию чемодана
-    this.depthTrack.add(suitcase);
+    this.suitcaseGroup.add(suitcase);
   }
 
   update(dt, t) {

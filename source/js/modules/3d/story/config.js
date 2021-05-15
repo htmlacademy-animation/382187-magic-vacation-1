@@ -269,18 +269,6 @@ export const fourthStoryConfig = {
 };
 
 export const objectsToAdd = {
-  suitcase: {
-    name: `suitcase`,
-    type: `gltf`,
-    path: `3d/gltf/suitcase.gltf`,
-    castShadow: true,
-    receiveShadow: true,
-    scale: {x: 1, y: 1.02, z: 1},
-    finalScale: {x: 1, y: 1, z: 1},
-    position: {x: -280, y: 550, z: 800},
-    finalPosition: {x: -280, y: 510, z: 800},
-    rotate: {x: 0, y: -20, z: 0},
-  },
   dog: {
     name: `dog`,
     type: `gltf`,
