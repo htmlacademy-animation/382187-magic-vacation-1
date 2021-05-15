@@ -181,7 +181,7 @@ class CameraRig extends THREE.Group {
         this._pitchAngle += (this._targetPitchAngle - this._pitchAngle) * 0.15;
       }
 
-      this.depthTrack.rotation.x = this._pitchAngle;
+      this.dollyBend.rotation.x = this._pitchAngle;
       this._pitchAngleChanged = false;
     }
 
