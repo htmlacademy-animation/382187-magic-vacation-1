@@ -67081,17 +67081,21 @@ class CameraRig extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
   constructRigElements() {
     // Construct parts
     const depthTrack = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
+    const suitcaseGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
     const dollyBend = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
     const poleHand = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
     const cameraNull = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
 
     // Connect
     this.add(depthTrack);
+    this.add(suitcaseGroup);
+
     depthTrack.add(dollyBend);
     dollyBend.add(poleHand);
     poleHand.add(cameraNull);
 
     this.depthTrack = depthTrack;
+    this.suitcaseGroup = suitcaseGroup;
     this.dollyBend = dollyBend;
     this.poleHand = poleHand;
     this.cameraNull = cameraNull;
@@ -67200,6 +67204,7 @@ class CameraRig extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
 
     if (this._horizonAngleChanged) {
       this.depthTrack.rotation.y = this._horizonAngle;
+      this.suitcaseGroup.rotation.y = this._horizonAngle;
       this._horizonAngleChanged = false;
     }
 
@@ -67252,8 +67257,7 @@ class CameraRig extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
   }
 
   addSuitcase(suitcase) {
-    // TODO. Разобраться почему вращение трека на реакцию мыши не влияет на позицию чемодана
-    this.depthTrack.add(suitcase);
+    this.suitcaseGroup.add(suitcase);
   }
 
   update(dt, t) {
@@ -67704,7 +67708,7 @@ class Carpet extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
 /*!************************************************!*\
   !*** ./source/js/modules/3d/objects/config.js ***!
   \************************************************/
-/*! exports provided: getWallConfig, carpetConfig, roadConfig, getSaturnConfig, lanternConfig, pyramidConfig, snowmanConfig, fencingConfig, airplaneConfig */
+/*! exports provided: getWallConfig, carpetConfig, roadConfig, getSaturnConfig, lanternConfig, pyramidConfig, snowmanConfig, fencingConfig, airplaneConfig, suitcaseConfig */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -67718,6 +67722,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "snowmanConfig", function() { return snowmanConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fencingConfig", function() { return fencingConfig; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "airplaneConfig", function() { return airplaneConfig; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "suitcaseConfig", function() { return suitcaseConfig; });
 /* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../helpers */ "./source/js/modules/helpers.js");
 /* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common */ "./source/js/modules/3d/common.js");
 
@@ -67907,6 +67912,19 @@ const airplaneConfig = {
   finalPosition: {x: 120, y: 30, z: 120},
   position: {x: 80, y: -75, z: -55},
   rotate: {x: -60, y: 45, z: 0},
+};
+
+const suitcaseConfig = {
+  name: `suitcase`,
+  type: `gltf`,
+  path: `3d/gltf/suitcase.gltf`,
+  castShadow: true,
+  receiveShadow: true,
+  scale: {x: 1, y: 1.02, z: 1},
+  finalScale: {x: 1, y: 1, z: 1},
+  position: {x: -280, y: 550, z: 800},
+  finalPosition: {x: -280, y: 515, z: 800},
+  rotate: {x: 0, y: -20, z: 0},
 };
 
 
@@ -68578,6 +68596,99 @@ class Snowman extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Snowman);
+
+
+/***/ }),
+
+/***/ "./source/js/modules/3d/objects/suitcase.js":
+/*!**************************************************!*\
+  !*** ./source/js/modules/3d/objects/suitcase.js ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./config */ "./source/js/modules/3d/objects/config.js");
+/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../common */ "./source/js/modules/3d/common.js");
+/* harmony import */ var _load_object_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../load-object-model */ "./source/js/modules/3d/load-object-model.js");
+/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../helpers */ "./source/js/modules/helpers.js");
+
+
+
+
+
+
+
+const SUITCASE_SQUASH_ANIMATION_TIME_SEC = 2.0;
+const SUITCASE_POSITION_ANIMATION_TIME_SEC = 1.4;
+
+class Suitcase extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
+  constructor(rig) {
+    super();
+    this.rig = rig;
+    this.config = _config__WEBPACK_IMPORTED_MODULE_1__["suitcaseConfig"];
+    this.startTime = -1;
+    this.construct = this.construct.bind(this);
+
+    this.construct();
+  }
+
+  construct() {
+    const params = this.config;
+    const material = params.color && Object(_common__WEBPACK_IMPORTED_MODULE_2__["getMaterial"])({color: params.color, ...params.materialReflectivity});
+
+    Object(_load_object_model__WEBPACK_IMPORTED_MODULE_3__["loadModel"])(params, material, (mesh) => {
+      const outerGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
+      outerGroup.castShadow = params.castShadow;
+      outerGroup.receiveShadow = params.receiveShadow;
+      const fluctuationGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
+
+      Object(_common__WEBPACK_IMPORTED_MODULE_2__["setMeshParams"])(fluctuationGroup, {rotate: params.rotate});
+      Object(_common__WEBPACK_IMPORTED_MODULE_2__["setMeshParams"])(outerGroup, {scale: params.scale});
+      Object(_common__WEBPACK_IMPORTED_MODULE_2__["setMeshParams"])(outerGroup, {position: params.position});
+
+      this.suitcase = {root: outerGroup, fluctation: fluctuationGroup, mesh, params: this.config};
+
+      fluctuationGroup.add(mesh);
+      outerGroup.add(fluctuationGroup);
+      this.rig.addSuitcase(outerGroup);
+    });
+  }
+
+  animateAppearance() {
+    if (this.suitcase) {
+      if (this.startTime < 0) {
+        this.startTime = new three__WEBPACK_IMPORTED_MODULE_0__["Clock"]();
+        return;
+      }
+
+      const t = this.startTime.getElapsedTime();
+      const params = this.suitcase.params;
+
+      // Анимируем падение
+      if (t < SUITCASE_POSITION_ANIMATION_TIME_SEC) {
+        const positionY = Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["tick"])(params.position.y, params.finalPosition.y, 1);
+        const position = [params.finalPosition.x, positionY, params.finalPosition.z];
+
+        this.suitcase.root.position.set(...position);
+      // Анимируем сжатие / растяжение
+      } else if (t > SUITCASE_POSITION_ANIMATION_TIME_SEC && t < SUITCASE_SQUASH_ANIMATION_TIME_SEC) {
+        let scaleX;
+        let scaleY;
+        let scaleZ;
+
+        scaleY = Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["tick"])(params.scale.y, params.finalScale.y, Object(_helpers__WEBPACK_IMPORTED_MODULE_4__["easeInOutQuad"])(t));
+        scaleX = scaleZ = 1 / (Math.sqrt(scaleY)) + 0.002;
+
+        this.suitcase.root.scale.set(scaleX, scaleY, scaleZ);
+      }
+    }
+  }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Suitcase);
 
 
 /***/ }),
@@ -69276,18 +69387,6 @@ const fourthStoryConfig = {
 };
 
 const objectsToAdd = {
-  suitcase: {
-    name: `suitcase`,
-    type: `gltf`,
-    path: `3d/gltf/suitcase.gltf`,
-    castShadow: true,
-    receiveShadow: true,
-    scale: {x: 1, y: 1.02, z: 1},
-    finalScale: {x: 1, y: 1, z: 1},
-    position: {x: -280, y: 550, z: 800},
-    finalPosition: {x: -280, y: 510, z: 800},
-    rotate: {x: 0, y: -20, z: 0},
-  },
   dog: {
     name: `dog`,
     type: `gltf`,
@@ -69334,17 +69433,15 @@ const objectsToAdd = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Story; });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../helpers */ "./source/js/modules/helpers.js");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./config */ "./source/js/modules/3d/story/config.js");
-/* harmony import */ var _common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../common */ "./source/js/modules/3d/common.js");
-/* harmony import */ var _load_object_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../load-object-model */ "./source/js/modules/3d/load-object-model.js");
-/* harmony import */ var _svg_loader__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../svg-loader */ "./source/js/modules/3d/svg-loader.js");
-/* harmony import */ var _start_start__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../start/start */ "./source/js/modules/3d/start/start.js");
-/* harmony import */ var _stories_first_story__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./stories/first-story */ "./source/js/modules/3d/story/stories/first-story.js");
-/* harmony import */ var _stories_second_story__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./stories/second-story */ "./source/js/modules/3d/story/stories/second-story.js");
-/* harmony import */ var _stories_third_story__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./stories/third-story */ "./source/js/modules/3d/story/stories/third-story.js");
-/* harmony import */ var _stories_fourth_story__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./stories/fourth-story */ "./source/js/modules/3d/story/stories/fourth-story.js");
-/* harmony import */ var _camera_rig__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../camera-rig */ "./source/js/modules/3d/camera-rig.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./config */ "./source/js/modules/3d/story/config.js");
+/* harmony import */ var _svg_loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../svg-loader */ "./source/js/modules/3d/svg-loader.js");
+/* harmony import */ var _start_start__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../start/start */ "./source/js/modules/3d/start/start.js");
+/* harmony import */ var _stories_first_story__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./stories/first-story */ "./source/js/modules/3d/story/stories/first-story.js");
+/* harmony import */ var _stories_second_story__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./stories/second-story */ "./source/js/modules/3d/story/stories/second-story.js");
+/* harmony import */ var _stories_third_story__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./stories/third-story */ "./source/js/modules/3d/story/stories/third-story.js");
+/* harmony import */ var _stories_fourth_story__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./stories/fourth-story */ "./source/js/modules/3d/story/stories/fourth-story.js");
+/* harmony import */ var _camera_rig__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../camera-rig */ "./source/js/modules/3d/camera-rig.js");
+/* harmony import */ var _objects_suitcase__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../objects/suitcase */ "./source/js/modules/3d/objects/suitcase.js");
 
 
 
@@ -69358,11 +69455,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
-
-const SUITCASE_SQUASH_ANIMATION_TIME_SEC = 2.0;
-const SUITCASE_POSITION_ANIMATION_TIME_SEC = 1.4;
 
 const getCameraRigStageState = (index, config) => {
   return {
@@ -69387,14 +69479,14 @@ class Story {
     this.centerCoords = {x: this.ww / 2, y: this.wh / 2};
 
     this.canvasSelector = `start-canvas`;
-    this.textures = Object(_config__WEBPACK_IMPORTED_MODULE_2__["getTexturesConfig"])({
-      first: new _stories_first_story__WEBPACK_IMPORTED_MODULE_7__["default"](),
-      second: new _stories_second_story__WEBPACK_IMPORTED_MODULE_8__["default"](),
-      third: new _stories_third_story__WEBPACK_IMPORTED_MODULE_9__["default"](),
-      fourth: new _stories_fourth_story__WEBPACK_IMPORTED_MODULE_10__["default"]()
+    this.textures = Object(_config__WEBPACK_IMPORTED_MODULE_1__["getTexturesConfig"])({
+      first: new _stories_first_story__WEBPACK_IMPORTED_MODULE_4__["default"](),
+      second: new _stories_second_story__WEBPACK_IMPORTED_MODULE_5__["default"](),
+      third: new _stories_third_story__WEBPACK_IMPORTED_MODULE_6__["default"](),
+      fourth: new _stories_fourth_story__WEBPACK_IMPORTED_MODULE_7__["default"]()
     });
 
-    this.startStory = new _start_start__WEBPACK_IMPORTED_MODULE_6__["default"]();
+    this.startStory = new _start_start__WEBPACK_IMPORTED_MODULE_3__["default"]();
 
     this.sceneParams = {
       fov: this.fov,
@@ -69412,14 +69504,14 @@ class Story {
       }
     };
 
-    this.cameraRigConfig = _config__WEBPACK_IMPORTED_MODULE_2__["cameraRigSettings"];
+    this.cameraRigConfig = _config__WEBPACK_IMPORTED_MODULE_1__["cameraRigSettings"];
 
     this.suitcase = null;
     this.dog = null;
 
     this.materials = [];
-    this.bubbles = Object(_config__WEBPACK_IMPORTED_MODULE_2__["getBubblesConfig"])(this.centerCoords, this.ww, this.wh);
-    this.lights = Object(_config__WEBPACK_IMPORTED_MODULE_2__["getLightsConfig"])(this.sceneParams);
+    this.bubbles = Object(_config__WEBPACK_IMPORTED_MODULE_1__["getBubblesConfig"])(this.centerCoords, this.ww, this.wh);
+    this.lights = Object(_config__WEBPACK_IMPORTED_MODULE_1__["getLightsConfig"])(this.sceneParams);
 
     this.hueIsAnimating = false;
     this.prevSceneIndex = 0;
@@ -69543,7 +69635,7 @@ class Story {
       this.init();
       this.initialized = true;
       this.scene.visible = false;
-      Object(_svg_loader__WEBPACK_IMPORTED_MODULE_5__["getSvgObject"])().then(() => {
+      Object(_svg_loader__WEBPACK_IMPORTED_MODULE_2__["getSvgObject"])().then(() => {
         this.scene.visible = true;
         this.animate();
       });
@@ -69575,7 +69667,7 @@ class Story {
     this.scene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
 
     // Add the Camera Rig
-    this.rig = new _camera_rig__WEBPACK_IMPORTED_MODULE_11__["default"](this.cameraRigConfig);
+    this.rig = new _camera_rig__WEBPACK_IMPORTED_MODULE_8__["default"](this.cameraRigConfig);
     this.rig.addObjectToCameraNull(this.camera);
     this.scene.add(this.rig);
 
@@ -69614,25 +69706,7 @@ class Story {
   }
 
   addSuitcase() {
-    const params = _config__WEBPACK_IMPORTED_MODULE_2__["objectsToAdd"].suitcase;
-    const material = params.color && Object(_common__WEBPACK_IMPORTED_MODULE_3__["getMaterial"])({color: params.color, ...params.materialReflectivity});
-
-    Object(_load_object_model__WEBPACK_IMPORTED_MODULE_4__["loadModel"])(params, material, (mesh) => {
-      const outerGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
-      outerGroup.castShadow = params.castShadow;
-      outerGroup.receiveShadow = params.receiveShadow;
-      const fluctuationGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
-
-      Object(_common__WEBPACK_IMPORTED_MODULE_3__["setMeshParams"])(fluctuationGroup, {rotate: params.rotate});
-      Object(_common__WEBPACK_IMPORTED_MODULE_3__["setMeshParams"])(outerGroup, {scale: params.scale});
-      Object(_common__WEBPACK_IMPORTED_MODULE_3__["setMeshParams"])(outerGroup, {position: params.position});
-
-      this.suitcase = {root: outerGroup, fluctation: fluctuationGroup, mesh, params: _config__WEBPACK_IMPORTED_MODULE_2__["objectsToAdd"].suitcase};
-
-      fluctuationGroup.add(mesh);
-      outerGroup.add(fluctuationGroup);
-      this.rig.addSuitcase(outerGroup);
-    });
+    this.suitcase = new _objects_suitcase__WEBPACK_IMPORTED_MODULE_9__["default"](this.rig);
   }
 
   endAnimation() {
@@ -69668,36 +69742,6 @@ class Story {
     this.renderer.render(this.scene, this.camera);
   }
 
-  animateSuitcase() {
-    if (this.suitcase) {
-      if (this.startTime < 0) {
-        this.startTime = new three__WEBPACK_IMPORTED_MODULE_0__["Clock"]();
-        return;
-      }
-
-      const t = this.startTime.getElapsedTime();
-      const params = this.suitcase.params;
-
-      // Анимируем падение
-      if (t < SUITCASE_POSITION_ANIMATION_TIME_SEC) {
-        const positionY = Object(_helpers__WEBPACK_IMPORTED_MODULE_1__["tick"])(params.position.y, params.finalPosition.y, 1);
-        const position = [params.finalPosition.x, positionY, params.finalPosition.z];
-
-        this.suitcase.root.position.set(...position);
-      // Анимируем сжатие / растяжение
-      } else if (t > SUITCASE_POSITION_ANIMATION_TIME_SEC && t < SUITCASE_SQUASH_ANIMATION_TIME_SEC) {
-        let scaleX;
-        let scaleY;
-        let scaleZ;
-
-        scaleY = Object(_helpers__WEBPACK_IMPORTED_MODULE_1__["tick"])(params.scale.y, params.finalScale.y, Object(_helpers__WEBPACK_IMPORTED_MODULE_1__["easeInOutQuad"])(t));
-        scaleX = scaleZ = 1 / (Math.sqrt(scaleY)) + 0.002;
-
-        this.suitcase.root.scale.set(scaleX, scaleY, scaleZ);
-      }
-    }
-  }
-
   animate() {
     requestAnimationFrame(this.animate);
 
@@ -69726,7 +69770,7 @@ class Story {
         this.startStory.update();
         break;
       case 1:
-        this.animateSuitcase();
+        this.suitcase.animateAppearance();
         this.storyGroup.children[0].update();
         break;
       case 2:
