@@ -1,9 +1,6 @@
 import * as THREE from 'three';
 
-import {tick, easeInOutQuad} from '../../helpers';
-import {getBubblesConfig, getLightsConfig, getTexturesConfig, objectsToAdd} from './config';
-import {getMaterial, setMeshParams} from '../common';
-import {loadModel} from '../load-object-model';
+import {cameraRigSettings, getBubblesConfig, getLightsConfig, getTexturesConfig} from './config';
 import {getSvgObject} from '../svg-loader';
 
 import StartStory from '../start/start';
@@ -13,9 +10,7 @@ import ThirdStory from './stories/third-story';
 import FourthStory from './stories/fourth-story';
 
 import CameraRig from '../camera-rig';
-
-const SUITCASE_SQUASH_ANIMATION_TIME_SEC = 2.0;
-const SUITCASE_POSITION_ANIMATION_TIME_SEC = 1.4;
+import Suitcase from '../objects/suitcase';
 
 const getCameraRigStageState = (index, config) => {
   return {
@@ -65,13 +60,7 @@ export default class Story {
       }
     };
 
-    this.config = {
-      deltaDepth: 0,
-      deltaHorizonAngle: 90 * THREE.Math.DEG2RAD,
-      radius: 0,
-      dollyLengthStart: 3000,
-      dollyLength: 0
-    };
+    this.cameraRigConfig = cameraRigSettings;
 
     this.suitcase = null;
     this.dog = null;
@@ -234,7 +223,7 @@ export default class Story {
     this.scene = new THREE.Scene();
 
     // Add the Camera Rig
-    this.rig = new CameraRig(this.config);
+    this.rig = new CameraRig(this.cameraRigConfig);
     this.rig.addObjectToCameraNull(this.camera);
     this.scene.add(this.rig);
 
@@ -273,25 +262,7 @@ export default class Story {
   }
 
   addSuitcase() {
-    const params = objectsToAdd.suitcase;
-    const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
-
-    loadModel(params, material, (mesh) => {
-      const outerGroup = new THREE.Group();
-      outerGroup.castShadow = params.castShadow;
-      outerGroup.receiveShadow = params.receiveShadow;
-      const fluctuationGroup = new THREE.Group();
-
-      setMeshParams(fluctuationGroup, {rotate: params.rotate});
-      setMeshParams(outerGroup, {scale: params.scale});
-      setMeshParams(outerGroup, {position: params.position});
-
-      this.suitcase = {root: outerGroup, fluctation: fluctuationGroup, mesh, params: objectsToAdd.suitcase};
-
-      fluctuationGroup.add(mesh);
-      outerGroup.add(fluctuationGroup);
-      this.rig.addSuitcase(outerGroup);
-    });
+    this.suitcase = new Suitcase(this.rig);
   }
 
   endAnimation() {
@@ -306,11 +277,14 @@ export default class Story {
     this.setLight();
 
     if (this.sceneIndex > 0) {
-      this.storyGroup.visible = true;
-      this.rig.changeStateTo(getCameraRigStageState(index, this.config));
+      this.rig.changeStateTo(getCameraRigStageState(index, this.cameraRigConfig));
 
       if (this.prevSceneIndex === 0 && this.sceneIndex === 1) {
+        this.storyGroup.visible = false;
+        this.rig.pitchToggled = false;
         setTimeout(() => {
+          this.rig.pitchToggled = true;
+          this.storyGroup.visible = true;
           this.startStory.visible = false;
         }, 400);
       }
@@ -322,36 +296,6 @@ export default class Story {
     }
 
     this.renderer.render(this.scene, this.camera);
-  }
-
-  animateSuitcase() {
-    if (this.suitcase) {
-      if (this.startTime < 0) {
-        this.startTime = new THREE.Clock();
-        return;
-      }
-
-      const t = this.startTime.getElapsedTime();
-      const params = this.suitcase.params;
-
-      // Анимируем падение
-      if (t < SUITCASE_POSITION_ANIMATION_TIME_SEC) {
-        const positionY = tick(params.position.y, params.finalPosition.y, 1);
-        const position = [params.finalPosition.x, positionY, params.finalPosition.z];
-
-        this.suitcase.root.position.set(...position);
-      // Анимируем сжатие / растяжение
-      } else if (t > SUITCASE_POSITION_ANIMATION_TIME_SEC && t < SUITCASE_SQUASH_ANIMATION_TIME_SEC) {
-        let scaleX;
-        let scaleY;
-        let scaleZ;
-
-        scaleY = tick(params.scale.y, params.finalScale.y, easeInOutQuad(t));
-        scaleX = scaleZ = 1 / (Math.sqrt(scaleY)) + 0.002;
-
-        this.suitcase.root.scale.set(scaleX, scaleY, scaleZ);
-      }
-    }
   }
 
   animate() {
@@ -382,7 +326,7 @@ export default class Story {
         this.startStory.update();
         break;
       case 1:
-        this.animateSuitcase();
+        this.suitcase.animateAppearance();
         this.storyGroup.children[0].update();
         break;
       case 2:
