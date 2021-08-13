@@ -2,7 +2,7 @@ import throttle from 'lodash/throttle';
 import timer from './timer.js';
 import prizes from './prizes.js';
 
-import Story from './3d/story/index';
+import Story from './3d/story';
 
 export default class FullPageScroll {
   constructor() {
@@ -141,9 +141,9 @@ export default class FullPageScroll {
   initScene() {
     const init = (screenName) => {
       if (screenName === `top` || screenName === `story`) {
-        this.scene.start(screenName);
+        this.scene.init(screenName);
       } else {
-        this.scene.endAnimation();
+        this.scene.end();
       }
     };
 
