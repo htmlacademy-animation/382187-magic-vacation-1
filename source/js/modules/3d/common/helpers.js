@@ -43,7 +43,7 @@ export const setMeshParams = (mesh, params) => {
 };
 
 export const getMaterial = (options = {}) => {
-  const {color, matcapMaterial, ...rest} = options;
+  const {color, matcapMaterial, roughness, metalness, ...rest} = options;
 
   if (isMobile && matcapMaterial) {
     const textureLoader = new THREE.TextureLoader(loadManager);
@@ -54,6 +54,7 @@ export const getMaterial = (options = {}) => {
 
   return new THREE.MeshStandardMaterial({
     color: new THREE.Color(color),
+    roughness, metalness,
     ...rest,
   });
 };
