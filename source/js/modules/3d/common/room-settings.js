@@ -9,7 +9,7 @@ const rooms = [
   {Elements: IntroRoom},
   {Elements: FirstRoom},
   {
-    options: {hueShift: -0.26, magnify: true},
+    options: {hueShift: -0.26, distort: true},
     animationSettings: {
       hue: {
         initalHue: -0.1,
@@ -27,11 +27,11 @@ const rooms = [
   },
 ].map((room) => ({
   ...room,
-  options: room.options || {hueShift: defaultHue, magnify: false},
+  options: room.options || {hueShift: defaultHue, distort: false},
   animationSettings: room.animationSettings || {hue: {initalHue: defaultHue, finalHue: defaultHue, variation: defaultHue}}
 }));
 
-export const effectRoomIndex = rooms.findIndex((room) => room.options.magnify);
+export const effectRoomIndex = rooms.findIndex((room) => room.options.distort);
 
 export const effectRoom = rooms[effectRoomIndex];
 

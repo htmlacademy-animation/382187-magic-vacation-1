@@ -1,14 +1,19 @@
 import * as THREE from 'three';
 
+import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer';
+import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
+import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass';
+
 import loadManager from '../common/load-manager';
 import isMobile from '../../../helpers/is-mobile';
 import CameraRig from '../common/camera-rig';
 import {getLightConfig, createLight} from '../common/lights';
 import {setMeshParams} from '../common/helpers';
 
-import rooms from '../common/room-settings';
+import rooms, {effectRoom, effectRoomIndex} from '../common/room-settings';
 import getSuitcase from '../common/objects/suitcase';
 import getCameraSettings from '../common/camera-settings';
+import getEffectMaterial, {getBubbles, getHue} from '../common/effects';
 
 const ScreenName = {
   top: `intro`,
@@ -76,6 +81,11 @@ export default class Story {
 
   getScenePosition(index) {
     return this.innerWidth * index;
+  }
+
+  getSceneSize() {
+    this.renderer.getSize(this.sceneSize);
+    return this.sceneSize;
   }
 
   setLight() {
@@ -179,6 +189,24 @@ export default class Story {
     }
   }
 
+  setEffect() {
+    const room = rooms[this.currentScene];
+    const pixelRatio = this.renderer.getPixelRatio();
+
+    this.bubbles = getBubbles(this.canvasCenter, pixelRatio, this.innerHeight, this.innerWidth);
+    this.hue = getHue();
+
+    const {width, height} = this.getSceneSize();
+    const resolution = [width * pixelRatio, height * pixelRatio];
+    this.bubbleUniform = this.bubbles.getUniform(effectRoom, resolution);
+
+    this.getEffectMaterial = (texture) => getEffectMaterial(texture, this.bubbleUniform, room.options);
+    this.effectMaterial = this.getEffectMaterial();
+
+    const effectPass = new ShaderPass(this.effectMaterial, `map`);
+    this.composer.addPass(effectPass);
+  }
+
   prepareScene(screenName) {
     this.canvasElement = document.getElementById(this.canvasSelector);
     this.canvasElement.width = this.innerWidth;
@@ -186,6 +214,7 @@ export default class Story {
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvasElement,
+      logarithmicDepthBuffer: false,
       powerPreference: `high-performance`
     });
     this.renderer.setClearColor(this.backgroundColor, 1);
@@ -198,6 +227,14 @@ export default class Story {
     this.camera = new THREE.PerspectiveCamera(this.fov, this.aspect, this.near, this.far);
 
     this.scene = new THREE.Scene();
+
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.setPixelRatio(window.devicePixelRatio);
+    this.composer.setPixelRatio(window.devicePixelRatio);
+    const renderPass = new RenderPass(this.scene, this.camera);
+    this.composer.addPass(renderPass);
+
+    this.setEffect();
 
     this.rig = new CameraRig(this.cameraSettings[screenName]);
     this.rig.addObjectToCameraNull(this.camera);
@@ -338,6 +375,11 @@ export default class Story {
     this.camera.aspect = this.innerWidth / this.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.innerWidth, this.innerHeight);
+
+    const {width, height} = this.getSceneSize();
+    const pixelRatio = this.renderer.getPixelRatio();
+    const resolution = [width * pixelRatio, height * pixelRatio];
+    this.effectMaterial.uniforms.distortion.value.resolution = resolution;
   }
 
   changeScene(index) {
@@ -364,11 +406,19 @@ export default class Story {
       });
     }
 
+    this.bubbles.reset(this.effectMaterial);
+    this.hue.reset(this.effectMaterial, this.currentScene);
+
+    if (this.currentScene === effectRoomIndex) {
+      this.bubbles.animate(this.effectMaterial);
+      this.hue.animate(this.effectMaterial, this.currentScene);
+    }
+
     this.renderer.render(this.scene, this.camera);
   }
 
   render() {
-    this.renderer.render(this.scene, this.camera);
+    this.composer.render();
 
     if (this.introAnimationRequest || this.roomAnimationsCount > 0 || this.mouseMoving) {
       requestAnimationFrame(this.render);
