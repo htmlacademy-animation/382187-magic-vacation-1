@@ -82,14 +82,6 @@ export default ({scene}) => {
     if (screenName === `story`) {
       scene.changeScene(1);
     }
-
-    if (screenName === `top`) {
-      scene.changeScene(0);
-    }
-
-    if (screenName !== `story` || screenName !== `top`) {
-      scene.endAnimation();
-    }
   });
 
   setSlider();
