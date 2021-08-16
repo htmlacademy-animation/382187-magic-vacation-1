@@ -67624,7 +67624,7 @@ const setMeshParams = (mesh, params) => {
 };
 
 const getMaterial = (options = {}) => {
-  const {color, matcapMaterial, ...rest} = options;
+  const {color, matcapMaterial, roughness, metalness, ...rest} = options;
 
   if (_helpers_is_mobile__WEBPACK_IMPORTED_MODULE_1__["default"] && matcapMaterial) {
     const textureLoader = new three__WEBPACK_IMPORTED_MODULE_0__["TextureLoader"](_load_manager__WEBPACK_IMPORTED_MODULE_2__["default"]);
@@ -67635,6 +67635,7 @@ const getMaterial = (options = {}) => {
 
   return new three__WEBPACK_IMPORTED_MODULE_0__["MeshStandardMaterial"]({
     color: new three__WEBPACK_IMPORTED_MODULE_0__["Color"](color),
+    roughness, metalness,
     ...rest,
   });
 };
