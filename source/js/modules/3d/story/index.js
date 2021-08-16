@@ -5,7 +5,8 @@ import isMobile from '../../../helpers/is-mobile';
 import CameraRig from '../common/camera-rig';
 import {getLightConfig, createLight} from '../common/lights';
 import {setMeshParams} from '../common/helpers';
-
+import {hideObjectsOnMobile} from '../common/hide-objects';
+import setBEMModificators from '../common/classes';
 import rooms from '../common/room-settings';
 import getSuitcase from '../common/objects/suitcase';
 import getCameraSettings from '../common/camera-settings';
@@ -261,6 +262,7 @@ export default class Story {
     });
 
     this.setLight();
+    hideObjectsOnMobile(this.scene);
   }
 
   init(rawName) {
@@ -303,6 +305,7 @@ export default class Story {
     this.mouseMoving = false;
     this.rigUpdating = null;
     this.animationRequest = null;
+    setBEMModificators(rooms[0].menuBackground);
   }
 
   handleResize() {
@@ -363,6 +366,8 @@ export default class Story {
         this.roomAnimationsCount -= 1;
       });
     }
+
+    setBEMModificators(rooms[this.currentScene].menuBackground);
 
     this.renderer.render(this.scene, this.camera);
   }

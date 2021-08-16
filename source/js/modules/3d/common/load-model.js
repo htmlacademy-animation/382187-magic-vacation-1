@@ -4,6 +4,7 @@ import loadManager from './load-manager';
 import {getMaterial} from './helpers';
 import isMobile from '../../../helpers/is-mobile';
 import materialReflectivity from './material-reflectivity';
+import {hideObjectsOnMobile} from './hide-objects';
 
 const onComplete = (obj3d, material, callback) => {
   if (material) {
@@ -13,6 +14,8 @@ const onComplete = (obj3d, material, callback) => {
       }
     });
   }
+
+  hideObjectsOnMobile(obj3d);
 
   if (typeof callback === `function`) {
     callback.call(null, obj3d);
