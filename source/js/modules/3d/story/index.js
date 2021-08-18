@@ -9,7 +9,8 @@ import isMobile from '../../../helpers/is-mobile';
 import CameraRig from '../common/camera-rig';
 import {getLightConfig, createLight} from '../common/lights';
 import {setMeshParams} from '../common/helpers';
-
+import {hideObjectsOnMobile} from '../common/hide-objects';
+import setBEMModificators from '../common/classes';
 import rooms, {effectRoom, effectRoomIndex} from '../common/room-settings';
 import getSuitcase from '../common/objects/suitcase';
 import getCameraSettings from '../common/camera-settings';
@@ -64,6 +65,7 @@ export default class Story {
     this.currentScene = 0;
 
     this.sceneSize = new THREE.Vector2();
+    this.progressBar = document.querySelector(`.progress-bar`);
 
     this.render = this.render.bind(this);
     this.handleResize = this.handleResize.bind(this);
@@ -298,6 +300,7 @@ export default class Story {
     });
 
     this.setLight();
+    hideObjectsOnMobile(this.scene);
   }
 
   init(rawName) {
@@ -310,9 +313,14 @@ export default class Story {
       this.intro.visible = false;
       this.roomGroup.visible = false;
 
+      loadManager.onProgress = (_, itemsLoaded, itemsTotal) => {
+        this.progressBar.textContent = `${Math.round(itemsLoaded / itemsTotal * 100)} %`;
+      };
+
       loadManager.onLoad = () => {
         this.intro.visible = true;
         this.roomGroup.visible = true;
+        this.progressBar.classList.add(`progress-bar--loaded`);
         this.renderer.render(this.scene, this.camera);
         this.intro.startAnimation();
         this.intro.onAnimationEnd = () => {
@@ -340,6 +348,7 @@ export default class Story {
     this.mouseMoving = false;
     this.rigUpdating = null;
     this.animationRequest = null;
+    setBEMModificators(rooms[0].menuBackground);
   }
 
   handleResize() {
@@ -413,6 +422,8 @@ export default class Story {
       this.bubbles.animate(this.effectMaterial);
       this.hue.animate(this.effectMaterial, this.currentScene);
     }
+
+    setBEMModificators(rooms[this.currentScene].menuBackground);
 
     this.renderer.render(this.scene, this.camera);
   }

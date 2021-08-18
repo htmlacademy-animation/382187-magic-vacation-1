@@ -162,8 +162,12 @@
   }
 }
 
-.screen {
-  &.active {
+.progress-bar {
+  &--loaded + .screen.active {
+    .intro__label {
+      opacity: 1;
+    }
+
     .intro__title.active .intro__word>span,
     .intro__date.active .intro__date-word>span {
       opacity: 1;
@@ -174,6 +178,11 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+}
+
+.screen {
+  &.active {
 
     .form__field {
       width: calc(100% - 21rem);
