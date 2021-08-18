@@ -17,6 +17,16 @@
   @media (max-width: $mobile) and (orientation: landscape) {
     padding: 0.9rem 0;
   }
+
+  --active-link-accent: #{$c-purple};
+
+  &--background-blue {
+    --active-link-accent: #{$c-blue};
+  }
+
+  &--background-gray {
+    --active-link-accent: #{$c-blue-dark};
+  }
 }
 
 .page-header__wrapper {
@@ -279,7 +289,7 @@
 
     &:hover,
     &:focus {
-      color: $c-purple;
+      color: var(--active-link-accent);
       outline: none;
 
       &::after {
@@ -287,8 +297,18 @@
         right: auto;
         left: 0;
         opacity: 1;
-        background-color: $c-purple;
+        background-color: var(--active-link-accent);
       }
+      // color: $c-purple;
+      // outline: none;
+
+      // &::after {
+      //   width: 100%;
+      //   right: auto;
+      //   left: 0;
+      //   opacity: 1;
+      //   background-color: $c-purple;
+      // }
     }
   }
 }
