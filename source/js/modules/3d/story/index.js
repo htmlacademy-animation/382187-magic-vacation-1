@@ -60,6 +60,8 @@ export default class Story {
     this.currentScene = 0;
 
     this.sceneSize = new THREE.Vector2();
+    this.progressBar = document.querySelector(`.progress-bar`);
+    this.progressBar.style.zIndex = 2;
 
     this.render = this.render.bind(this);
     this.handleResize = this.handleResize.bind(this);
@@ -275,9 +277,14 @@ export default class Story {
       this.intro.visible = false;
       this.roomGroup.visible = false;
 
+      loadManager.onProgress = (_, itemsLoaded, itemsTotal) => {
+        this.progressBar.textContent = `${Math.round(itemsLoaded / itemsTotal * 100)} %`;
+      };
+
       loadManager.onLoad = () => {
         this.intro.visible = true;
         this.roomGroup.visible = true;
+        this.progressBar.style.zIndex = -1;
         this.renderer.render(this.scene, this.camera);
         this.intro.startAnimation();
         this.intro.onAnimationEnd = () => {
