@@ -68936,7 +68936,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "varying vec2 vUv;\n\nuniform vec3 mainColor;\nuniform vec3 stripeColor;\n\nvoid main() {\n  float stripes = 7.0 * vUv.x;\n  float rounded = floor(stripes);\n\n  if (mod(rounded, 2.0) == 1.0)\n  {\n    gl_FragColor = vec4(stripeColor, 1.0);\n  }\n  else\n  {\n    gl_FragColor = vec4(mainColor, 1.0);\n  }\n}\n"
+module.exports = "#ifdef USE_LOGDEPTHBUF\n#ifdef USE_LOGDEPTHBUF_EXT\n#extension GL_EXT_frag_depth : enable\nvarying float vFragDepth;\n#endif\nuniform float logDepthBufFC;\n#endif\n\nvarying vec2 vUv;\n\nuniform vec3 mainColor;\nuniform vec3 stripeColor;\n\nvoid main() {\n  float stripes = 7.0 * vUv.x;\n  float rounded = floor(stripes);\n\n  if (mod(rounded, 2.0) == 1.0)\n  {\n    gl_FragColor = vec4(stripeColor, 1.0);\n  }\n  else\n  {\n    gl_FragColor = vec4(mainColor, 1.0);\n  }\n\n  #if defined(USE_LOGDEPTHBUF) && defined(USE_LOGDEPTHBUF_EXT)\n    gl_FragDepthEXT = log2(vFragDepth) * logDepthBufFC * 0.5;\n  #endif\n}\n"
 
 /***/ }),
 
@@ -68987,7 +68987,7 @@ class CarpetMaterial extends three__WEBPACK_IMPORTED_MODULE_0__["ShaderMaterial"
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "varying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n"
+module.exports = "#ifdef USE_LOGDEPTHBUF\n#define EPSILON 1e-6\n#ifdef USE_LOGDEPTHBUF_EXT\nvarying float vFragDepth;\n#endif\nuniform float logDepthBufFC;\n#endif\n\nvarying vec3 vNormal;\n\nvarying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n\n  #ifdef USE_LOGDEPTHBUF\n    gl_Position.z = log2(max( EPSILON, gl_Position.w + 1.0 )) * logDepthBufFC;\n  #ifdef USE_LOGDEPTHBUF_EXT\n    vFragDepth = 1.0 + gl_Position.w;\n  #else\n    gl_Position.z = (gl_Position.z - 1.0) * gl_Position.w;\n  #endif\n  #endif\n}\n"
 
 /***/ }),
 
@@ -68998,7 +68998,7 @@ module.exports = "varying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n\n  gl_Positi
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "varying vec2 vUv;\n\nuniform vec3 mainColor;\nuniform vec3 stripeColor;\n\nvoid main() {\n  float stripesY = 3.0 * vUv.y;\n  float roundedY = floor(stripesY);\n  float stripesX = 9.0 * vUv.x;\n  float roundedX = floor(stripesX);\n\n  if (\n    mod(roundedY, 2.0) == 1.0 &&\n    vUv.y < 0.55 && vUv.y > 0.40 &&\n    mod(roundedX, 2.0) == 1.0\n  )\n  {\n    gl_FragColor = vec4(stripeColor, 1.0);\n  }\n  else\n  {\n    gl_FragColor = vec4(mainColor, 1.0);\n  }\n}\n"
+module.exports = "#ifdef USE_LOGDEPTHBUF\n#ifdef USE_LOGDEPTHBUF_EXT\n#extension GL_EXT_frag_depth : enable\nvarying float vFragDepth;\n#endif\nuniform float logDepthBufFC;\n#endif\n\nvarying vec2 vUv;\n\nuniform vec3 mainColor;\nuniform vec3 stripeColor;\n\nvoid main() {\n  float stripesY = 3.0 * vUv.y;\n  float roundedY = floor(stripesY);\n  float stripesX = 9.0 * vUv.x;\n  float roundedX = floor(stripesX);\n\n  if (\n    mod(roundedY, 2.0) == 1.0 &&\n    vUv.y < 0.55 && vUv.y > 0.40 &&\n    mod(roundedX, 2.0) == 1.0\n  )\n  {\n    gl_FragColor = vec4(stripeColor, 1.0);\n  }\n  else\n  {\n    gl_FragColor = vec4(mainColor, 1.0);\n  }\n\n  #if defined(USE_LOGDEPTHBUF) && defined(USE_LOGDEPTHBUF_EXT)\n    gl_FragDepthEXT = log2(vFragDepth) * logDepthBufFC * 0.5;\n  #endif\n}\n"
 
 /***/ }),
 
@@ -69049,7 +69049,7 @@ class RoadMaterial extends three__WEBPACK_IMPORTED_MODULE_0__["ShaderMaterial"] 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "varying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n\n  gl_Position   = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n"
+module.exports = "#ifdef USE_LOGDEPTHBUF\n#define EPSILON 1e-6\n#ifdef USE_LOGDEPTHBUF_EXT\nvarying float vFragDepth;\n#endif\nuniform float logDepthBufFC;\n#endif\n\nvarying vec3 vNormal;\n\nvarying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n\n  gl_Position   = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n\n  #ifdef USE_LOGDEPTHBUF\n    gl_Position.z = log2(max( EPSILON, gl_Position.w + 1.0 )) * logDepthBufFC;\n  #ifdef USE_LOGDEPTHBUF_EXT\n    vFragDepth = 1.0 + gl_Position.w;\n  #else\n    gl_Position.z = (gl_Position.z - 1.0) * gl_Position.w;\n  #endif\n  #endif\n}\n"
 
 /***/ }),
 
@@ -71756,7 +71756,7 @@ class Story {
 
     this.renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]({
       canvas: this.canvasElement,
-      logarithmicDepthBuffer: false,
+      logarithmicDepthBuffer: true,
       powerPreference: `high-performance`
     });
     this.renderer.setClearColor(this.backgroundColor, 1);
