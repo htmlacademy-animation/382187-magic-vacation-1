@@ -216,7 +216,7 @@ export default class Story {
 
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvasElement,
-      logarithmicDepthBuffer: false,
+      logarithmicDepthBuffer: true,
       powerPreference: `high-performance`
     });
     this.renderer.setClearColor(this.backgroundColor, 1);
