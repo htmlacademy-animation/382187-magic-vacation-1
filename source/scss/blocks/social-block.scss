@@ -1,6 +1,19 @@
 .social-block {
   position: relative;
 
+  --toggle-default: #{$c-purple};
+  --toggle-hover: #{$c-dark};
+
+  &--background-blue {
+    --toggle-default: #{$c-blue-dark};
+    --toggle-hover: #{$c-blue};
+  }
+
+  &--background-gray {
+    --toggle-default: #{$c-blue};
+    --toggle-hover: #{$c-blue-dark};
+  }
+
   &:hover {
     .social-block__list {
       opacity: 1;
@@ -38,7 +51,7 @@
   display: block;
   width: 4rem;
   height: 4rem;
-  color: $c-dark;
+  color: var(--toggle-default);
   border-radius: 50%;
 
   @media (max-width: $tablet) and (orientation: portrait) {
@@ -70,7 +83,7 @@
 
   &:hover,
   .social-block--active & {
-    color: $c-purple;
+    color: var(--toggle-hover);
     transition: all 0.3s ease;
 
     &::before {
@@ -80,11 +93,11 @@
   }
 
   &:focus {
-    color: $c-purple;
+    color: var(--toggle-hover);
     outline: none;
 
     &::before {
-      border-color: $c-purple;
+      border-color: currentColor;
     }
 
     & + .social-block__list {
@@ -100,8 +113,8 @@
     &::before {
       width: 100%;
       height: 100%;
-      background-color: $c-purple;
-      border-color: $c-purple;
+      background-color: var(--toggle-hover);
+      border-color: var(--toggle-hover);
     }
   }
 }

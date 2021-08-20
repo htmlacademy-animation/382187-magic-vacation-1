@@ -1,3 +1,11 @@
+#ifdef USE_LOGDEPTHBUF
+#ifdef USE_LOGDEPTHBUF_EXT
+#extension GL_EXT_frag_depth : enable
+varying float vFragDepth;
+#endif
+uniform float logDepthBufFC;
+#endif
+
 varying vec2 vUv;
 
 uniform vec3 mainColor;
@@ -21,4 +29,8 @@ void main() {
   {
     gl_FragColor = vec4(mainColor, 1.0);
   }
+
+  #if defined(USE_LOGDEPTHBUF) && defined(USE_LOGDEPTHBUF_EXT)
+    gl_FragDepthEXT = log2(vFragDepth) * logDepthBufFC * 0.5;
+  #endif
 }

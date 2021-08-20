@@ -11,12 +11,12 @@ function setBEMModificators(mod, value, elementClassnames) {
       return;
     }
 
-    const startsWith = `${elementClassName}_${mod}`;
+    const startsWith = `${elementClassName}--${mod}`;
 
     const prevBackgroundClass = [...element.classList].find((localClassName) => localClassName.startsWith(startsWith));
     element.classList.remove(prevBackgroundClass);
     if (value) {
-      element.classList.add(`${startsWith}_${value}`);
+      element.classList.add(`${startsWith}-${value}`);
     }
   });
 }
