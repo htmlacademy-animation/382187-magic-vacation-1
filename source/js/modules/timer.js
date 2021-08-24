@@ -1,41 +1,66 @@
 import animateCrocodileScene from "./crocodile-scene";
 
-export default () => {
-  const gameBtns = document.querySelectorAll(`.game__button`);
-  const loseResultTitle = document.querySelector(`#result3 .result__title`);
-  // TODO. Set correct timing. Now 2 second just to show seacalf scene animation
-  const COUNTDOWN_TIME = 1 * 2 * 1000;
-  const endTime = new Date().getTime() + COUNTDOWN_TIME;
-  const minutesElement = document.querySelector(`.game__counter span:first-child`);
-  const secondsElement = document.querySelector(`.game__counter span:last-child`);
+const COUNTDOWN_TIME = 1 * 300 * 1000;
 
-  function getRemainingTime(deadline) {
+class Timer {
+  constructor() {
+    this.gameBtns = document.querySelectorAll(`.game__button`);
+    this.loseResultTitle = document.querySelector(`#result3 .result__title`);
+    this.minutesElement = document.querySelector(`.game__counter span:first-child`);
+    this.secondsElement = document.querySelector(`.game__counter span:last-child`);
+
+    this.animationRequest = null;
+
+    this.start = this.start.bind(this);
+    this.end = this.end.bind(this);
+    this.getRemainingTime = this.getRemainingTime.bind(this);
+    this.pad = this.pad.bind(this);
+    this.showTime = this.showTime.bind(this);
+  }
+
+  getRemainingTime(deadline) {
     const currentTime = new Date().getTime();
     return deadline - currentTime;
   }
 
-  function pad(value) {
+  pad(value) {
     return (`0` + Math.floor(value)).slice(-2);
   }
 
-  function showTime() {
-    const remainingTime = getRemainingTime(endTime);
-    const seconds = pad((remainingTime / 1000) % 60);
-    const minutes = pad((remainingTime / (60 * 1000)) % 60);
+  showTime() {
+    const remainingTime = this.getRemainingTime(this.endTime);
+    const seconds = this.pad((remainingTime / 1000) % 60);
+    const minutes = this.pad((remainingTime / (60 * 1000)) % 60);
 
-    minutesElement.textContent = minutes;
-    secondsElement.textContent = seconds;
+    this.minutesElement.textContent = minutes;
+    this.secondsElement.textContent = seconds;
 
     if (remainingTime >= 1000) {
-      requestAnimationFrame(showTime);
+      requestAnimationFrame(this.showTime);
     } else {
-      gameBtns[2].click();
-      const img = document.createElement(`img`);
-      img.src = `./img/lose-result.svg`;
-      loseResultTitle.append(img);
-      animateCrocodileScene();
+      this.showDefeatScreen();
     }
   }
 
-  requestAnimationFrame(showTime);
-};
+  showDefeatScreen() {
+    this.gameBtns[2].click();
+    const img = document.createElement(`img`);
+    img.src = `./img/lose-result.svg`;
+    this.loseResultTitle.append(img);
+    animateCrocodileScene();
+  }
+
+  start() {
+    this.endTime = new Date().getTime() + COUNTDOWN_TIME;
+    this.animationRequest = requestAnimationFrame(this.showTime);
+  }
+
+  end() {
+    if (this.animationRequest) {
+      cancelAnimationFrame(this.animationRequest);
+      this.animationRequest = null;
+    }
+  }
+}
+
+export default Timer;
