@@ -1,4 +1,5 @@
 precision mediump float;
+precision mediump int;
 
 uniform sampler2D map;
 

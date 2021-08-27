@@ -69,4 +69,6 @@ class SonyaAnimation {
   }
 }
 
-export default SonyaAnimation;
+const sonyaAnimation = new SonyaAnimation();
+
+export default sonyaAnimation;

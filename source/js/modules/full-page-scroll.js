@@ -1,9 +1,9 @@
 import throttle from 'lodash/throttle';
-import Timer from './timer.js';
+import timer from './timer.js';
 import prizes from './prizes.js';
+import sonyaAnimation from './sonya-animation';
 
 import Story from './3d/story';
-import SonyaAnimation from './sonya-animation';
 
 export default class FullPageScroll {
   constructor() {
@@ -25,7 +25,6 @@ export default class FullPageScroll {
     this.onUrlHashChengedHandler = this.onUrlHashChanged.bind(this);
 
     this.setScene();
-    this.setSonya();
   }
 
   init() {
@@ -105,11 +104,11 @@ export default class FullPageScroll {
       activeItem.classList.add(`active`);
 
       if (activeItem.dataset.href === `game`) {
-        this.timer.start();
-        this.sonyaAnimation.start();
+        timer.start();
+        sonyaAnimation.start();
       } else {
-        this.timer.end();
-        this.sonyaAnimation.end();
+        timer.end();
+        sonyaAnimation.end();
       }
 
       if (activeItem.dataset.href === `prizes`) {
@@ -142,11 +141,6 @@ export default class FullPageScroll {
 
   setScene() {
     this.scene = new Story();
-  }
-
-  setSonya() {
-    this.timer = new Timer();
-    this.sonyaAnimation = new SonyaAnimation();
   }
 
   initScene() {
