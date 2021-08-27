@@ -1,15 +1,14 @@
-import animateCrocodileScene from "./crocodile-scene";
+import {showFailureScreen} from "./chat";
 
-const COUNTDOWN_TIME = 1 * 300 * 1000;
+const COUNTDOWN_TIME = 13 * 1000;
 
 class Timer {
-  constructor() {
-    this.gameBtns = document.querySelectorAll(`.game__button`);
-    this.loseResultTitle = document.querySelector(`#result3 .result__title`);
+  constructor(onEnd) {
     this.minutesElement = document.querySelector(`.game__counter span:first-child`);
     this.secondsElement = document.querySelector(`.game__counter span:last-child`);
 
     this.animationRequest = null;
+    this.onEnd = onEnd;
 
     this.start = this.start.bind(this);
     this.end = this.end.bind(this);
@@ -38,16 +37,8 @@ class Timer {
     if (remainingTime >= 1000) {
       requestAnimationFrame(this.showTime);
     } else {
-      this.showDefeatScreen();
+      this.onEnd();
     }
-  }
-
-  showDefeatScreen() {
-    this.gameBtns[2].click();
-    const img = document.createElement(`img`);
-    img.src = `./img/lose-result.svg`;
-    this.loseResultTitle.append(img);
-    animateCrocodileScene();
   }
 
   start() {
@@ -63,4 +54,6 @@ class Timer {
   }
 }
 
-export default Timer;
+const timer = new Timer(showFailureScreen);
+
+export default timer;

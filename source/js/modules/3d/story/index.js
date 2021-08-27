@@ -199,8 +199,8 @@ export default class Story {
     this.hue = getHue();
 
     const {width, height} = this.getSceneSize();
-    const resolution = [width * pixelRatio, height * pixelRatio];
-    this.bubbleUniform = this.bubbles.getUniform(effectRoom, resolution);
+    const resolutionParams = [width * pixelRatio, height * pixelRatio];
+    this.bubbleUniform = this.bubbles.getUniform(effectRoom, resolutionParams);
 
     this.getEffectMaterial = (texture) => getEffectMaterial(texture, this.bubbleUniform, room.options);
     this.effectMaterial = this.getEffectMaterial();
@@ -321,7 +321,6 @@ export default class Story {
         this.intro.visible = true;
         this.roomGroup.visible = true;
         this.progressBar.classList.add(`progress-bar--loaded`);
-        this.renderer.render(this.scene, this.camera);
         this.intro.startAnimation();
         this.intro.onAnimationEnd = () => {
           this.introAnimationRequest = false;
@@ -387,8 +386,8 @@ export default class Story {
 
     const {width, height} = this.getSceneSize();
     const pixelRatio = this.renderer.getPixelRatio();
-    const resolution = [width * pixelRatio, height * pixelRatio];
-    this.effectMaterial.uniforms.distortion.value.resolution = resolution;
+    const resolutionParams = [width * pixelRatio, height * pixelRatio];
+    this.effectMaterial.uniforms.distortion.value.resolution = resolutionParams;
   }
 
   changeScene(index) {
@@ -424,8 +423,6 @@ export default class Story {
     }
 
     setBEMModificators(rooms[this.currentScene].menuBackground);
-
-    this.renderer.render(this.scene, this.camera);
   }
 
   render() {
@@ -433,6 +430,8 @@ export default class Story {
 
     if (this.introAnimationRequest || this.roomAnimationsCount > 0 || this.mouseMoving) {
       requestAnimationFrame(this.render);
+    } else {
+      this.renderer.render(this.scene, this.camera);
     }
 
     if (this.rigUpdating) {
