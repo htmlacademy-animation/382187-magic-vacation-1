@@ -1,6 +1,6 @@
 import {showFailureScreen} from "./chat";
 
-const COUNTDOWN_TIME = 13 * 1000;
+const COUNTDOWN_TIME = 300 * 1000;
 
 class Timer {
   constructor(onEnd) {
